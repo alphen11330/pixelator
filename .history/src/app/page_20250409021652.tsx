@@ -9,7 +9,6 @@ import ImageEditor from "./components/ImageEditor";
 import CollorPalette from "./components/ColorPalette";
 import DitherTypeDropdown from "./components/DitherTypeDropdown";
 import style from "./icon.module.css";
-import Downloader from "./components/Downloader";
 
 declare global {
   interface Window {
@@ -101,7 +100,6 @@ export default function Page() {
     width: "100%",
     height: "100%",
     objectFit: "contain",
-    userSelect: "none",
   };
 
   return (
@@ -137,13 +135,10 @@ export default function Page() {
           </div>
         </div>
         <div style={gridBox}>
-          <div>
-            <Uploader
-              setImageSrc={setImageSrc}
-              setSmoothImageSrc={setSmoothImageSrc}
-            />
-            <Downloader dotsImageSrc={dotsImageSrc} />
-          </div>
+          <Uploader
+            setImageSrc={setImageSrc}
+            setSmoothImageSrc={setSmoothImageSrc}
+          />
           {imageSrc && (
             <>
               <CheckBox

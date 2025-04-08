@@ -54,7 +54,7 @@ const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
     marginLeft: "3rem",
     marginTop: "1rem",
     padding: "10px 15px",
-    border: "2px solid rgb(76, 145, 175)",
+    border: "2px solid hsl(342, 39.40%, 49.20%)",
     borderRadius: "5px",
     backgroundColor: "rgb(208, 237, 243)",
     fontSize: "16px",

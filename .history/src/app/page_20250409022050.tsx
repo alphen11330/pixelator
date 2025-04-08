@@ -101,7 +101,6 @@ export default function Page() {
     width: "100%",
     height: "100%",
     objectFit: "contain",
-    userSelect: "none",
   };
 
   return (
@@ -137,13 +136,12 @@ export default function Page() {
           </div>
         </div>
         <div style={gridBox}>
-          <div>
-            <Uploader
-              setImageSrc={setImageSrc}
-              setSmoothImageSrc={setSmoothImageSrc}
-            />
-            <Downloader dotsImageSrc={dotsImageSrc} />
-          </div>
+          <Uploader
+            setImageSrc={setImageSrc}
+            setSmoothImageSrc={setSmoothImageSrc}
+          />
+          <Downloader dotsImageSrc={dotsImageSrc} />
+
           {imageSrc && (
             <>
               <CheckBox
