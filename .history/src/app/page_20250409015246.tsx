@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-export default function Page() {
+export default function page() {
   const isPC = DeviceChecker();
 
   const [imageSrc, setImageSrc] = useState<string | null>(null); // オリジナル保持
