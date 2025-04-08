@@ -48,7 +48,7 @@ const Downloader: React.FC<Props> = ({
 
   const boxStyle: React.CSSProperties = {
     position: "sticky",
-    marginLeft: "1rem",
+    marginLeft: "3rem",
     marginTop: "1rem",
     padding: "10px 15px",
     border: "2px solid rgb(219, 142, 165)",

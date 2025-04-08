@@ -507,11 +507,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   return (
     <>
       {dotsImageSrc && (
-        <img
-          src={dotsImageSrc}
-          alt="Pixel Art"
-          style={imgStyle}
-          onContextMenu={(e) => e.preventDefault()}
+        <img src={dotsImageSrc} alt="Pixel Art" style={imgStyle} 
+        onContextMenu={(e) => e.preventDefault()
         />
       )}
     </>

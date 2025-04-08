@@ -48,12 +48,12 @@ const Downloader: React.FC<Props> = ({
 
   const boxStyle: React.CSSProperties = {
     position: "sticky",
-    marginLeft: "1rem",
+    marginLeft: "3rem",
     marginTop: "1rem",
     padding: "10px 15px",
     border: "2px solid rgb(219, 142, 165)",
     borderRadius: "5px",
-    backgroundColor: "rgb(243, 208, 218)",
+    backgroundColor: "rgb(208, 237, 243)",
     fontSize: "16px",
     cursor: "pointer",
     transition: "background-color 0.3s, transform 0.3s",
