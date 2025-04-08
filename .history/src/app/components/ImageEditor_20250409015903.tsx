@@ -102,7 +102,7 @@ const ImageEditor: React.FC<Props> = ({
 
       // 処理ステップ4: 白黒画素処理による輪郭線処理（更新）
       if (edgeEnhancement) {
-        const enhanced = erodeDilateProcessor(
+        let enhanced = erodeDilateProcessor(
           cv,
           dst,
           whiteSize, // 変数名変更

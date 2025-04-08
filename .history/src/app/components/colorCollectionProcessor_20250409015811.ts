@@ -55,7 +55,7 @@ const colorCollectionProcessor = (
     // アルファチャンネルを統合
     if (src.channels() === 4) {
         const channels = new cv.MatVector();
-        const output = new cv.Mat();
+        let output = new cv.Mat();
         cv.split(dst, channels);
         channels.push_back(alpha);
         cv.merge(channels, output);

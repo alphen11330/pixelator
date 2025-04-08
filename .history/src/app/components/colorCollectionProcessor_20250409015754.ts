@@ -39,7 +39,7 @@ const colorCollectionProcessor = (
     // HLSチャンネルを統一
         for (let y = 0; y < hls.rows; y++) {
             for (let x = 0; x < hls.cols; x++) {
-                const pixel = hls.ucharPtr(y, x);
+                let pixel = hls.ucharPtr(y, x);
                 if(isHue) pixel[0] = hue; // 色相(H)の値を代入
                 if (isLuminance) pixel[1] = luminance; // 輝度(L)の値を代入
                 if (isSaturation) pixel[2] = saturation; // 彩度(S)の値を代入
@@ -54,8 +54,8 @@ const colorCollectionProcessor = (
     
     // アルファチャンネルを統合
     if (src.channels() === 4) {
-        const channels = new cv.MatVector();
-        const output = new cv.Mat();
+        let channels = new cv.MatVector();
+        let output = new cv.Mat();
         cv.split(dst, channels);
         channels.push_back(alpha);
         cv.merge(channels, output);

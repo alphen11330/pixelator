@@ -1,5 +1,5 @@
 const grayscaleProcess = (cv: any, src: any): any => {
-  const dst = new cv.Mat();
+  let dst = new cv.Mat();
 
   if (src.channels() === 4) {
     // RGBA画像ならアルファチャンネルを保持しつつRGBをグレースケール化

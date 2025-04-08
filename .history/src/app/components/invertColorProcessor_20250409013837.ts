@@ -1,8 +1,8 @@
-const grayscaleProcess = (cv: any, src: any): any => {
-  const dst = new cv.Mat();
+const invertColorProcessor = (cv: any, src: any): any => {
+  let dst = new cv.Mat();
 
   if (src.channels() === 4) {
-    // RGBA画像ならアルファチャンネルを保持しつつRGBをグレースケール化
+    // RGBA画像ならアルファチャンネルを保持しつつRGBを色反転
     const rgbaChannels = new cv.MatVector();
     cv.split(src, rgbaChannels);
 
@@ -11,15 +11,16 @@ const grayscaleProcess = (cv: any, src: any): any => {
     const b = rgbaChannels.get(2);
     const a = rgbaChannels.get(3); // アルファチャンネル
 
-    const gray = new cv.Mat();
-    cv.addWeighted(r, 0.3, g, 0.59, 0, gray);
-    cv.addWeighted(gray, 1, b, 0.11, 0, gray);
+    // RGB部分を色反転
+    cv.bitwise_not(r, r);
+    cv.bitwise_not(g, g);
+    cv.bitwise_not(b, b);
 
     // 4チャンネルに戻す
     const mergedChannels = new cv.MatVector();
-    mergedChannels.push_back(gray);
-    mergedChannels.push_back(gray);
-    mergedChannels.push_back(gray);
+    mergedChannels.push_back(r);
+    mergedChannels.push_back(g);
+    mergedChannels.push_back(b);
     mergedChannels.push_back(a); // アルファチャンネルを戻す
 
     cv.merge(mergedChannels, dst);
@@ -29,16 +30,14 @@ const grayscaleProcess = (cv: any, src: any): any => {
     g.delete();
     b.delete();
     a.delete();
-    gray.delete();
     rgbaChannels.delete();
     mergedChannels.delete();
   } else {
-    // RGB画像ならそのままグレースケール化
-    cv.cvtColor(src, dst, cv.COLOR_RGB2GRAY);
-    cv.cvtColor(dst, dst, cv.COLOR_GRAY2RGB);
+    // RGB画像ならそのまま色反転
+    cv.bitwise_not(src, dst);
   }
 
   return dst;
 };
 
-export default grayscaleProcess;
+export default invertColorProcessor;
