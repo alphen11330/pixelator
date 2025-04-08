@@ -1,0 +1,90 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import Uploader from "./components/Uploader";
+import PixelArtProcessor from "./components/PixelArtProcessor";
+import InputRange from "./components/InputRange";
+import CheckBox from "./components/CheckBox";
+import ImageEditor from "./components/ImageEditor";
+
+export default function PixelArtConverter() {
+  const [imageSrc, setImageSrc] = useState<string | null>(null); // オリジナル保持
+  const [smoothImageSrc, setSmoothImageSrc] = useState<string | null>(null);
+  const [dotsImageSrc, setDotsImageSrc] = useState<string | null>(null);
+  const [pixelLength, setPixelLength] = useState(64);
+  const [grayscale, setGrayscale] = useState(false);
+  const [invertColor, setInvertColor] = useState(false); // 色反転の状態
+
+  // OpenCV.js をロード
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "/js/opencv.js";
+    script.async = true;
+    script.onload = () => console.log("OpenCV.js Loaded");
+    document.body.appendChild(script);
+  }, []);
+
+  const imgBox: React.CSSProperties = {
+    display: "inline",
+    margin: "1rem",
+    border: "solid 1px rgb(0, 0, 0)",
+  };
+
+  return (
+    <>
+      <Uploader
+        setImageSrc={setImageSrc}
+        setSmoothImageSrc={setSmoothImageSrc}
+      />
+      {smoothImageSrc && imageSrc && (
+        <>
+          <img
+            src={smoothImageSrc}
+            width={"256px"}
+            alt="Original"
+            style={imgBox}
+          />
+
+          <ImageEditor //オリジナル画像をもとにスムーズ画像を加工
+            imageSrc={imageSrc} //オリジナル画像
+            setSmoothImageSrc={setSmoothImageSrc} //加工後の画像セッター
+            grayscale={grayscale}
+            invertColor={invertColor}
+          />
+
+          <PixelArtProcessor //スムーズ画像をドット絵に変換
+            smoothImageSrc={smoothImageSrc}
+            setDotsImageSrc={setDotsImageSrc}
+            pixelLength={pixelLength}
+          />
+
+          <span style={{ userSelect: "none" }}>▶</span>
+        </>
+      )}
+      {dotsImageSrc && (
+        <>
+          <img
+            src={dotsImageSrc}
+            width={"256px"}
+            alt="Pixel Art"
+            style={{ ...imgBox, imageRendering: "pixelated" }}
+          />
+          <br />
+        </>
+      )}
+      <CheckBox name={"色反転"} value={invertColor} setValue={setInvertColor} />
+      <CheckBox
+        name={"グレースケール"}
+        value={grayscale}
+        setValue={setGrayscale}
+      />
+      <InputRange
+        name={"ドット長"}
+        min={8}
+        max={512}
+        step={8}
+        value={pixelLength}
+        setValue={setPixelLength}
+      />
+    </>
+  );
+}

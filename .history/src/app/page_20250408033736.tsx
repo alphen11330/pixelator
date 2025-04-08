@@ -1,0 +1,177 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import Head from "next/head";
+
+type Props = {
+  smoothImageSrc: string | null;
+  dotsImageSrc: string | null;
+  setDotsImageSrc: React.Dispatch<React.SetStateAction<string | null>>;
+  pixelLength: number;
+  colorReduction: boolean;
+  colorPalette: string[];
+};
+
+// RGBの距離を計算
+const colorDistance = (
+  r1: number,
+  g1: number,
+  b1: number,
+  r2: number,
+  g2: number,
+  b2: number
+) => {
+  return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+};
+
+// パレットの中から一番近い色を返す
+const findNearestColor = (
+  r: number,
+  g: number,
+  b: number,
+  palette: [number, number, number][]
+) => {
+  let minDist = Infinity;
+  let nearestColor: [number, number, number] = palette[0];
+
+  for (const [pr, pg, pb] of palette) {
+    const dist = colorDistance(r, g, b, pr, pg, pb);
+    if (dist < minDist) {
+      minDist = dist;
+      nearestColor = [pr, pg, pb];
+    }
+  }
+
+  return nearestColor;
+};
+
+// "rgb(255, 0, 0)" → [255, 0, 0]
+const parseRgb = (rgbStr: string): [number, number, number] => {
+  const match = rgbStr.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  if (!match) return [0, 0, 0];
+  return [parseInt(match[1]), parseInt(match[2]), parseInt(match[3])];
+};
+
+const PixelArtProcessor: React.FC<Props> = ({
+  smoothImageSrc,
+  dotsImageSrc,
+  setDotsImageSrc,
+  pixelLength,
+  colorReduction,
+  colorPalette,
+}) => {
+  const [cvReady, setCvReady] = useState(false);
+
+  // OpenCVスクリプトを読み込み
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // 既に読み込み済みならスキップ
+    if (window.cv && window.cv.Mat) {
+      setCvReady(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://docs.opencv.org/4.x/opencv.js";
+    script.async = true;
+    script.onload = () => {
+      window.cv["onRuntimeInitialized"] = () => {
+        setCvReady(true);
+      };
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  // 画像処理
+  useEffect(() => {
+    if (!cvReady || !smoothImageSrc) return;
+
+    const cv = window.cv;
+
+    const imgElement = document.createElement("img");
+    imgElement.src = smoothImageSrc;
+
+    imgElement.onload = () => {
+      const src = cv.imread(imgElement);
+
+      let newWidth, newHeight;
+      if (src.cols > src.rows) {
+        newWidth = pixelLength;
+        newHeight = Math.round((src.rows / src.cols) * pixelLength);
+      } else {
+        newHeight = pixelLength;
+        newWidth = Math.round((src.cols / src.rows) * pixelLength);
+      }
+
+      const dst = new cv.Mat();
+      cv.resize(
+        src,
+        dst,
+        new cv.Size(newWidth, newHeight),
+        0,
+        0,
+        cv.INTER_NEAREST
+      );
+
+      const canvas = document.createElement("canvas");
+      canvas.width = pixelLength;
+      canvas.height = pixelLength;
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      cv.imshow(canvas, dst);
+
+      // 色数削減
+      if (colorReduction && colorPalette.length > 0 && ctx) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        const paletteRGB = colorPalette.map(parseRgb);
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const a = data[i + 3];
+
+          if (a < 10) continue;
+
+          const [nr, ng, nb] = findNearestColor(r, g, b, paletteRGB);
+          data[i] = nr;
+          data[i + 1] = ng;
+          data[i + 2] = nb;
+        }
+
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      setDotsImageSrc(canvas.toDataURL());
+
+      src.delete();
+      dst.delete();
+    };
+  }, [cvReady, smoothImageSrc, pixelLength, colorReduction, colorPalette]);
+
+  return (
+    <>
+      {/* 表示 */}
+      {dotsImageSrc && (
+        <img
+          src={dotsImageSrc}
+          alt="Pixel Art"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            imageRendering: "pixelated",
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default PixelArtProcessor;

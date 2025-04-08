@@ -1,0 +1,39 @@
+.dotToImg {
+    position: absolute;
+    margin: -10px;
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+    background: rgb(254, 255, 236); /* 空の背景 */
+    border: 3px solid rgb(118, 118, 118);
+    border-radius: 0.25em;
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* 丸左 */
+.dotToImg::after {
+    content: '';
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    width: 75%;
+    height: 75%;
+    border-radius: 999px;
+    background-color: rgb(255, 184, 198);
+    z-index: 5;
+}
+
+/* 四角右 */
+.dotToImg::before {
+    content: '';
+    position: absolute;
+    bottom: 3%;
+    right: 3%;
+    width: 65%;
+    height: 65%;
+    background-color: rgb(100, 195, 246);
+    border-radius: 20%;
+    z-index: 2;
+}

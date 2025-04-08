@@ -1,0 +1,48 @@
+.photoIcon {
+    position: absolute;
+    display: inline-block;
+    width: 2.5em;
+    height: 1.8em;
+    background: #e0e0e0;
+    border: 0.15em solid #333;
+    border-radius: 0.25em;
+    box-shadow: 0 0.2em 0.4em rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.photoIcon::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 55%;
+    background: linear-gradient(to bottom, #87ceeb, #1e90ff); /* 空のグラデーション */
+    border-radius: 0.15em;
+    z-index: 1;
+}
+
+.photoIcon::after {
+    content: '';
+    position: absolute;
+    bottom: 10%;
+    left: 5%;
+    width: 90%;
+    height: 30%;
+    background: linear-gradient(to bottom, #228b22, #006400); /* 草地のグラデーション */
+    border-radius: 0.15em;
+    z-index: 2;
+}
+
+/* 写真中央にシンプルな太陽や円を追加 */
+.photoIcon .circle {
+    position: absolute;
+    top: 25%;
+    left: 70%;
+    width: 0.8em;
+    height: 0.8em;
+    background: radial-gradient(circle, #fff, #ffd700); /* 太陽を模したデザイン */
+    border-radius: 50%;
+    box-shadow: 0 0.1em 0.3em rgba(255, 215, 0, 0.6);
+    z-index: 3;
+}

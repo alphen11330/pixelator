@@ -1,0 +1,62 @@
+"use client";
+import React, { useEffect } from "react";
+
+declare global {
+  interface Window {
+    cv: any;
+  }
+}
+
+interface Props {
+  imageSrc: string;
+  setDotsImageSrc: (src: string | null) => void;
+}
+
+export default function PixelArtProcessor({
+  imageSrc,
+  setDotsImageSrc,
+}: Props) {
+  useEffect(() => {
+    const processImage = async () => {
+      if (!window.cv) {
+        console.error("OpenCV is not loaded.");
+        return;
+      }
+      const cv = window.cv;
+
+      // 画像を読み込む
+      const imgElement = document.createElement("img");
+      imgElement.src = imageSrc;
+      imgElement.onload = () => {
+        const src = cv.imread(imgElement);
+        const dst = new cv.Mat();
+        const size = new cv.Size(64, 64);
+
+        // 画像を64×64に縮小
+        cv.resize(src, dst, size, 0, 0, cv.INTER_NEAREST);
+
+        // カラー画像の場合、グレースケールに変換
+        const gray = new cv.Mat();
+        cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
+
+        // キャンバスに描画
+        const canvas = document.createElement("canvas");
+        canvas.width = 64;
+        canvas.height = 64;
+        cv.imshow(canvas, gray);
+
+        // データURLとして取得
+        setDotsImageSrc(canvas.toDataURL());
+
+        // メモリ解放
+        src.delete();
+        dst.delete();
+        gray.delete();
+      };
+    };
+
+    processImage();
+  }, [imageSrc, setDotsImageSrc]);
+
+  return null;
+}

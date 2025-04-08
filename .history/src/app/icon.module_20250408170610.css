@@ -1,0 +1,38 @@
+.dotToImg {
+    position: absolute;
+    margin: -10px;
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+    background: #ffffff; /* 空の背景 */
+    border: 3px solid rgb(118, 118, 118);
+    border-radius: 0.25em;
+    box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* 丸左 */
+.dotToImg::after {
+    content: '';
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 75%;
+    height: 75%;
+    border-radius: 999px;
+    background-color: rgb(255, 184, 198);
+    z-index: 5;
+}
+
+/* 小さな山（右側） */
+.dotToImg::before {
+    content: '';
+    position: absolute;
+    bottom: 0%;
+    right: 0%;
+    width: 65%;
+    height: 65%;
+    background-color: rgb(255, 184, 198);
+    z-index: 2;
+}
