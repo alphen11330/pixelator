@@ -1,3 +1,4 @@
+// Downloader.tsx
 import React from "react";
 
 interface DownloaderProps {
@@ -14,21 +15,20 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
         let width = img.width;
         let height = img.height;
 
-        const minSize = 960;
-        // 幅か高さがminSize px未満の場合にスケーリング
-        if (width <= minSize && height <= minSize) {
-          const scale = Math.max(minSize / width, minSize / height);
+        // 幅か高さが1280px未満の場合にスケーリング
+        if (width <= 1280 && height <= 1280) {
+          const scale = Math.max(1280 / width, 1280 / height);
           width = Math.round(width * scale);
           height = Math.round(height * scale);
-        } else if (width > minSize || height > minSize) {
-          // 幅または高さのいずれかがminSize px以上の場合、アスペクト比を保ちながらスケーリング
+        } else if (width > 1280 || height > 1280) {
+          // 幅または高さのいずれかが1280px以上の場合、アスペクト比を保ちながらスケーリング
           if (width > height) {
-            const scale = minSize / width;
-            width = minSize;
+            const scale = 1280 / width;
+            width = 1280;
             height = Math.round(height * scale);
           } else {
-            const scale = minSize / height;
-            height = minSize;
+            const scale = 1280 / height;
+            height = 1280;
             width = Math.round(width * scale);
           }
         }
@@ -37,27 +37,15 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
+        const ctx = canvas.getContext("2d");
         if (ctx) {
-          // ドット絵の鮮明さを保つために重要：アンチエイリアスを無効化
-          ctx.imageSmoothingEnabled = false;
-
-          // 他のブラウザ向けのプロパティも設定（古いブラウザ対応）
-          // @ts-ignore
-          ctx.mozImageSmoothingEnabled = false;
-          // @ts-ignore
-          ctx.webkitImageSmoothingEnabled = false;
-          // @ts-ignore
-          ctx.msImageSmoothingEnabled = false;
-
           ctx.drawImage(img, 0, 0, width, height);
           const scaledImage = canvas.toDataURL("image/png");
 
           // 画像を保存
           const link = document.createElement("a");
           link.href = scaledImage;
-          link.download = "pixel-art.png"; // 保存するファイル名を変更
+          link.download = "scaled-dots-image.png"; // 保存するファイル名
           link.click(); // ダウンロード開始
         }
       };
@@ -69,12 +57,12 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
 
   const boxStyle: React.CSSProperties = {
     position: "sticky",
-    marginLeft: "1rem",
+    marginLeft: "3rem",
     marginTop: "1rem",
     padding: "10px 15px",
     border: "2px solid rgb(76, 145, 175)",
     borderRadius: "5px",
-    backgroundColor: "rgb(243, 208, 218)",
+    backgroundColor: "rgb(208, 237, 243)",
     fontSize: "16px",
     cursor: "pointer",
     transition: "background-color 0.3s, transform 0.3s",

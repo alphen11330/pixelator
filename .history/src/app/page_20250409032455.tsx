@@ -144,7 +144,7 @@ export default function Page() {
               setImageSrc={setImageSrc}
               setSmoothImageSrc={setSmoothImageSrc}
             />
-            {imageSrc && <Downloader dotsImageSrc={dotsImageSrc} />}
+            <Downloader dotsImageSrc={dotsImageSrc} />
           </div>
           {imageSrc && (
             <>

@@ -14,14 +14,14 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
         let width = img.width;
         let height = img.height;
 
-        const minSize = 960;
-        // 幅か高さがminSize px未満の場合にスケーリング
+        const minSize = 720;
+        // 幅か高さが720px未満の場合にスケーリング
         if (width <= minSize && height <= minSize) {
           const scale = Math.max(minSize / width, minSize / height);
           width = Math.round(width * scale);
           height = Math.round(height * scale);
         } else if (width > minSize || height > minSize) {
-          // 幅または高さのいずれかがminSize px以上の場合、アスペクト比を保ちながらスケーリング
+          // 幅または高さのいずれかが720px以上の場合、アスペクト比を保ちながらスケーリング
           if (width > height) {
             const scale = minSize / width;
             width = minSize;
