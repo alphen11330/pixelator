@@ -69,11 +69,12 @@ const Downloader: React.FC<Props> = ({
           textAlign: "center",
         }}
         onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgb(219, 142, 165)")
+          (e.currentTarget.style.backgroundColor = "rgb(142, 196, 219)")
         }
         onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgb(243, 208, 218)")
+          (e.currentTarget.style.backgroundColor = "rgb(208, 237, 243)")
         }
+        disabled={!dotsImageSrc}
       >
         <div className="select-none">ドット絵を保存</div>
       </button>

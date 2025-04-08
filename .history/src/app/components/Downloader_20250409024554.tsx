@@ -79,6 +79,6 @@ const Downloader: React.FC<Props> = ({
       </button>
     </>
   );
-};
 
 export default Downloader;
+

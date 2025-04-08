@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React from "react";
 
 type Props = {
   dotsImageSrc: string | null;
@@ -13,36 +13,33 @@ const Downloader: React.FC<Props> = ({
   const handleDownload = () => {
     if (!dotsImageSrc) return;
 
-    // 新しい画像を作成してピクセルアートを鮮明に保存
     const img = new Image();
-    img.crossOrigin = "anonymous";
     img.src = dotsImageSrc;
 
     img.onload = () => {
-      // キャンバスを作成して画像サイズに設定
+      // オリジナル画像の幅と高さを取得
+      const width = img.width;
+      const height = img.height;
+
+      // Canvasに描画
       const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (ctx) {
+        canvas.width = width; // 元の画像の幅
+        canvas.height = height; // 元の画像の高さ
+        ctx.drawImage(img, 0, 0, width, height); // 画像をキャンバスに描画
 
-      // イメージスムージングを無効化（これがピクセルをシャープに保つ鍵）
-      ctx.imageSmoothingEnabled = false;
+        // 保存するためのデータURLを取得
+        const dataUrl = canvas.toDataURL("image/png");
 
-      // 画像をキャンバスに描画
-      ctx.drawImage(img, 0, 0, img.width, img.height);
-
-      // キャンバスから鮮明なPNGを生成
-      const pngDataUrl = canvas.toDataURL("image/png");
-
-      // ダウンロードリンクを作成
-      const link = document.createElement("a");
-      link.href = pngDataUrl;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        // ダウンロードリンクの作成
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     };
   };
 
@@ -60,7 +57,7 @@ const Downloader: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <div>
       <button
         onClick={handleDownload}
         style={{
@@ -69,15 +66,15 @@ const Downloader: React.FC<Props> = ({
           textAlign: "center",
         }}
         onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgb(219, 142, 165)")
+          (e.currentTarget.style.backgroundColor = "rgb(142, 196, 219)")
         }
         onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgb(243, 208, 218)")
+          (e.currentTarget.style.backgroundColor = "rgb(208, 237, 243)")
         }
       >
         <div className="select-none">ドット絵を保存</div>
       </button>
-    </>
+    </div>
   );
 };
 
