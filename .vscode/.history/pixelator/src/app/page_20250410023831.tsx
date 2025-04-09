@@ -37,8 +37,8 @@ export default function Page() {
   const [hue, setHue] = useState(60); // 色相の値
   const [isLuminance, setIsLuminance] = useState(false);
   const [luminance, setLuminance] = useState(128); // 輝度の値
-  const [isSaturation, setIsSaturation] = useState(true);
-  const [saturation, setSaturation] = useState(150); // 彩度の値
+  const [isSaturation, setIsSaturation] = useState(false);
+  const [saturation, setSaturation] = useState(191); // 彩度の値
   const [contrast, setContrast] = useState(true);
   const [contrastLevel, setContrastLevel] = useState(1.2); // コントラスト
   const [brightness, setBrightness] = useState(false);
