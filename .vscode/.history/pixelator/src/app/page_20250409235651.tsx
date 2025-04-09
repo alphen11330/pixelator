@@ -60,10 +60,11 @@ export default function Page() {
     document.body.appendChild(script);
   }, []);
 
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const gridContainer: React.CSSProperties = {
     position: "relative",
     width: "100%",
-    height: "calc(100svh - 50px)",
+    height: "calc(100dvh - 50px)",
     display: "grid",
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
     gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
@@ -79,7 +80,7 @@ export default function Page() {
   const dotsBox: React.CSSProperties = {
     position: "relative",
     height: isPC ? "" : "min(100% - 10px)",
-    width: isPC ? "80%" : "",
+    width: isPC ? "70%" : "",
     aspectRatio: "1/1",
     display: isPC ? "" : "inline-block",
     border: "solid 1px rgb(135, 135, 135)",

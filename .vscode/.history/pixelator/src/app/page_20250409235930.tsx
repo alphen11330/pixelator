@@ -79,7 +79,7 @@ export default function Page() {
   const dotsBox: React.CSSProperties = {
     position: "relative",
     height: isPC ? "" : "min(100% - 10px)",
-    width: isPC ? "80%" : "",
+    width: isPC ? "90%" : "",
     aspectRatio: "1/1",
     display: isPC ? "" : "inline-block",
     border: "solid 1px rgb(135, 135, 135)",
