@@ -66,10 +66,10 @@ export default function Page() {
   const gridContainer: React.CSSProperties = {
     position: "relative",
     width: "100%",
-    height: "100svh",
+    height: "calc(100svh - 50px)",
     display: "grid",
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
-    gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
+    gridTemplateRows: isPC ? "1fr" : "2fr 1fr",
     zIndex: "1",
   };
 
