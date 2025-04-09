@@ -57,10 +57,8 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
           // 画像を保存
           const link = document.createElement("a");
           link.href = scaledImage;
-          link.download = `pixelator.png`;
-          document.body.appendChild(link); // IEとSafariの互換性のため
-          link.click();
-          document.body.removeChild(link);
+          link.download = "pixel-art.png"; // 保存するファイル名を変更
+          link.click(); // ダウンロード開始
         }
       };
     } else {
