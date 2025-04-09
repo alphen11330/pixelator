@@ -25,12 +25,6 @@ type Props = {
   isSaturation: boolean;
   saturation: number;
 
-  //コントラストと明度調整
-  contrast: boolean;
-  contrastLevel: number;
-  brightness: boolean;
-  brightnessLevel: number;
-
   //輪郭線強調（更新）
   edgeEnhancement: boolean;
   whiteSize: number; // 白画素処理サイズ（正:縮小、負:拡大）
@@ -51,10 +45,6 @@ const ImageEditor: React.FC<Props> = ({
   luminance,
   isSaturation,
   saturation,
-  contrast,
-  contrastLevel,
-  brightness,
-  brightnessLevel,
   edgeEnhancement,
   whiteSize,
   blackSize,
@@ -94,9 +84,9 @@ const ImageEditor: React.FC<Props> = ({
         dst = inverted;
       }
 
-      // 処理ステップ3: 色相統一処理とコントラスト・明度調整
+      // 処理ステップ3: 色相統一処理
       if (colorCollection) {
-        const processed = colorCollectionProcessor(
+        const reduced = colorCollectionProcessor(
           cv,
           dst,
           isHue,
@@ -104,14 +94,10 @@ const ImageEditor: React.FC<Props> = ({
           isLuminance,
           luminance,
           isSaturation,
-          saturation,
-          contrast,
-          contrastLevel,
-          brightness,
-          brightnessLevel
+          saturation
         );
         dst.delete();
-        dst = processed;
+        dst = reduced;
       }
 
       // 処理ステップ4: 白黒画素処理による輪郭線処理（更新）
@@ -152,10 +138,6 @@ const ImageEditor: React.FC<Props> = ({
     luminance,
     isSaturation,
     saturation,
-    contrast,
-    contrastLevel,
-    brightness,
-    brightnessLevel,
     edgeEnhancement,
     whiteSize,
     blackSize,

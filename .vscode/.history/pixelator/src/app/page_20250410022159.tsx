@@ -207,7 +207,7 @@ export default function Page() {
                           <InputRange
                             name={"コントラスト"}
                             min={0.1}
-                            max={2}
+                            max={5}
                             step={0.1}
                             value={contrastLevel}
                             unit={""}
@@ -221,7 +221,7 @@ export default function Page() {
                             name={"明度"}
                             min={-100}
                             max={100}
-                            step={1}
+                            step={0.1}
                             value={brightnessLevel}
                             unit={""}
                             setValue={setBrightnessLevel}

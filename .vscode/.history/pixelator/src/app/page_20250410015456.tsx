@@ -32,12 +32,12 @@ export default function Page() {
   const [display, setDisplay] = useState(true); // 表示画像
 
   //色調補正
-  const [colorCollection, setColorCollection] = useState(false); // 色調補正処理の判定
+  const [colorCollection, setcolorCollection] = useState(false); // 色調補正処理の判定
   const [isHue, setIsHue] = useState(false);
   const [hue, setHue] = useState(60); // 色相の値
   const [isLuminance, setIsLuminance] = useState(false);
   const [luminance, setLuminance] = useState(128); // 輝度の値
-  const [isSaturation, setIsSaturation] = useState(false);
+  const [isSaturation, setIsSaturation] = useState(true);
   const [saturation, setSaturation] = useState(191); // 彩度の値
   const [contrast, setContrast] = useState(false);
   const [contrastLevel, setContrastLevel] = useState(1); // コントラスト
@@ -184,53 +184,31 @@ export default function Page() {
 
               <div>
                 <CheckBox
+                  name={"色調補正（明度・コントラスト）"}
+                  value={}
+                  setValue={setcolorCollection}
+                />
+              </div>
+
+              <div>
+                <CheckBox
                   name={"色調補正（HLS）"}
                   value={colorCollection}
-                  setValue={setColorCollection}
+                  setValue={setcolorCollection}
                 />
                 {colorCollection && (
                   <>
                     <div className="ml-7">
                       <CheckBox
-                        name={"コントラスト"}
-                        value={contrast}
-                        setValue={setContrast}
+                        name={"色相"}
+                        value={isHue}
+                        setValue={setIsHue}
                       />
-
                       <CheckBox
-                        name={"明度"}
-                        value={brightness}
-                        setValue={setBrightness}
-                      />
-                      {contrast && (
-                        <div className="ml-7">
-                          <InputRange
-                            name={"コントラスト"}
-                            min={0.1}
-                            max={2}
-                            step={0.1}
-                            value={contrastLevel}
-                            unit={""}
-                            setValue={setContrastLevel}
-                          />
-                        </div>
-                      )}
-                      {brightness && (
-                        <div className="ml-7">
-                          <InputRange
-                            name={"明度"}
-                            min={-100}
-                            max={100}
-                            step={1}
-                            value={brightnessLevel}
-                            unit={""}
-                            setValue={setBrightnessLevel}
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="ml-7">
+                        name={"色相"}
+                        value={isHue}
+                        setValue={setIsHue}
+                      />{" "}
                       <CheckBox
                         name={"色相"}
                         value={isHue}
@@ -259,7 +237,6 @@ export default function Page() {
                           />
                         </div>
                       )}
-
                       {isLuminance && (
                         <div className="ml-7">
                           <InputRange
@@ -273,7 +250,6 @@ export default function Page() {
                           />
                         </div>
                       )}
-
                       {isSaturation && (
                         <div className="ml-7">
                           <InputRange

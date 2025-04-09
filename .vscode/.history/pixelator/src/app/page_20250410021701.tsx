@@ -202,32 +202,6 @@ export default function Page() {
                         value={brightness}
                         setValue={setBrightness}
                       />
-                      {contrast && (
-                        <div className="ml-7">
-                          <InputRange
-                            name={"コントラスト"}
-                            min={0.1}
-                            max={2}
-                            step={0.1}
-                            value={contrastLevel}
-                            unit={""}
-                            setValue={setContrastLevel}
-                          />
-                        </div>
-                      )}
-                      {brightness && (
-                        <div className="ml-7">
-                          <InputRange
-                            name={"明度"}
-                            min={-100}
-                            max={100}
-                            step={1}
-                            value={brightnessLevel}
-                            unit={""}
-                            setValue={setBrightnessLevel}
-                          />
-                        </div>
-                      )}
                     </div>
 
                     <div className="ml-7">

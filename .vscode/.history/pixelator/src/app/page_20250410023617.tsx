@@ -207,7 +207,7 @@ export default function Page() {
                           <InputRange
                             name={"コントラスト"}
                             min={0.1}
-                            max={2}
+                            max={5}
                             step={0.1}
                             value={contrastLevel}
                             unit={""}

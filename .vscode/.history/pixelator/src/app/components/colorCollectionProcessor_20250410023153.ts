@@ -14,11 +14,9 @@ const colorCollectionProcessor = (
 ) => {
     const hls = new cv.Mat();
     let alpha = new cv.Mat();
-    let hasAlpha = false;
     
     // RGBA画像をHLSに変換（アルファチャンネルを分離）
     if (src.channels() === 4) {
-        hasAlpha = true;
         const channels = new cv.MatVector();
         cv.split(src, channels);
         const bgr = new cv.Mat();
@@ -32,7 +30,7 @@ const colorCollectionProcessor = (
         cv.cvtColor(bgr, hls, cv.COLOR_RGB2HLS);
         
         // アルファチャンネルを保持
-        alpha = channels.get(3).clone(); // クローンを作成して保持
+        alpha = channels.get(3);
         
         // メモリ解放
         bgr.delete();
@@ -57,18 +55,18 @@ const colorCollectionProcessor = (
     cv.cvtColor(hls, dst, cv.COLOR_HLS2RGB);
     
     // アルファチャンネルを統合
-    if (hasAlpha) {
+    if (src.channels() === 4) {
         const channels = new cv.MatVector();
         const output = new cv.Mat();
         cv.split(dst, channels);
-        channels.push_back(alpha); // この時点でalphaはまだ有効
+        channels.push_back(alpha);
         cv.merge(channels, output);
         dst.delete();
         dst = output;
         
         // メモリ解放
         channels.delete();
-        // alphaはこの時点では削除しない - コントラスト調整で使用するため
+        alpha.delete();
     }
     
     // メモリ解放
@@ -79,59 +77,44 @@ const colorCollectionProcessor = (
         const adjustedImage = new cv.Mat();
         
         // コントラストと明度の調整値を設定
+        // コントラスト: contrastLevel (1.0がデフォルト、1.0より大きいとコントラスト増加)
+        // 明度: brightnessLevel (0がデフォルト、正の値で明るく、負の値で暗く)
         const contrastFactor = contrast ? contrastLevel : 1.0;
         const brightnessFactor = brightness ? brightnessLevel : 0;
         
-        if (hasAlpha) {
-            // アルファチャンネルを分離
-            const rgbaChannels = new cv.MatVector();
-            cv.split(dst, rgbaChannels);
+        // コントラストと明度を調整してから絶対値変換を適用する
+        cv.convertScaleAbs(dst, adjustedImage, contrastFactor, brightnessFactor);
+        
+        // 調整前の画像を解放
+        dst.delete();
+        dst = adjustedImage;
+        
+        // アルファチャンネルが存在する場合は、調整後にアルファチャンネルを適切に処理
+        if (src.channels() === 4) {
+            const channels = new cv.MatVector();
+            cv.split(dst, channels);
             
-            // RGB部分のみを取得
-            const rgbOnly = new cv.Mat();
-            const tempChannels = new cv.MatVector();
-            tempChannels.push_back(rgbaChannels.get(0));
-            tempChannels.push_back(rgbaChannels.get(1));
-            tempChannels.push_back(rgbaChannels.get(2));
-            cv.merge(tempChannels, rgbOnly);
+            // RGB部分は調整済み、アルファチャンネルは元のまま（新しいアルファチャンネルを作成）
+            const newAlpha = new cv.Mat.zeros(dst.rows, dst.cols, cv.CV_8UC1);
+            alpha.copyTo(newAlpha);
             
-            // RGBにコントラスト・明度調整適用
-            cv.convertScaleAbs(rgbOnly, adjustedImage, contrastFactor, brightnessFactor);
-            
-            // 調整されたRGBとアルファを再統合
+            // アルファチャンネルを再統合
             const output = new cv.Mat();
-            const finalChannels = new cv.MatVector();
-            const finalRgbChannels = new cv.MatVector();
-            cv.split(adjustedImage, finalRgbChannels);
-            
-            finalChannels.push_back(finalRgbChannels.get(0));
-            finalChannels.push_back(finalRgbChannels.get(1));
-            finalChannels.push_back(finalRgbChannels.get(2));
-            finalChannels.push_back(alpha); // ここでalphaを使用
-            
-            cv.merge(finalChannels, output);
+            const rgbaChannels = new cv.MatVector();
+            rgbaChannels.push_back(channels.get(0));
+            rgbaChannels.push_back(channels.get(1));
+            rgbaChannels.push_back(channels.get(2));
+            rgbaChannels.push_back(newAlpha);
+            cv.merge(rgbaChannels, output);
             
             // メモリ解放
-            rgbaChannels.delete();
-            tempChannels.delete();
-            rgbOnly.delete();
-            finalChannels.delete();
-            finalRgbChannels.delete();
-            adjustedImage.delete();
             dst.delete();
+            channels.delete();
+            rgbaChannels.delete();
+            newAlpha.delete();
             
             dst = output;
-        } else {
-            // アルファなしの場合は単純にコントラスト・明度調整
-            cv.convertScaleAbs(dst, adjustedImage, contrastFactor, brightnessFactor);
-            dst.delete();
-            dst = adjustedImage;
         }
-    }
-    
-    // 最後にアルファをクリーンアップ
-    if (hasAlpha) {
-        alpha.delete();
     }
     
     return dst;

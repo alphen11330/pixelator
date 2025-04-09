@@ -95,7 +95,7 @@ const ImageEditor: React.FC<Props> = ({
       }
 
       // 処理ステップ3: 色相統一処理とコントラスト・明度調整
-      if (colorCollection) {
+      if (colorCollection || contrast || brightness) {
         const processed = colorCollectionProcessor(
           cv,
           dst,

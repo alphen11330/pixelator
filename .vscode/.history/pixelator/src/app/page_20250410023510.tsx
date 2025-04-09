@@ -207,8 +207,8 @@ export default function Page() {
                           <InputRange
                             name={"コントラスト"}
                             min={0.1}
-                            max={2}
-                            step={0.1}
+                            max={5}
+                            step={2}
                             value={contrastLevel}
                             unit={""}
                             setValue={setContrastLevel}
@@ -219,9 +219,9 @@ export default function Page() {
                         <div className="ml-7">
                           <InputRange
                             name={"明度"}
-                            min={-100}
-                            max={100}
-                            step={1}
+                            min={-1000}
+                            max={1000}
+                            step={0.1}
                             value={brightnessLevel}
                             unit={""}
                             setValue={setBrightnessLevel}
