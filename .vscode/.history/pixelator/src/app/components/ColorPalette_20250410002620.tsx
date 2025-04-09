@@ -46,7 +46,7 @@ const CollorPalette: React.FC<Props> = ({
     };
 
     fetchPalette();
-  }, [refreshColorPalette, colorLevels]);
+  }, [colorLevels]);
 
   const collorPaletteStyle: React.CSSProperties = {
     display: "flex",
@@ -91,7 +91,6 @@ const CollorPalette: React.FC<Props> = ({
         onMouseOut={(e) =>
           (e.currentTarget.style.backgroundColor = "rgb(243, 243, 208)")
         }
-        onClick={() => setRefreshColorPalette(!refreshColorPalette)}
       >
         配色をリフレッシュ
       </button>

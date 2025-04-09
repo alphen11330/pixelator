@@ -46,13 +46,12 @@ const CollorPalette: React.FC<Props> = ({
     };
 
     fetchPalette();
-  }, [refreshColorPalette, colorLevels]);
+  }, [colorLevels]);
 
   const collorPaletteStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "wrap",
     marginTop: "1rem",
-    marginBottom: "3rem",
     marginInline: "auto",
     width: "80%",
   };
@@ -72,7 +71,7 @@ const CollorPalette: React.FC<Props> = ({
     position: "sticky",
     padding: "10px 15px",
     marginTop: "1rem",
-    left: "10%",
+
     border: "2px solid rgb(175, 175, 76)",
     borderRadius: "5px",
     backgroundColor: "rgb(243, 243, 208)",
@@ -91,10 +90,7 @@ const CollorPalette: React.FC<Props> = ({
         onMouseOut={(e) =>
           (e.currentTarget.style.backgroundColor = "rgb(243, 243, 208)")
         }
-        onClick={() => setRefreshColorPalette(!refreshColorPalette)}
-      >
-        配色をリフレッシュ
-      </button>
+      ></button>
       <div style={collorPaletteStyle}>
         {colorPalette.map((color, index) => (
           <input

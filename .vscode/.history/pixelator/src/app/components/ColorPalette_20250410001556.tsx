@@ -46,13 +46,12 @@ const CollorPalette: React.FC<Props> = ({
     };
 
     fetchPalette();
-  }, [refreshColorPalette, colorLevels]);
+  }, [colorLevels]);
 
   const collorPaletteStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "wrap",
-    marginTop: "1rem",
-    marginBottom: "3rem",
+    marginBlock: "2rem",
     marginInline: "auto",
     width: "80%",
   };
@@ -68,33 +67,8 @@ const CollorPalette: React.FC<Props> = ({
     backgroundColor: "rgb(255, 255, 255)",
   };
 
-  const refreshButton: React.CSSProperties = {
-    position: "sticky",
-    padding: "10px 15px",
-    marginTop: "1rem",
-    left: "10%",
-    border: "2px solid rgb(175, 175, 76)",
-    borderRadius: "5px",
-    backgroundColor: "rgb(243, 243, 208)",
-    fontSize: "16px",
-    cursor: "pointer",
-    transition: "background-color 0.3s, transform 0.3s",
-  };
-
   return (
     <>
-      <button
-        style={refreshButton}
-        onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgb(219, 219, 142)")
-        }
-        onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgb(243, 243, 208)")
-        }
-        onClick={() => setRefreshColorPalette(!refreshColorPalette)}
-      >
-        配色をリフレッシュ
-      </button>
       <div style={collorPaletteStyle}>
         {colorPalette.map((color, index) => (
           <input
@@ -111,6 +85,7 @@ const CollorPalette: React.FC<Props> = ({
           />
         ))}
       </div>
+      <div></div>
     </>
   );
 };

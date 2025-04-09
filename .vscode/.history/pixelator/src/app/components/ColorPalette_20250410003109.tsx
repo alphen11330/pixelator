@@ -46,7 +46,7 @@ const CollorPalette: React.FC<Props> = ({
     };
 
     fetchPalette();
-  }, [refreshColorPalette, colorLevels]);
+  }, [colorLevels]);
 
   const collorPaletteStyle: React.CSSProperties = {
     display: "flex",

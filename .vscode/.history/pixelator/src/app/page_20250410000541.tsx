@@ -43,9 +43,6 @@ export default function Page() {
   const [colorReduction, setColorReduction] = useState(false); // 減色処理の判定
   const [colorLevels, setColorLevels] = useState(4); // 減色数(bit)
   const [colorPalette, setColorPalette] = useState<string[]>([]); // 減色したカラーパレット
-  const [refreshColorPalette, setRefreshColorPalette] = useState(false); // カラーパレットをリフレッシュ
-
-  //ディザリング
   const [ditherType, setDitherType] = useState<
     "ordered" | "atkinson" | "floydsteinberg" | "none"
   >("ordered"); // ディザリング手法の選択
@@ -315,8 +312,6 @@ export default function Page() {
                       setColorPalette={setColorPalette}
                       smoothImageSrc={smoothImageSrc}
                       colorLevels={colorLevels}
-                      refreshColorPalette={refreshColorPalette}
-                      setRefreshColorPalette={setRefreshColorPalette}
                     />
                   </>
                 )}

@@ -257,7 +257,7 @@ export default function Page() {
                       name={"白画素処理サイズ"}
                       min={-10}
                       max={10}
-                      step={1}
+                      step={0.1}
                       value={whiteSize}
                       unit={"px"}
                       setValue={setWhiteSize}
@@ -266,7 +266,7 @@ export default function Page() {
                       name={"黒画素処理サイズ"}
                       min={-10}
                       max={10}
-                      step={1}
+                      step={0.1}
                       value={blackSize}
                       unit={"px"}
                       setValue={setBlackSize}

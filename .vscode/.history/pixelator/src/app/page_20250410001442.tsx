@@ -315,8 +315,6 @@ export default function Page() {
                       setColorPalette={setColorPalette}
                       smoothImageSrc={smoothImageSrc}
                       colorLevels={colorLevels}
-                      refreshColorPalette={refreshColorPalette}
-                      setRefreshColorPalette={setRefreshColorPalette}
                     />
                   </>
                 )}
