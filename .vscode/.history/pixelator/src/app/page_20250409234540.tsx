@@ -63,7 +63,7 @@ export default function Page() {
   const gridContainer: React.CSSProperties = {
     position: "relative",
     width: "100%",
-    height: "calc(100svh - 50px)",
+    height: "calc(100vh - 50px)",
     display: "grid",
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
     gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
