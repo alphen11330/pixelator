@@ -94,7 +94,6 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%,-50%)",
-    width: isPC ? "auto" : "95%",
     height: isPC ? "95%" : "auto",
     aspectRatio: "1/1",
     backgroundColor: "rgb(255,255,255)",
