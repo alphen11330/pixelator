@@ -119,7 +119,7 @@ const Header = () => {
     right: isPC ? "-50%" : clickHamburger ? "0%" : "-50%",
     width: "50%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.84)",
+    backgroundColor: "rgba(104, 104, 104, 0.95)",
     transition: "all 0.5s ease",
 
     display: "flex",

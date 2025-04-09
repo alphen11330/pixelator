@@ -78,10 +78,10 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
 
   const overlayStyle: React.CSSProperties = {
     position: "fixed",
-    top: "50px",
+    top: 0,
     left: 0,
     width: "100vw",
-    height: "calc(100vh - 50px)",
+    height: "100vh",
     backgroundColor: isDisplayImg ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0)",
     zIndex: 99,
     transition: "all 0.4s ease",
@@ -94,7 +94,7 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%,-50%)",
-    width: isPC ? "auto" : "80%",
+    width: isPC ? "auto" : "95%",
     height: isPC ? "95%" : "auto",
     aspectRatio: "1/1",
     backgroundColor: "rgb(255,255,255)",
