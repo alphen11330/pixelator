@@ -8,9 +8,9 @@ type Props = {
 const DitherTypeDropdown: React.FC<Props> = ({ ditherType, setDitherType }) => {
   const dithers = [
     { value: "none", label: "ーーーー" },
-    { value: "ordered", label: "ディザリングＡ" }, //組織的ディザリング
-    { value: "atkinson", label: "ディザリングＢ" }, //アトキンソンディザリング
-    { value: "floydsteinberg", label: "ディザリングＣ" }, //フロイド・スタインバーグディザリング
+    { value: "ordered", label: "組織的ディザリング" },
+    { value: "atkinson", label: "アトキンソンディザリング" },
+    { value: "floydsteinberg", label: "フロイド・スタインバーグディザリング" },
   ];
 
   const label: React.CSSProperties = {
