@@ -127,20 +127,20 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
       >
         画像を保存
       </button>
-      <div style={overlayStyle} onClick={() => setIsDisplayImg(false)}>
-        <div
-          style={downloadImgContainer}
-          onClick={(e) => e.stopPropagation()} // 画像クリックで閉じないように
-        >
-          {scaledImageUrl && (
+      {scaledImageUrl && (
+        <div style={overlayStyle} onClick={() => setIsDisplayImg(false)}>
+          <div
+            style={downloadImgContainer}
+            onClick={(e) => e.stopPropagation()} // 画像クリックで閉じないように
+          >
             <img
               src={scaledImageUrl}
               alt="スケーリングされた画像"
               style={downloadImg}
             />
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
