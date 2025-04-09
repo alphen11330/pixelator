@@ -73,7 +73,7 @@ export default function Page() {
   const gridBox: React.CSSProperties = {
     overflowY: "auto",
     width: "100%",
-    height: isPC ? "calc(100svh - 50px)" : "calc(100svh / 2 - 25px)",
+    height: isPC ? "calc(100svb - 50px)" : "calc(100svb / 2 - 25px)",
   };
 
   const dotsBox: React.CSSProperties = {
