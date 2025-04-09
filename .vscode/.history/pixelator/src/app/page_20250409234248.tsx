@@ -65,8 +65,8 @@ export default function Page() {
     width: "100%",
     height: "calc(100vh - 50px)",
     display: "grid",
-    gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
-    gridTemplateRows: isPC ? "1fr" : "calc(50svh - 25px) calc(50svh - 25px)",
+    gridTemplateColumns: isPC ? "50svh 50svh" : "1fr",
+    gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
     zIndex: "1",
   };
 

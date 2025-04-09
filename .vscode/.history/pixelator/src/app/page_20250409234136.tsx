@@ -66,7 +66,7 @@ export default function Page() {
     height: "calc(100vh - 50px)",
     display: "grid",
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
-    gridTemplateRows: isPC ? "1fr" : "calc(50svh - 25px) calc(50svh - 25px)",
+    gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
     zIndex: "1",
   };
 
@@ -112,6 +112,7 @@ export default function Page() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            borderBottom: "dash 1px rgb(152, 152, 152)",
           }}
         >
           <div style={dotsBox}>

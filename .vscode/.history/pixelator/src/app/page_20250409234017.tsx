@@ -66,7 +66,7 @@ export default function Page() {
     height: "calc(100vh - 50px)",
     display: "grid",
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
-    gridTemplateRows: isPC ? "1fr" : "calc(50svh - 25px) calc(50svh - 25px)",
+    gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
     zIndex: "1",
   };
 
@@ -74,6 +74,7 @@ export default function Page() {
     overflowY: "auto",
     width: "100%",
     height: isPC ? "calc(100vh - 50px)" : "calc(100vh / 2 - 25px)",
+    border: "solid 1px black",
   };
 
   const dotsBox: React.CSSProperties = {
@@ -81,6 +82,9 @@ export default function Page() {
     height: isPC ? "" : "min(100% - 10px)",
     width: isPC ? "70%" : "",
     aspectRatio: "1/1",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%,-50%)",
     display: isPC ? "" : "inline-block",
     border: "solid 1px rgb(135, 135, 135)",
     outline: "solid 1px rgb(135, 135, 135)",
