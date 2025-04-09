@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import Image from "next/image";
 
 type Props = {
   smoothImageSrc: string | null;
@@ -509,7 +508,7 @@ const PixelArtProcessor: React.FC<Props> = ({
   return (
     <>
       {dotsImageSrc && (
-        <Image
+        <img
           src={dotsImageSrc}
           alt="Pixel Art"
           style={imgStyle}

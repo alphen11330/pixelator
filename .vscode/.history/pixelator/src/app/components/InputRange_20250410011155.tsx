@@ -44,9 +44,10 @@ const InputRange: React.FC<Props> = ({
     position: "relative",
     width: "min(100% - 6rem, 460px)",
     marginInline: "3rem",
-    height: "50px",
+    height: "30px",
     borderRadius: "5px",
     cursor: "pointer",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
   return (

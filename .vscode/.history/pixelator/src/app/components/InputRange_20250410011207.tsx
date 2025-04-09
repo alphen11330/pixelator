@@ -47,6 +47,7 @@ const InputRange: React.FC<Props> = ({
     height: "50px",
     borderRadius: "5px",
     cursor: "pointer",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
   return (

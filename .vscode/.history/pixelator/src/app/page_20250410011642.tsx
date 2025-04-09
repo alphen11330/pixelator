@@ -138,7 +138,7 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <Image
+              <img
                 src={smoothImageSrc}
                 alt="Pixel Art"
                 style={{ ...imgStyle }}

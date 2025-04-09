@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import DeviceChecker from "./deviceChecker";
 import Uploader from "./components/Uploader";
 import PixelArtProcessor from "./components/PixelArtProcessor";
@@ -82,7 +81,7 @@ export default function Page() {
 
   const dotsBox: React.CSSProperties = {
     position: "relative",
-    height: isPC ? "" : "min(100% - 10px)",
+    height: isPC ? "0" : "min(100% - 10px)",
     width: isPC ? "80%" : "",
     aspectRatio: "1/1",
     display: isPC ? "" : "inline-block",
@@ -138,7 +137,7 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <Image
+              <img
                 src={smoothImageSrc}
                 alt="Pixel Art"
                 style={{ ...imgStyle }}

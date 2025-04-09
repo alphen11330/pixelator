@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import DeviceChecker from "./deviceChecker";
 import Uploader from "./components/Uploader";
 import PixelArtProcessor from "./components/PixelArtProcessor";
@@ -138,12 +137,7 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <Image
-                src={smoothImageSrc}
-                alt="Pixel Art"
-                style={{ ...imgStyle }}
-                onContextMenu={(e) => e.preventDefault()}
-              />
+              <Image src={smoothImageSrc} alt="Pixel Art" />
             )}
           </div>
         </div>

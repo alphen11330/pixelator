@@ -43,10 +43,12 @@ const InputRange: React.FC<Props> = ({
   const rangeInput: React.CSSProperties = {
     position: "relative",
     width: "min(100% - 6rem, 460px)",
+    height: "10px",
     marginInline: "3rem",
-    height: "50px",
+    height: "8px",
     borderRadius: "5px",
     cursor: "pointer",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   };
 
   return (
