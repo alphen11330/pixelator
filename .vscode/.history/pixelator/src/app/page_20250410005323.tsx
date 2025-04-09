@@ -71,7 +71,6 @@ export default function Page() {
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
     gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
     zIndex: "1",
-    border: "solid 1px black",
   };
 
   const gridBox: React.CSSProperties = {
