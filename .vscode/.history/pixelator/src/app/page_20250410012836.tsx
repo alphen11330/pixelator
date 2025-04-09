@@ -72,7 +72,7 @@ export default function Page() {
     gridTemplateColumns: isPC ? "1fr 1fr" : "1fr",
     gridTemplateRows: isPC ? "1fr" : "1fr 1fr",
     zIndex: "1",
-    backgroundColor: "rgb(255,255,255)",
+    backgroundColor: "red",
   };
 
   const gridBox: React.CSSProperties = {
