@@ -73,7 +73,6 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
     fontSize: "16px",
     cursor: "pointer",
     transition: "background-color 0.3s, transform 0.3s",
-    userSelect: "none",
   };
 
   const overlayStyle: React.CSSProperties = {
@@ -83,26 +82,24 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
     width: "100vw",
     height: "100vh",
     backgroundColor: isDisplayImg ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 99,
-    transition: "all 0.4s ease",
+    transition: "all 0.5s ease",
     pointerEvents: isDisplayImg ? "auto" : "none",
     userSelect: "none",
   };
 
   const downloadImgContainer: React.CSSProperties = {
     position: "relative",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%,-50%)",
     width: isPC ? "auto" : "80%",
     height: isPC ? "80%" : "auto",
     aspectRatio: "1/1",
     backgroundColor: "rgb(255,255,255)",
     border: "solid 1px black",
     borderRadius: "2%",
-    opacity: isDisplayImg ? "1" : "0",
     zIndex: 100,
-    transition: "all 0.4s ease",
   };
 
   const downloadImg: React.CSSProperties = {
@@ -125,8 +122,8 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
       >
         画像を保存
       </button>
-      {scaledImageUrl && (
-        <div style={overlayStyle} onClick={() => setIsDisplayImg(false)}>
+      <div style={overlayStyle} onClick={() => setIsDisplayImg(false)}>
+        {scaledImageUrl && isDisplayImg && (
           <div
             style={downloadImgContainer}
             onClick={(e) => e.stopPropagation()} // 画像クリックで閉じないように
@@ -137,8 +134,8 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
               style={downloadImg}
             />
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };

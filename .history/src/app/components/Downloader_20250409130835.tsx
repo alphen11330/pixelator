@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import DeviceChecker from "../deviceChecker";
 
 interface DownloaderProps {
   dotsImageSrc: string | null;
@@ -7,13 +6,11 @@ interface DownloaderProps {
 
 const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
   const [scaledImageUrl, setScaledImageUrl] = useState<string | null>(null);
-  const isPC = DeviceChecker();
-  const [isDisplayImg, setIsDisplayImg] = useState(false);
 
   const handleGenerate = () => {
     if (dotsImageSrc) {
       const img = new Image();
-      img.crossOrigin = "anonymous";
+      img.crossOrigin = "anonymous"; // クロスオリジン対策（必要なら）
       img.src = dotsImageSrc;
 
       img.onload = () => {
@@ -53,8 +50,9 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
 
           ctx.drawImage(img, 0, 0, width, height);
           const scaledImage = canvas.toDataURL("image/png");
+
+          // 画像URLをReactのstateに保存して表示
           setScaledImageUrl(scaledImage);
-          setIsDisplayImg(true); // 画像読み込み後に表示
         }
       };
     } else {
@@ -73,42 +71,17 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
     fontSize: "16px",
     cursor: "pointer",
     transition: "background-color 0.3s, transform 0.3s",
-    userSelect: "none",
-  };
-
-  const overlayStyle: React.CSSProperties = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: isDisplayImg ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0)",
-    zIndex: 99,
-    transition: "all 0.4s ease",
-    pointerEvents: isDisplayImg ? "auto" : "none",
-    userSelect: "none",
   };
 
   const downloadImgContainer: React.CSSProperties = {
-    position: "relative",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%,-50%)",
-    width: isPC ? "auto" : "80%",
-    height: isPC ? "80%" : "auto",
-    aspectRatio: "1/1",
-    backgroundColor: "rgb(255,255,255)",
-    border: "solid 1px black",
-    borderRadius: "2%",
-    opacity: isDisplayImg ? "1" : "0",
-    zIndex: 100,
-    transition: "all 0.4s ease",
-  };
-
-  const downloadImg: React.CSSProperties = {
+    position: "fixed",
     width: "100%",
     height: "100%",
-    objectFit: "contain",
+    top: "0",
+    left: "50%",
+    transform: "translate(-50%,-50%)",
+    border: "solid 1px black",
+    zIndex: "100",
   };
 
   return (
@@ -125,19 +98,14 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
       >
         画像を保存
       </button>
+      <div style={downloadImgContainer} />
+      {/* 生成された画像を表示 */}
       {scaledImageUrl && (
-        <div style={overlayStyle} onClick={() => setIsDisplayImg(false)}>
-          <div
-            style={downloadImgContainer}
-            onClick={(e) => e.stopPropagation()} // 画像クリックで閉じないように
-          >
-            <img
-              src={scaledImageUrl}
-              alt="スケーリングされた画像"
-              style={downloadImg}
-            />
-          </div>
-        </div>
+        <img
+          src={scaledImageUrl}
+          alt="スケーリングされた画像"
+          style={{ maxWidth: "100%" }}
+        />
       )}
     </>
   );

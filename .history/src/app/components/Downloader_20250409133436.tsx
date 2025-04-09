@@ -73,7 +73,6 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
     fontSize: "16px",
     cursor: "pointer",
     transition: "background-color 0.3s, transform 0.3s",
-    userSelect: "none",
   };
 
   const overlayStyle: React.CSSProperties = {
