@@ -91,7 +91,7 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
 
   const downloadImgContainer: React.CSSProperties = {
     position: "relative",
-    top: "calc(50% - 50px)",
+    top: "calc(50% + 50px)",
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: isPC ? "auto" : "95%",
