@@ -39,6 +39,7 @@
 
 .dotToImg {
     position: absolute;
+    margin: -10px;
     display: inline-block;
     width: 3em;
     height: 3em;

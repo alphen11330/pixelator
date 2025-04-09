@@ -78,8 +78,7 @@ export default function Page() {
 
   const dotsBox: React.CSSProperties = {
     position: "relative",
-    height: isPC ? "" : "min(100% - 10px)",
-    width: isPC ? "70%" : "",
+    height: "min(100% - 20px, 560px)",
     aspectRatio: "1/1",
     top: "50%",
     left: "50%",
@@ -87,7 +86,7 @@ export default function Page() {
     display: isPC ? "" : "inline-block",
     border: "solid 1px rgb(135, 135, 135)",
     outline: "solid 1px rgb(135, 135, 135)",
-    outlineOffset: "3px",
+    outlineOffset: "5px",
     backgroundImage: `
     conic-gradient(
       from 0deg,
