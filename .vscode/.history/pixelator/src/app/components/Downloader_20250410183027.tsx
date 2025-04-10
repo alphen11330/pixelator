@@ -59,7 +59,6 @@ const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
 
           const blobUrl = URL.createObjectURL(blob);
 
-          // ダウンロード
           const link = document.createElement("a");
           link.href = blobUrl;
           link.download = "pixelator.png";

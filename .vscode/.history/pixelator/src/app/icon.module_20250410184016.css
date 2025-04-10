@@ -21,7 +21,7 @@
     width: 75%;
     height: 75%;
     border-radius: 999px;
-    background-color: hsl(348, 100%, 86%);
+    background-color: rgb(255, 184, 198);
     z-index: 5;
 }
 
@@ -33,7 +33,7 @@
     right: 3%;
     width: 65%;
     height: 65%;
-    background-color: hsl(191, 23%, 91%);
+    background-color: rgb(184, 208, 221);
     border-radius: 20%;
     z-index: 4;
 }
@@ -61,7 +61,7 @@
     width: 75%;
     height: 75%;
     border-radius: 999px;
-    background-color: hsl(338, 26%, 93%);
+    background-color: rgb(238, 225, 227);
     z-index: 4;
 }
 
@@ -73,7 +73,7 @@
     right: 3%;
     width: 65%;
     height: 65%;
-    background-color: hsl(201, 89%, 68%);
+    background-color: rgb(100, 195, 246);
     border-radius: 20%;
     z-index: 5;
 }

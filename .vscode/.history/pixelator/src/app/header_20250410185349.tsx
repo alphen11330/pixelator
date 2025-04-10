@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DeviceChecker from "./deviceChecker";
-import { pupupuFont } from "./fonts/pupupuFonr";
 
 const Header = () => {
   const isPC = DeviceChecker();
@@ -18,11 +17,11 @@ const Header = () => {
     zIndex: 10,
   };
 
-  const headerTextStyle: React.CSSProperties = {
-    fontSize: "1.8rem",
-    color: " rgb(176, 200, 255)",
-    WebkitTextStroke: "1px rgb(0, 0, 0)",
-    textShadow: "3px 2px  rgb(255, 146, 146)",
+  const pixelTextStyle: React.CSSProperties = {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    color: " rgb(102, 183, 52)",
+    textShadow: "2px 2px #000",
   };
 
   const title: React.CSSProperties = {
@@ -135,6 +134,12 @@ const Header = () => {
   };
   return (
     <>
+      <style>
+        {`
+    @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+  `}
+      </style>
+
       <div style={header}>
         <div style={title}>
           <div style={logobox}>
@@ -144,9 +149,7 @@ const Header = () => {
             <div style={blueSquare} />
           </div>
           <Link href="/">
-            <span className={pupupuFont.className} style={headerTextStyle}>
-              ぴくせれーたー
-            </span>
+            <span style={pixelTextStyle}>ぴくせれーたー</span>
           </Link>
         </div>
         {!isPC && (

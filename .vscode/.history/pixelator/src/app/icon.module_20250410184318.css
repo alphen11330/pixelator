@@ -33,7 +33,7 @@
     right: 3%;
     width: 65%;
     height: 65%;
-    background-color: hsl(191, 23%, 91%);
+    background-color: hsl(191, 39%, 79%);
     border-radius: 20%;
     z-index: 4;
 }
@@ -61,7 +61,7 @@
     width: 75%;
     height: 75%;
     border-radius: 999px;
-    background-color: hsl(338, 26%, 93%);
+    background-color: hsl(338, 28%, 91%);
     z-index: 4;
 }
 

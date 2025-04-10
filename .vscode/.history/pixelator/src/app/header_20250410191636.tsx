@@ -18,11 +18,10 @@ const Header = () => {
     zIndex: 10,
   };
 
-  const headerTextStyle: React.CSSProperties = {
-    fontSize: "1.8rem",
-    color: " rgb(176, 200, 255)",
-    WebkitTextStroke: "1px rgb(0, 0, 0)",
-    textShadow: "3px 2px  rgb(255, 146, 146)",
+  const pixelTextStyle: React.CSSProperties = {
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    color: " rgb(63, 63, 63)",
   };
 
   const title: React.CSSProperties = {
@@ -144,7 +143,7 @@ const Header = () => {
             <div style={blueSquare} />
           </div>
           <Link href="/">
-            <span className={pupupuFont.className} style={headerTextStyle}>
+            <span className={pupupuFont.className} style={pixelTextStyle}>
               ぴくせれーたー
             </span>
           </Link>
