@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ドット絵変換｜ぴくせれーたー｜Pixelator",
+  title: "ドット絵変換｜ぴくせれーたー",
   description:
     "高速リアルタイム処理でイラストからドット絵風の画像を作成します。",
 };

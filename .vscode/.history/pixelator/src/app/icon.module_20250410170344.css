@@ -9,7 +9,6 @@
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
     overflow: hidden;
     cursor: pointer;
-    z-index: 3;
 }
 
 /* 丸左 */
@@ -49,7 +48,6 @@
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
     overflow: hidden;
     cursor: pointer;
-    z-index: 3;
 }
 
 /* 丸左 */

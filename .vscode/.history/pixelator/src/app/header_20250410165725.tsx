@@ -21,7 +21,7 @@ const Header = () => {
     fontFamily: '"DotGothic16", sans-serif',
     fontSize: "1.5rem",
     fontWeight: "bold",
-    color: " rgb(102, 183, 52)",
+    color: " rgb(144, 139, 167)",
     textShadow: "2px 2px #000",
   };
 

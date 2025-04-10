@@ -20,8 +20,8 @@ const Header = () => {
   const pixelTextStyle: React.CSSProperties = {
     fontFamily: '"DotGothic16", sans-serif',
     fontSize: "1.5rem",
-    fontWeight: "bold",
-    color: " rgb(102, 183, 52)",
+    fontWeight: "1000",
+    color: " rgb(151, 138, 214)",
     textShadow: "2px 2px #000",
   };
 

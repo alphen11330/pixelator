@@ -1,15 +1,13 @@
 .imgToDot {
     position: absolute;
     display: inline-block;
-    width: 3em;
-    height: 3em;
+
     background: rgb(255, 255, 255); /* 空の背景 */
     border: 3px solid rgb(118, 118, 118);
     border-radius: 0.25em;
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
     overflow: hidden;
     cursor: pointer;
-    z-index: 3;
 }
 
 /* 丸左 */
@@ -49,7 +47,6 @@
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
     overflow: hidden;
     cursor: pointer;
-    z-index: 3;
 }
 
 /* 丸左 */

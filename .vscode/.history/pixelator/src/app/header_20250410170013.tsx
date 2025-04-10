@@ -11,7 +11,7 @@ const Header = () => {
     top: "0",
     width: "100%",
     height: "50px",
-    backgroundColor: "rgb(255, 255, 255)",
+    backgroundColor: "rgb(70, 117, 41)",",
     borderBottom: "solid 1px rgb(167, 167, 167)",
     userSelect: "none",
     zIndex: 10,
@@ -21,7 +21,7 @@ const Header = () => {
     fontFamily: '"DotGothic16", sans-serif',
     fontSize: "1.5rem",
     fontWeight: "bold",
-    color: " rgb(102, 183, 52)",
+    color: " rgb(70, 117, 41)",
     textShadow: "2px 2px #000",
   };
 
