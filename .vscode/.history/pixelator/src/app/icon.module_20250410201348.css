@@ -3,8 +3,7 @@
     display: inline-block;
     width: 3em;
     height: 3em;
-    background: rgb(255, 255, 255);
-    /* 空の背景 */
+    background: rgb(255, 255, 255); /* 空の背景 */
     border: 3px solid rgb(118, 118, 118);
     border-radius: 0.25em;
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
@@ -23,7 +22,7 @@
     height: 75%;
     border-radius: 999px;
     background-color: hsl(348, 100%, 86%);
-    border: dashed 2px hsl(0, 100%, 50%);
+    border:solid 1px hsl(358, 24%, 52%);
     z-index: 5;
 }
 
@@ -45,8 +44,7 @@
     display: inline-block;
     width: 3em;
     height: 3em;
-    background: rgb(255, 255, 255);
-    /* 空の背景 */
+    background: rgb(255, 255, 255); /* 空の背景 */
     border: 3px solid rgb(118, 118, 118);
     border-radius: 0.25em;
     box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
@@ -77,36 +75,34 @@
     width: 65%;
     height: 65%;
     background-color: hsl(201, 89%, 68%);
-    border: dashed 2px hsl(233, 100%, 50%);
     border-radius: 20%;
     z-index: 5;
 }
 
 /* 矢印 */
 .reload {
-    position: relative;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-top: 0.2rem solid hsl(125, 50%, 30%);
-    border-left: 0.2rem solid hsl(125, 50%, 30%);
-    border-right: 0.2rem solid transparent;
-    border-bottom: 0.2rem solid hsl(125, 50%, 30%);
-    border-radius: 100% 100% 100% 100%;
-    /* -webkit-transform: rotate(-45deg);
+	position: relative;
+	width: 1.5rem;
+	height: 1.5rem;
+	border-top: 0.2rem solid hsl(125, 50%, 30%);
+	border-left: 0.2rem solid hsl(125, 50%, 30%);
+	border-right: 0.2rem solid transparent;
+	border-bottom: 0.2rem solid hsl(125, 50%, 30%);
+	border-radius: 100% 100% 100% 100%;
+	/* -webkit-transform: rotate(-45deg);
 	transform: rotate(-45deg); */
 }
-
 /* 三角 */
 .reload::before {
-    content: "";
-    position: absolute;
-    top: -0.15rem;
-    left: 0.8rem;
-    width: 0;
-    height: 0;
-    border-top: 0.35rem solid transparent;
-    border-left: 0.5rem solid hsl(125, 50%, 30%);
-    border-bottom: 0.35rem solid transparent;
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
+	content: "";
+	position: absolute;
+	top: -0.15rem;
+	left: 0.8rem;
+	width: 0;
+	height: 0;
+	border-top: 0.35rem solid transparent;
+	border-left: 0.5rem solid hsl(125, 50%, 30%);
+	border-bottom: 0.35rem solid transparent;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
 }
