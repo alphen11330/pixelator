@@ -9,35 +9,14 @@ interface ColorBox {
   volume: number;
 }
 
-// ランベルト・ベールの法則に基づく輝度変換
-function applyLambertBeerTransform(value: number): number {
-  // 指数関数的な変換を適用（暗い部分を圧縮し、明るい部分を拡張）
-  return Math.pow(value / 255, 0.5) * 255;
-}
-
-// 逆ランベルト・ベール変換（線形→非線形）
-function inverseLambertBeerTransform(value: number): number {
-  // 明るい値をより多く分布させる
-  return Math.pow(value / 255, 2) * 255;
-}
-
-// MedianCutアルゴリズムによる色空間の量子化（ランベルト・ベール法則を考慮）
+// MedianCutアルゴリズムによる色空間の量子化
 function medianCutQuantization(pixels: RGB[], numColors: number): RGB[] {
   if (pixels.length <= numColors) {
     return pixels;
   }
 
-  // 画素値をランベルト・ベール空間に変換
-  const transformedPixels = pixels.map(pixel => {
-    return [
-      applyLambertBeerTransform(pixel[0]),
-      applyLambertBeerTransform(pixel[1]),
-      applyLambertBeerTransform(pixel[2])
-    ] as RGB;
-  });
-
   // ボックスを作成して初期化
-  const initialBox: ColorBox = createBox(transformedPixels);
+  const initialBox: ColorBox = createBox(pixels);
   const boxes: ColorBox[] = [initialBox];
 
   // 必要なボックス数になるまで分割を続ける
@@ -67,16 +46,8 @@ function medianCutQuantization(pixels: RGB[], numColors: number): RGB[] {
     boxes.push(box2);
   }
 
-  // 各ボックスの平均色を計算し、元のRGB空間に戻す
-  return boxes.map(box => {
-    const avg = averageColor(box.colors);
-    // 変換空間から元のRGB空間に戻す
-    return [
-      inverseLambertBeerTransform(avg[0]),
-      inverseLambertBeerTransform(avg[1]),
-      inverseLambertBeerTransform(avg[2])
-    ] as RGB;
-  });
+  // 各ボックスの平均色を計算
+  return boxes.map(box => averageColor(box.colors));
 }
 
 // ボックスを作成
@@ -98,7 +69,7 @@ function createBox(colors: RGB[]): ColorBox {
   return { colors, min, max, volume };
 }
 
-// ボックスを分割（ランベルト・ベール法則に基づく急激な変化を反映）
+// ボックスを分割
 function splitBox(box: ColorBox): [ColorBox, ColorBox] {
   // 最長軸を見つける
   const ranges: [number, number][] = [
@@ -115,11 +86,10 @@ function splitBox(box: ColorBox): [ColorBox, ColorBox] {
   const sortedColors = [...box.colors];
   sortedColors.sort((a, b) => a[longestAxis] - b[longestAxis]);
 
-  // ランベルト・ベール法則に基づいた非線形分割点を計算
-  // 暗い色が少なく、明るい色が多くなるように調整
-  const splitPosition = Math.floor(sortedColors.length * 0.7); // 70%地点で分割
-  const colors1 = sortedColors.slice(0, splitPosition);
-  const colors2 = sortedColors.slice(splitPosition);
+  // 中央で分割
+  const medianIndex = Math.floor(sortedColors.length / 2);
+  const colors1 = sortedColors.slice(0, medianIndex);
+  const colors2 = sortedColors.slice(medianIndex);
 
   // 新しいボックスを作成
   const box1 = createBox(colors1);
@@ -182,61 +152,38 @@ function rgbToHsv(r: number, g: number, b: number): HSV {
   return [h * 360, s * 100, v * 100];
 }
 
-// ランベルト・ベールの法則に基づいてパレットをHSVでソートする
-// 明るい色が多く、暗い色は少なくなるようにする
-function sortPaletteByLambertBeerHSV(palette: RGB[]): RGB[] {
-  // HSVに変換
-  const hsvPalette = palette.map(([r, g, b]) => {
-    return {
-      rgb: [r, g, b] as RGB,
-      hsv: rgbToHsv(r, g, b)
-    };
+// パレットをHSVに基づいてソートする
+function sortPaletteByHSV(palette: RGB[]): RGB[] {
+  return palette.sort((a, b) => {
+    const hsvA = rgbToHsv(a[0], a[1], a[2]);
+    const hsvB = rgbToHsv(b[0], b[1], b[2]);
+    // 明度（V）降順
+    if (hsvB[2] !== hsvA[2]) return hsvB[2] - hsvA[2];
+    // 彩度（S）降順
+    if (hsvB[1] !== hsvA[1]) return hsvB[1] - hsvA[1];
+    // 色相（H）昇順（360度の円として扱う）
+    return hsvA[0] - hsvB[0];
   });
-
-  // ランベルト・ベール法則に基づくソート
-  // 明度（V）を非線形に評価して、高明度の色がより多く分布するようにする
-  return hsvPalette.sort((a, b) => {
-    // 明度を非線形に評価（高明度の差異を強調）
-    const vA = Math.pow(a.hsv[2] / 100, 0.5);
-    const vB = Math.pow(b.hsv[2] / 100, 0.5);
-    
-    if (Math.abs(vB - vA) > 0.05) return vB - vA; // 明度が異なる場合
-    
-    // 彩度の評価（高彩度を優先）
-    const sA = a.hsv[1];
-    const sB = b.hsv[1];
-    if (Math.abs(sB - sA) > 5) return sB - sA;
-    
-    // 色相によるソート（円環上を移動）
-    return a.hsv[0] - b.hsv[0];
-  }).map(item => item.rgb);
 }
 
-// 非線形のカラー距離計算（ランベルト・ベール法則考慮）
-function lambertBeerColorDistance(color1: RGB, color2: RGB): number {
-  // 明るい色の差異をより強調する
+// RGB色の距離を計算（知覚的に近いCIELAB空間での距離）
+function colorDistance(color1: RGB, color2: RGB): number {
+  // 知覚的に近い重み付き距離
   const rMean = (color1[0] + color2[0]) / 2;
-  
-  // 各チャンネルの差分
-  let r = color1[0] - color2[0];
-  let g = color1[1] - color2[1];
-  let b = color1[2] - color2[2];
-  
-  // ランベルト・ベール法則に基づいて明るい色の差異を強調
-  const luminance1 = 0.299 * color1[0] + 0.587 * color1[1] + 0.114 * color1[2];
-  const luminance2 = 0.299 * color2[0] + 0.587 * color2[1] + 0.114 * color2[2];
-  const luminanceFactor = Math.pow(Math.max(luminance1, luminance2) / 255, 0.5);
+  const r = color1[0] - color2[0];
+  const g = color1[1] - color2[1];
+  const b = color1[2] - color2[2];
   
   // 人間の目は緑に最も敏感で、青に最も鈍感
-  // 明るさが高いほど差異を強調
+  // 赤の知覚は明るさに依存する
   return Math.sqrt(
-    (2 + rMean / 256) * r * r * luminanceFactor + 
-    4 * g * g * luminanceFactor + 
-    (2 + (255 - rMean) / 256) * b * b * luminanceFactor
+    (2 + rMean / 256) * r * r + 
+    4 * g * g + 
+    (2 + (255 - rMean) / 256) * b * b
   );
 }
 
-// 類似色をマージする（ランベルト・ベール法則を考慮）
+// 類似色をマージする
 function mergeSimilarColors(colors: RGB[], targetCount: number): RGB[] {
   if (colors.length <= targetCount) {
     return colors;
@@ -247,7 +194,7 @@ function mergeSimilarColors(colors: RGB[], targetCount: number): RGB[] {
   
   for (let i = 0; i < colors.length; i++) {
     for (let j = i + 1; j < colors.length; j++) {
-      const distance = lambertBeerColorDistance(colors[i], colors[j]);
+      const distance = colorDistance(colors[i], colors[j]);
       colorDistances.push({ i, j, distance });
     }
   }
@@ -265,23 +212,7 @@ function mergeSimilarColors(colors: RGB[], targetCount: number): RGB[] {
     }
 
     // j番目の色を削除し、i番目の色を2色の平均に置き換え
-    const color1 = result[i];
-    const color2 = result[j];
-    
-    // 明るさを考慮した重み付き平均（明るい色を優先）
-    const lum1 = 0.299 * color1[0] + 0.587 * color1[1] + 0.114 * color1[2];
-    const lum2 = 0.299 * color2[0] + 0.587 * color2[1] + 0.114 * color2[2];
-    
-    // 明るい色により重みを置く
-    const weight1 = lum1 / (lum1 + lum2);
-    const weight2 = lum2 / (lum1 + lum2);
-    
-    const mergedColor: RGB = [
-      Math.round(color1[0] * weight1 + color2[0] * weight2),
-      Math.round(color1[1] * weight1 + color2[1] * weight2),
-      Math.round(color1[2] * weight1 + color2[2] * weight2)
-    ];
-    
+    const mergedColor = averageColor([result[i], result[j]]);
     result[i] = mergedColor;
     
     // j番目をマークして後で削除
@@ -297,7 +228,7 @@ function mergeSimilarColors(colors: RGB[], targetCount: number): RGB[] {
 }
 
 // 画像から色パレットを生成する
-const createLambertBeerPalette = (imageSrc: string, numColors: number = 16): Promise<string[]> => {
+const createPalette = (imageSrc: string, numColors: number = 16): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
@@ -346,29 +277,18 @@ const createLambertBeerPalette = (imageSrc: string, numColors: number = 16): Pro
         return reject('有効なピクセルが見つかりませんでした');
       }
 
-      // ランベルト・ベール法則に基づくピクセルサンプリング
-      // 明るいピクセルをより多くサンプリングする
+      // まばらにサンプリング（大きな画像の場合）
       let sampledPixels = pixels;
       if (pixels.length > 10000) {
         const sampleSize = 10000;
         sampledPixels = [];
-        
-        // 輝度に基づいてソート（明るい順）
-        const sortedByLuminance = [...pixels].sort((a, b) => {
-          const lumA = 0.299 * a[0] + 0.587 * a[1] + 0.114 * a[2];
-          const lumB = 0.299 * b[0] + 0.587 * b[1] + 0.114 * b[2];
-          return lumB - lumA; // 明るい順
-        });
-        
-        // 明るいピクセルを優先的にサンプリング
-        for (let i = 0; i < sampleSize; i++) {
-          // 非線形インデックス計算で明るいピクセルを多く選択
-          const index = Math.floor(Math.pow(i / sampleSize, 2) * sortedByLuminance.length);
-          sampledPixels.push(sortedByLuminance[index]);
+        const step = Math.floor(pixels.length / sampleSize);
+        for (let i = 0; i < pixels.length; i += step) {
+          sampledPixels.push(pixels[i]);
         }
       }
 
-      // MedianCutアルゴリズムでパレットを生成（ランベルト・ベール法則適用済み）
+      // MedianCutアルゴリズムでパレットを生成
       let palette = medianCutQuantization(sampledPixels, numColors);
 
       // 黒と白が含まれているか確認
@@ -389,53 +309,18 @@ const createLambertBeerPalette = (imageSrc: string, numColors: number = 16): Pro
         palette = palette.slice(0, numColors);
       }
 
-      // 類似色をマージする（ランベルト・ベール法則を考慮）
+      // 色を重複排除し、似た色をマージする
       palette = mergeSimilarColors(palette, numColors);
       
-      // ランベルト・ベール法則に基づいてパレットをソート
-      palette = sortPaletteByLambertBeerHSV(palette);
+      // HSVに基づいてパレットをソート
+      palette = sortPaletteByHSV(palette);
 
       // RGB形式の文字列に変換
-      resolve(palette.map(([r, g, b]) => `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`));
+      resolve(palette.map(([r, g, b]) => `rgb(${r}, ${g}, ${b})`));
     };
 
     img.onerror = (e) => reject(`画像の読み込みに失敗しました: ${e}`);
   });
 };
 
-// ランベルト・ベール法則を視覚化するためのグラデーション生成関数
-function createLambertBeerGradient(width: number = 256, height: number = 50): string {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  
-  if (!ctx) return '';
-  
-  // 線形グラデーション（比較用）
-  const linearGrad = ctx.createLinearGradient(0, 0, width, 0);
-  linearGrad.addColorStop(0, 'black');
-  linearGrad.addColorStop(1, 'white');
-  
-  // ランベルト・ベール法則に基づく非線形グラデーション
-  const lambertBeerGrad = ctx.createLinearGradient(0, 0, width, 0);
-  
-  // 非線形の色止めを設定
-  for (let i = 0; i <= 20; i++) {
-    const pos = i / 20;
-    // 指数関数的な色の変化を生成（ランベルト・ベール法則）
-    const intensity = Math.pow(pos, 2); // 二乗関数で急激な変化を表現
-    const color = Math.round(intensity * 255);
-    lambertBeerGrad.addColorStop(pos, `rgb(${color}, ${color}, ${color})`);
-  }
-  
-  // 描画
-  ctx.fillStyle = lambertBeerGrad;
-  ctx.fillRect(0, 0, width, height);
-  
-  return canvas.toDataURL();
-}
-
-export default createLambertBeerPalette;
-// ユーティリティ関数もエクスポート
-export { createLambertBeerGradient };
+export default createPalette;
