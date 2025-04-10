@@ -39,6 +39,7 @@ const Header = () => {
     left: "-48px",
     width: "36px",
     height: "36px",
+    border: "solid 1px black",
   };
 
   const pinkCircle: React.CSSProperties = {

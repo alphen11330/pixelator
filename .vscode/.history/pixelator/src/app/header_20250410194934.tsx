@@ -59,6 +59,7 @@ const Header = () => {
     height: "24px",
     borderRadius: "20%",
     zIndex: "-1",
+    border: "solid 1px black",
   };
 
   const yellowLight: React.CSSProperties = {

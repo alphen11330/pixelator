@@ -12,6 +12,8 @@ const Header = () => {
     top: "0",
     width: "100%",
     height: "50px",
+    display: "flex",
+    alignContent: "center",
     backgroundColor: "rgb(255, 255, 255)",
     borderBottom: "solid 1px rgb(167, 167, 167)",
     userSelect: "none",

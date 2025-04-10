@@ -21,7 +21,7 @@ const Header = () => {
   const headerTextStyle: React.CSSProperties = {
     fontSize: "1.8rem",
     color: " rgb(176, 200, 255)",
-    WebkitTextStroke: "0.5px rgb(33, 79, 184)",
+    WebkitTextStroke: "0.1px rgb(0, 0, 0)",
     textShadow: "3px 2px  rgb(255, 146, 146)",
   };
 

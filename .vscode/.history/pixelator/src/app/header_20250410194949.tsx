@@ -48,6 +48,7 @@ const Header = () => {
     height: "28px",
     borderRadius: "100%",
     overflow: "hidden",
+    border: "solid 1px black",
   };
 
   const blueSquare: React.CSSProperties = {
@@ -59,6 +60,7 @@ const Header = () => {
     height: "24px",
     borderRadius: "20%",
     zIndex: "-1",
+    border: "solid 1px black",
   };
 
   const yellowLight: React.CSSProperties = {
@@ -69,6 +71,7 @@ const Header = () => {
     width: "24px",
     height: "24px",
     borderRadius: "20%",
+    border: "solid 2px black",
   };
 
   const [clickHamburger, setClickHamburger] = useState(false);

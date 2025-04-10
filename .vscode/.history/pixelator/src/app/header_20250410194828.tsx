@@ -138,10 +138,12 @@ const Header = () => {
       <div style={header}>
         <div style={title}>
           <div style={logobox}>
-            <div style={pinkCircle}>
-              <div style={yellowLight} />
+            <div style={{ border: "solid 10px black" }}>
+              <div style={pinkCircle}>
+                <div style={yellowLight} />
+              </div>
+              <div style={blueSquare} />
             </div>
-            <div style={blueSquare} />
           </div>
           <Link href="/">
             <span className={pupupuFont.className} style={headerTextStyle}>
