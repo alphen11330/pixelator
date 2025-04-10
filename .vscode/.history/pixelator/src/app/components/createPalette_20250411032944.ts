@@ -117,6 +117,8 @@ function splitBox(box: ColorBox): [ColorBox, ColorBox] {
 
   let splitRatio = 0.5; 
   
+
+  
   const splitPosition = Math.floor(sortedColors.length * splitRatio);
   const colors1 = sortedColors.slice(0, splitPosition);
   const colors2 = sortedColors.slice(splitPosition);
@@ -485,7 +487,7 @@ const createEnhancedLambertBeerPalette = (imageSrc: string, numColors: number = 
 
       // MedianCutアルゴリズムでパレットを生成（ランベルト・ベール法則適用）
       // 目標色数より少し多めに生成（後で明るい色を増やすため）
-      const baseColorCount = Math.max(3, Math.floor(numColors*2 ));
+      const baseColorCount = Math.max(3, Math.floor(numColors*3 ));
       let palette = medianCutQuantization(sampledPixels, baseColorCount);
 
       // 黒と白が含まれているか確認

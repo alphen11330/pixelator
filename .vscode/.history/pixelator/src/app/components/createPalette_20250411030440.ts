@@ -98,7 +98,7 @@ function createBox(colors: RGB[]): ColorBox {
   return { colors, min, max, volume };
 }
 
-// ボックスを分割
+// ボックスを分割（輝度に基づく非均等分割）
 function splitBox(box: ColorBox): [ColorBox, ColorBox] {
   // 最長軸を見つける
   const ranges: [number, number][] = [
@@ -106,22 +106,48 @@ function splitBox(box: ColorBox): [ColorBox, ColorBox] {
     [box.max[1] - box.min[1], 1],
     [box.max[2] - box.min[2], 2]
   ];
-
-  // 最長の軸でソート（降順）
   ranges.sort((a, b) => b[0] - a[0]);
   const longestAxis = ranges[0][1];
 
-  // その軸に沿ってピクセルをソート
   const sortedColors = [...box.colors];
   sortedColors.sort((a, b) => a[longestAxis] - b[longestAxis]);
 
-  let splitRatio = 0.5; 
-  
+  // 輝度と彩度を計算
+  const luminances: number[] = [];
+  const saturations: number[] = [];
+
+  for (const color of sortedColors) {
+    const [r, g, b] = color.map(v => v / 255);
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const lum = 0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2];
+    const sat = max === 0 ? 0 : (max - min) / max;
+    luminances.push(lum);
+    saturations.push(sat);
+  }
+
+  const avgLuminance = luminances.reduce((sum, l) => sum + l, 0) / luminances.length;
+  const maxLuminance = Math.max(...luminances);
+  const avgSaturation = saturations.reduce((sum, s) => sum + s, 0) / saturations.length;
+  const maxSaturation = Math.max(...saturations);
+
+  // 分割比初期値
+  let splitRatio = 0.5;
+
+  // 輝度が高ければ、明るい側を細かく
+  if (avgLuminance > 128 || maxLuminance > 200) {
+    splitRatio = 0.65;
+  }
+
+  // 彩度が高ければ、より細かく分ける（彩度のバリエーションを増やす）
+  if (avgSaturation > 0.5 || maxSaturation > 0.8) {
+    splitRatio = 0.75;
+  }
+
   const splitPosition = Math.floor(sortedColors.length * splitRatio);
   const colors1 = sortedColors.slice(0, splitPosition);
   const colors2 = sortedColors.slice(splitPosition);
 
-  // 新しいボックスを作成
   const box1 = createBox(colors1);
   const box2 = createBox(colors2);
 
@@ -289,12 +315,12 @@ function lambertBeerColorDistance(color1: RGB, color2: RGB): number {
   
   // 明るい色の差異をより強調する重み付け
   const avgLuminance = (luminance1 + luminance2) / 2;
-  const luminanceWeight = Math.pow(avgLuminance / 255, 0.5);
+  const luminanceWeight = Math.pow(avgLuminance / 255, 0.3);
   
   // 明るさが高いほど色差を強調（人間の目の感度を考慮）
   return Math.sqrt(
-    (4 * luminanceWeight) * r * r + 
-    (6 * luminanceWeight) * g * g + 
+    (3 * luminanceWeight) * r * r + 
+    (4 * luminanceWeight) * g * g + 
     (2 * luminanceWeight) * b * b
   );
 }
@@ -458,6 +484,7 @@ const createEnhancedLambertBeerPalette = (imageSrc: string, numColors: number = 
           
           const groupPixels = pixelsByLuminance[g];
           
+          // サンプリング（ランダム）
           // サンプリング（等間隔）
           for (let i = 0; i < groupSampleCount && groupPixels.length > 0; i++) {
             const index = Math.floor(i * groupPixels.length / groupSampleCount);
@@ -483,9 +510,9 @@ const createEnhancedLambertBeerPalette = (imageSrc: string, numColors: number = 
         
       }
 
-      // MedianCutアルゴリズムでパレットを生成（ランベルト・ベール法則適用）
+      // MedianCutアルゴリズムでパレットを生成（強化版ランベルト・ベール法則適用）
       // 目標色数より少し多めに生成（後で明るい色を増やすため）
-      const baseColorCount = Math.max(3, Math.floor(numColors*2 ));
+      const baseColorCount = Math.max(3, Math.floor(numColors * 5));
       let palette = medianCutQuantization(sampledPixels, baseColorCount);
 
       // 黒と白が含まれているか確認

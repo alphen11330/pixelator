@@ -98,7 +98,7 @@ function createBox(colors: RGB[]): ColorBox {
   return { colors, min, max, volume };
 }
 
-// ボックスを分割
+// ボックスを分割（輝度に基づく非均等分割）
 function splitBox(box: ColorBox): [ColorBox, ColorBox] {
   // 最長軸を見つける
   const ranges: [number, number][] = [
@@ -115,7 +115,26 @@ function splitBox(box: ColorBox): [ColorBox, ColorBox] {
   const sortedColors = [...box.colors];
   sortedColors.sort((a, b) => a[longestAxis] - b[longestAxis]);
 
-  let splitRatio = 0.5; 
+  // ボックス内のピクセルの輝度を計算
+  const luminances = sortedColors.map(color => 
+    0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]
+  );
+
+  // 平均輝度を計算
+  const avgLuminance = luminances.reduce((sum, lum) => sum + lum, 0) / luminances.length;
+  const maxLuminance = Math.max(...luminances);
+  
+  // 分割点を決定（高輝度領域をより細かく分割）
+  let splitRatio = 0.5; // デフォルト分割比
+  
+  // 平均輝度が高い場合、より非対称な分割を行う
+  if (avgLuminance > 128) {
+    // 明るいボックスはより細かく分割する（明るい色のバリエーションを増やす）
+    splitRatio = 0.75; // 75%点で分割
+  } else if (maxLuminance > 180) {
+    // 最大輝度が高い場合も明るい部分を細かく分割
+    splitRatio = 0.50; // 65%点で分割
+  }
   
   const splitPosition = Math.floor(sortedColors.length * splitRatio);
   const colors1 = sortedColors.slice(0, splitPosition);
@@ -485,7 +504,7 @@ const createEnhancedLambertBeerPalette = (imageSrc: string, numColors: number = 
 
       // MedianCutアルゴリズムでパレットを生成（ランベルト・ベール法則適用）
       // 目標色数より少し多めに生成（後で明るい色を増やすため）
-      const baseColorCount = Math.max(3, Math.floor(numColors*2 ));
+      const baseColorCount = Math.max(3, Math.floor(numColors*3 ));
       let palette = medianCutQuantization(sampledPixels, baseColorCount);
 
       // 黒と白が含まれているか確認

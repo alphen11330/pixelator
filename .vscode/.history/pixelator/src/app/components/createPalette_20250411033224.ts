@@ -293,9 +293,9 @@ function lambertBeerColorDistance(color1: RGB, color2: RGB): number {
   
   // 明るさが高いほど色差を強調（人間の目の感度を考慮）
   return Math.sqrt(
-    (4 * luminanceWeight) * r * r + 
-    (6 * luminanceWeight) * g * g + 
-    (2 * luminanceWeight) * b * b
+    (120 * luminanceWeight) * r * r + 
+    (120 * luminanceWeight) * g * g + 
+    (0 * luminanceWeight) * b * b
   );
 }
 
