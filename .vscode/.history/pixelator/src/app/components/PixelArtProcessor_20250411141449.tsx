@@ -456,9 +456,8 @@ const PixelArtProcessor: React.FC<Props> = ({
             );
             break;
         }
-        if (processedImageData) {
-          ctx.putImageData(processedImageData, 0, 0);
-        }
+
+        ctx.putImageData(processedImageData, 0, 0);
       } catch (error) {
         console.error("Dithering failed:", error);
         // エラー時は通常の色変換を適用

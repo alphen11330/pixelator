@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, memo, useRef } from "react";
+import { useEffect, useState } from "react";
 import createPalette from "./createPalette";
 import style from "../icon.module.css";
 
@@ -64,81 +64,6 @@ const readImage = (
   reader.readAsDataURL(file);
 };
 
-// 個別の色入力コンポーネント（メモ化）
-const ColorInput = memo(
-  ({
-    color,
-    index,
-    onColorChange,
-  }: {
-    color: string;
-    index: number;
-    onColorChange: (index: number, value: string) => void;
-  }) => {
-    // 内部状態を持つことで、親コンポーネントのレンダリングに影響されないようにする
-    const [currentColor, setCurrentColor] = useState(color);
-    // refを使用してDOMにアクセスする
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    // 親から新しい色が渡されたときに状態を更新
-    useEffect(() => {
-      setCurrentColor(color);
-    }, [color]);
-
-    const colorInputStyle: React.CSSProperties = {
-      width: "calc(100% / 8 - 3px)",
-      paddingTop: "10%",
-      marginInline: "1.5px",
-      marginBottom: "3px",
-      borderRadius: "4px",
-      border: "solid 1px rgb(184, 184, 184)",
-      cursor: "pointer",
-      backgroundColor: "rgb(255, 255, 255)",
-    };
-
-    const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newColor = e.target.value;
-      setCurrentColor(newColor);
-      onColorChange(index, newColor);
-
-      // カラーピッカーを強制的に開いたままにする
-      if (inputRef.current) {
-        // 少し遅延させて実行することで、ブラウザのレンダリングサイクルが終わった後に実行される
-        setTimeout(() => {
-          inputRef.current?.click();
-        }, 0);
-      }
-    };
-
-    return (
-      <div
-        style={{
-          position: "relative",
-          ...colorInputStyle,
-          backgroundColor: currentColor,
-        }}
-      >
-        <input
-          ref={inputRef}
-          type="color"
-          value={rgbToHex(currentColor)}
-          title={currentColor}
-          onChange={handleColorChange}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            opacity: 0,
-            cursor: "pointer",
-          }}
-        />
-      </div>
-    );
-  }
-);
-
 type Props = {
   colorPalette: string[];
   setColorPalette: React.Dispatch<React.SetStateAction<string[]>>;
@@ -149,7 +74,7 @@ type Props = {
   setRefreshColorPalette: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ColorPalette: React.FC<Props> = ({
+const CollorPalette: React.FC<Props> = ({
   colorPalette,
   setColorPalette,
   smoothImageSrc,
@@ -159,47 +84,25 @@ const ColorPalette: React.FC<Props> = ({
   setRefreshColorPalette,
 }) => {
   const [imageForPalette, setImageForPalette] = useState<string | null>(null);
-  // 変更中の色のインデックスを追跡
-  const [editingColorIndex, setEditingColorIndex] = useState<number | null>(
-    null
-  );
 
   // カラーパレットの生成
-  const fetchPalette = useCallback(
-    async (img: string | null) => {
-      if (img) {
-        const palette = await createPalette(img, Math.pow(2, colorLevels));
-        setColorPalette(palette);
-      }
-    },
-    [colorLevels, setColorPalette]
-  );
+  const fetchPalette = async (img: string | null) => {
+    if (img) {
+      const palette = await createPalette(img, Math.pow(2, colorLevels));
+      setColorPalette(palette);
+    }
+  };
 
   // リフレッシュ、減色数を変更したときに編集画像からパレットを作成
   useEffect(() => {
     fetchPalette(smoothImageSrc);
-  }, [fetchPalette, smoothImageSrc, imageSrc, refreshColorPalette]);
+  }, [imageSrc, refreshColorPalette, colorLevels]);
 
   // パレット用画像からパレットを作成
   useEffect(() => {
-    if (imageForPalette) {
-      fetchPalette(imageForPalette);
-      setImageForPalette(null);
-    }
-  }, [imageForPalette, fetchPalette]);
-
-  // 個別の色更新を最適化
-  const handleColorChange = useCallback(
-    (index: number, newColor: string) => {
-      setEditingColorIndex(index);
-      setColorPalette((prevPalette) => {
-        const updatedPalette = [...prevPalette];
-        updatedPalette[index] = newColor;
-        return updatedPalette;
-      });
-    },
-    [setColorPalette]
-  );
+    fetchPalette(imageForPalette);
+    setImageForPalette(null);
+  }, [imageForPalette]);
 
   const collorPaletteStyle: React.CSSProperties = {
     display: "flex",
@@ -207,6 +110,17 @@ const ColorPalette: React.FC<Props> = ({
     marginTop: "1rem",
     marginInline: "auto",
     width: "80%",
+  };
+
+  const colorInputStyle: React.CSSProperties = {
+    width: "calc(100% / 8 - 3px)",
+    paddingTop: "10%",
+    marginInline: "1.5px",
+    marginBottom: "3px",
+    borderRadius: "4px",
+    border: "solid 1px rgb(184, 184, 184)",
+    cursor: "pointer",
+    backgroundColor: "rgb(255, 255, 255)",
   };
 
   const buttonContainer: React.CSSProperties = {
@@ -237,6 +151,7 @@ const ColorPalette: React.FC<Props> = ({
         <button
           style={{
             ...buttonStyle,
+
             border: "2px solid hsl(140, 39.40%, 49.20%)",
             backgroundColor: "hsl(125, 59.30%, 88.40%)",
           }}
@@ -278,11 +193,17 @@ const ColorPalette: React.FC<Props> = ({
 
       <div style={collorPaletteStyle}>
         {colorPalette.map((color, index) => (
-          <ColorInput
-            key={`color-${index}`}
-            color={color}
-            index={index}
-            onColorChange={handleColorChange}
+          <input
+            key={index}
+            type="color"
+            value={rgbToHex(color)}
+            title={color}
+            onChange={(e) => {
+              const updatedPalette = [...colorPalette];
+              updatedPalette[index] = e.target.value;
+              setColorPalette(updatedPalette);
+            }}
+            style={{ ...colorInputStyle, backgroundColor: color }}
           />
         ))}
       </div>
@@ -290,4 +211,4 @@ const ColorPalette: React.FC<Props> = ({
   );
 };
 
-export default memo(ColorPalette);
+export default CollorPalette;

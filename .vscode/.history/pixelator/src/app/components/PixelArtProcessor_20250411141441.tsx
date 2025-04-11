@@ -17,12 +17,13 @@ type Props = {
 
 const parseRgb = (colorStr: string): [number, number, number] => {
   // キャッシュ用のMapを使用
-  (parseRgb as any).cache =
-    (parseRgb as any).cache || new Map<string, [number, number, number]>();
+  if (!parseRgb.cache) {
+    (parseRgb as any).cache = new Map<string, [number, number, number]>();
+  }
 
   // キャッシュにあればそれを返す
-  if ((parseRgb as any).cache.has(colorStr)) {
-    return (parseRgb as any).cache.get(colorStr)!;
+  if (parseRgb.cache.has(colorStr)) {
+    return parseRgb.cache.get(colorStr)!;
   }
 
   let result: [number, number, number] = [0, 0, 0];
@@ -42,10 +43,9 @@ const parseRgb = (colorStr: string): [number, number, number] => {
   }
 
   // 結果をキャッシュ
-  (parseRgb as any).cache.set(colorStr, result);
+  parseRgb.cache.set(colorStr, result);
   return result;
 };
-
 // TypeScriptでキャッシュプロパティを追加
 (parseRgb as any).cache = new Map<string, [number, number, number]>();
 
@@ -456,9 +456,8 @@ const PixelArtProcessor: React.FC<Props> = ({
             );
             break;
         }
-        if (processedImageData) {
-          ctx.putImageData(processedImageData, 0, 0);
-        }
+
+        ctx.putImageData(processedImageData, 0, 0);
       } catch (error) {
         console.error("Dithering failed:", error);
         // エラー時は通常の色変換を適用
