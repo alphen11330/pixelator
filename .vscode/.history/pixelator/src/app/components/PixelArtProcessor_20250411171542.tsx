@@ -77,21 +77,10 @@ const PixelArtProcessor: React.FC<Props> = ({
   );
 
   useEffect(() => {
-    // 配色数とドット長でデバウンス値をセット
-    if (colorLevels <= 5 || pixelLength <= 512) {
-      setInitDebouncedColorPalette(5);
-      setInitDebouncedDitherStrength(0);
-      setInitDebouncedpixelLength(0);
-    } else if (7 <= colorLevels && pixelLength <= 768) {
-      setInitDebouncedColorPalette(100);
-      setInitDebouncedDitherStrength(100);
-      setInitDebouncedpixelLength(100);
-    } else {
-      setInitDebouncedColorPalette(15);
-      setInitDebouncedDitherStrength(30);
-      setInitDebouncedpixelLength(50);
+    // 配色数でデバウンス値をセット
+    if (colorLevels <= 4) {
     }
-  }, [colorLevels, pixelLength]);
+  }, [colorLevels]);
 
   useEffect(() => {
     // パレットが変更されたかどうかをチェック

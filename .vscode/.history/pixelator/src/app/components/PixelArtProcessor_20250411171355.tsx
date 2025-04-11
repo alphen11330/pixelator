@@ -64,34 +64,15 @@ const PixelArtProcessor: React.FC<Props> = ({
   );
   // デバウンス処理変数（ディザリング強度）
   const [initDebouncedDitherStrength, setInitDebouncedDitherStrength] =
-    useState(5);
-  const [debouncedDitherStrength] = useDebounce(
-    ditherStrength,
-    initDebouncedDitherStrength
-  );
+    useState(10);
+  const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
   // デバウンス処理変数（ドット長）
-  const [initDebouncedpixelLength, setInitDebouncedpixelLength] = useState(0);
-  const [debouncedpixelLength] = useDebounce(
-    pixelLength,
-    initDebouncedpixelLength
-  );
+  const [debouncedpixelLength] = useDebounce(pixelLength, 1);
 
   useEffect(() => {
-    // 配色数とドット長でデバウンス値をセット
-    if (colorLevels <= 5 || pixelLength <= 512) {
-      setInitDebouncedColorPalette(5);
-      setInitDebouncedDitherStrength(0);
-      setInitDebouncedpixelLength(0);
-    } else if (7 <= colorLevels && pixelLength <= 768) {
-      setInitDebouncedColorPalette(100);
-      setInitDebouncedDitherStrength(100);
-      setInitDebouncedpixelLength(100);
-    } else {
-      setInitDebouncedColorPalette(15);
-      setInitDebouncedDitherStrength(30);
-      setInitDebouncedpixelLength(50);
+    if (colorLevels <= 4) {
     }
-  }, [colorLevels, pixelLength]);
+  }, [colorLevels]);
 
   useEffect(() => {
     // パレットが変更されたかどうかをチェック

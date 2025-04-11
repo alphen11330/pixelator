@@ -485,7 +485,7 @@ const createEnhancedLambertBeerPalette = (imageSrc: string, numColors: number = 
 
       // MedianCutアルゴリズムでパレットを生成（ランベルト・ベール法則適用）
       // 目標色数より少し多めに生成（後で明るい色を増やすため）
-      const baseColorCount = Math.max(3, Math.floor(numColors));
+      const baseColorCount = Math.max(3, Math.floor(numColors ));
       let palette = medianCutQuantization(sampledPixels, baseColorCount);
 
       // 黒と白が含まれているか確認

@@ -84,7 +84,7 @@ const PixelArtProcessor: React.FC<Props> = ({
       setInitDebouncedpixelLength(0);
     } else if (7 <= colorLevels && pixelLength <= 768) {
       setInitDebouncedColorPalette(100);
-      setInitDebouncedDitherStrength(100);
+      setInitDebouncedDitherStrength(30);
       setInitDebouncedpixelLength(100);
     } else {
       setInitDebouncedColorPalette(15);
