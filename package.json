@@ -13,18 +13,21 @@
     "chroma-js": "^3.1.2",
     "colorthief": "^2.6.0",
     "ditherjs": "^0.10.0",
+    "lodash": "^4.17.21",
     "next": "15.2.4",
     "react": "^19.0.0",
     "react-color": "^2.19.3",
     "react-dom": "^19.0.0",
     "rgbquant": "^1.1.2",
     "sharp": "^0.33.5",
-    "styled-components": "^6.1.17"
+    "styled-components": "^6.1.17",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/chroma-js": "^3.1.1",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-color": "^3.0.13",

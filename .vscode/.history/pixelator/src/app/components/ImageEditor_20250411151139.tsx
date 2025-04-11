@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import grayscaleProcessor from "./grayscaleProcessor";
 import invertColorProcessor from "./invertColorProcessor";
 import colorCollectionProcessor from "./colorCollectionProcessor";
@@ -11,6 +11,10 @@ type Props = {
 
   grayscale: boolean; //グレースケール
   invertColor: boolean; //色反転
+
+  //減色処理
+  colorReduction: boolean;
+  colorLevels: number;
 
   //色調補正
   colorCollection: boolean;
@@ -38,6 +42,8 @@ const ImageEditor: React.FC<Props> = ({
   setSmoothImageSrc,
   grayscale,
   invertColor,
+  colorReduction,
+  colorLevels,
   colorCollection,
   isHue,
   hue,
@@ -137,6 +143,8 @@ const ImageEditor: React.FC<Props> = ({
     imageSrc,
     grayscale,
     invertColor,
+    colorReduction,
+    colorLevels,
     colorCollection,
     isHue,
     hue,

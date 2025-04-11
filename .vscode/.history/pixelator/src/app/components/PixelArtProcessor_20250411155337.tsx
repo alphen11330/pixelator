@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
-import { useDebounce } from "use-debounce";
 
 type Props = {
   smoothImageSrc: string | null;
@@ -12,6 +11,7 @@ type Props = {
   colorPalette: string[];
   ditherType?: "ordered" | "atkinson" | "floydsteinberg" | "none";
   ditherStrength?: number; // 0.0～2.0の範囲で強度を指定 (デフォルト: 1.0)
+  debounceDelay?: number; // デバウンス遅延時間（ミリ秒）
 };
 
 // rgb() 形式と hex(#rrggbb) 形式の両方に対応
@@ -45,8 +45,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   colorReduction,
   colorPalette,
   ditherType = "ordered",
-  // ditherType?: "floydsteinberg" | "atkinson" | "ordered" | "none";
-  ditherStrength, // デフォルト値は1.0（通常の強度）
+  ditherStrength = 2, // デフォルト値は2（通常の強度）
+  debounceDelay = 10, // デフォルトのデバウンス遅延時間: 300ms
 }) => {
   // 元の画像ピクセルデータを保持するためのRef
   const originalPixelsRef = useRef<ImageData | null>(null);
@@ -54,96 +54,125 @@ const PixelArtProcessor: React.FC<Props> = ({
   const prevPaletteRef = useRef<string[]>([]);
   // キャンバスを参照するためのRef
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // デバウンス処理変数（カラーパレット）
-  const [debouncedColorPalette] = useDebounce(colorPalette, 10);
-  const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
+  // デバウンスタイマーを保持するためのRef
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // 処理待ちの状態を表すRef
+  const pendingProcessRef = useRef<{
+    type: "original" | "palette";
+    params: any;
+  } | null>(null);
+  // 処理中かどうかを表すRef
+  const isProcessingRef = useRef<boolean>(false);
 
-  useEffect(() => {
-    // パレットが変更されたかどうかをチェック
-    const isPaletteChanged =
-      JSON.stringify(prevPaletteRef.current) !== JSON.stringify(colorPalette);
-    const isInitialRender = !dotsImageSrc || !originalPixelsRef.current;
+  // デバウンス処理を行う関数
+  const debounce = useCallback(
+    (func: () => void) => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
 
-    // 元の画像を処理する必要がある場合
-    if (isInitialRender || !isPaletteChanged) {
-      processOriginalImage();
-    } else {
-      // パレットのみ変更された場合、色置換のみを再適用
-      applyColorPalette();
+      debounceTimerRef.current = setTimeout(() => {
+        func();
+        debounceTimerRef.current = null;
+      }, debounceDelay);
+    },
+    [debounceDelay]
+  );
+
+  // 元の画像からピクセルアートを生成（デバウンス処理付き）
+  const processOriginalImage = useCallback(() => {
+    // 既に処理中の場合は、処理待ちに追加
+    if (isProcessingRef.current) {
+      pendingProcessRef.current = { type: "original", params: null };
+      return;
     }
 
-    // 現在のパレットを保存
-    prevPaletteRef.current = [...colorPalette];
+    // デバウンス処理
+    debounce(() => {
+      if (!window.cv) {
+        console.error("OpenCV is not loaded.");
+        return;
+      }
+
+      isProcessingRef.current = true;
+      const cv = window.cv;
+
+      if (!smoothImageSrc) {
+        isProcessingRef.current = false;
+        return;
+      }
+
+      const imgElement = document.createElement("img");
+      imgElement.src = smoothImageSrc;
+
+      imgElement.onload = async () => {
+        const src = cv.imread(imgElement);
+        let width = src.cols;
+        let height = src.rows;
+
+        let newWidth, newHeight;
+        if (width > height) {
+          newWidth = pixelLength;
+          newHeight = Math.round((height / width) * pixelLength);
+        } else {
+          newHeight = pixelLength;
+          newWidth = Math.round((width / height) * pixelLength);
+        }
+
+        const dst = new cv.Mat();
+        const size = new cv.Size(newWidth, newHeight);
+        cv.resize(src, dst, size, 0, 0, cv.INTER_NEAREST);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        canvasRef.current = canvas;
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        cv.imshow(canvas, dst);
+
+        // 元のピクセルデータを保存
+        if (ctx) {
+          originalPixelsRef.current = ctx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+
+          // 色置換処理を適用
+          if (colorReduction && colorPalette.length > 0) {
+            applyColorPalette();
+          } else {
+            setDotsImageSrc(canvas.toDataURL());
+            isProcessingRef.current = false;
+
+            // 処理待ちがあれば実行
+            if (pendingProcessRef.current) {
+              const { type } = pendingProcessRef.current;
+              pendingProcessRef.current = null;
+              if (type === "original") {
+                processOriginalImage();
+              } else if (type === "palette") {
+                applyColorPalette();
+              }
+            }
+          }
+        }
+
+        src.delete();
+        dst.delete();
+      };
+    });
   }, [
     smoothImageSrc,
     pixelLength,
     colorReduction,
-    debouncedColorPalette,
-    ditherType,
-    debouncedDitherStrength,
+    colorPalette,
+    debounce,
+    setDotsImageSrc,
   ]);
-
-  // 元の画像からピクセルアートを生成
-  const processOriginalImage = () => {
-    if (!window.cv) {
-      console.error("OpenCV is not loaded.");
-      return;
-    }
-    const cv = window.cv;
-
-    if (!smoothImageSrc) return;
-
-    const imgElement = document.createElement("img");
-    imgElement.src = smoothImageSrc;
-
-    imgElement.onload = async () => {
-      const src = cv.imread(imgElement);
-      let width = src.cols;
-      let height = src.rows;
-
-      let newWidth, newHeight;
-      if (width > height) {
-        newWidth = pixelLength;
-        newHeight = Math.round((height / width) * pixelLength);
-      } else {
-        newHeight = pixelLength;
-        newWidth = Math.round((width / height) * pixelLength);
-      }
-
-      const dst = new cv.Mat();
-      const size = new cv.Size(newWidth, newHeight);
-      cv.resize(src, dst, size, 0, 0, cv.INTER_NEAREST);
-
-      const canvas = document.createElement("canvas");
-      canvas.width = newWidth;
-      canvas.height = newHeight;
-      canvasRef.current = canvas;
-      const ctx = canvas.getContext("2d");
-
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-      cv.imshow(canvas, dst);
-
-      // 元のピクセルデータを保存
-      if (ctx) {
-        originalPixelsRef.current = ctx.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-        // 色置換処理を適用
-        if (colorReduction && colorPalette.length > 0) {
-          applyColorPalette();
-        } else {
-          setDotsImageSrc(canvas.toDataURL());
-        }
-      }
-
-      src.delete();
-      dst.delete();
-    };
-  };
 
   // RGBの距離を計算
   const colorDistance = (
@@ -427,79 +456,150 @@ const PixelArtProcessor: React.FC<Props> = ({
     return imageData;
   };
 
-  // 色置換処理のみを適用
-  const applyColorPalette = () => {
-    if (
-      !canvasRef.current ||
-      !originalPixelsRef.current ||
-      colorPalette.length === 0
-    )
+  // 色置換処理のみを適用（デバウンス処理付き）
+  const applyColorPalette = useCallback(() => {
+    // 既に処理中の場合は、処理待ちに追加
+    if (isProcessingRef.current) {
+      pendingProcessRef.current = { type: "palette", params: null };
       return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // 元のピクセルデータをコピー
-    const imageData = new ImageData(
-      new Uint8ClampedArray(originalPixelsRef.current.data),
-      originalPixelsRef.current.width,
-      originalPixelsRef.current.height
-    );
-
-    const paletteRGB = colorPalette.map(parseRgb);
-
-    // 各ディザリングアルゴリズムに応じた処理
-    if (colorReduction) {
-      try {
-        let processedImageData;
-
-        // 強度パラメータを各ディザリング関数に渡す
-        switch (ditherType) {
-          case "floydsteinberg":
-            processedImageData = applyFloydSteinbergDithering(
-              imageData,
-              paletteRGB,
-              ditherStrength
-            );
-            break;
-          case "atkinson":
-            processedImageData = applyAtkinsonDithering(
-              imageData,
-              paletteRGB,
-              ditherStrength
-            );
-            break;
-          case "ordered":
-            processedImageData = applyOrderedDithering(
-              imageData,
-              paletteRGB,
-              ditherStrength
-            );
-            break;
-          case "none":
-          default:
-            // ディザリングなしの通常の色変換
-            processedImageData = applySimpleColorReduction(
-              imageData,
-              paletteRGB
-            );
-            break;
-        }
-
-        ctx.putImageData(processedImageData, 0, 0);
-      } catch (error) {
-        console.error("Dithering failed:", error);
-        // エラー時は通常の色変換を適用
-        applySimpleColorReduction(imageData, paletteRGB);
-        ctx.putImageData(imageData, 0, 0);
-      }
-    } else {
-      ctx.putImageData(imageData, 0, 0);
     }
 
-    setDotsImageSrc(canvas.toDataURL());
-  };
+    // デバウンス処理
+    debounce(() => {
+      if (
+        !canvasRef.current ||
+        !originalPixelsRef.current ||
+        colorPalette.length === 0
+      ) {
+        isProcessingRef.current = false;
+        return;
+      }
+
+      isProcessingRef.current = true;
+
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        isProcessingRef.current = false;
+        return;
+      }
+
+      // 元のピクセルデータをコピー
+      const imageData = new ImageData(
+        new Uint8ClampedArray(originalPixelsRef.current.data),
+        originalPixelsRef.current.width,
+        originalPixelsRef.current.height
+      );
+
+      const paletteRGB = colorPalette.map(parseRgb);
+
+      // 各ディザリングアルゴリズムに応じた処理
+      if (colorReduction) {
+        try {
+          let processedImageData;
+
+          // 強度パラメータを各ディザリング関数に渡す
+          switch (ditherType) {
+            case "floydsteinberg":
+              processedImageData = applyFloydSteinbergDithering(
+                imageData,
+                paletteRGB,
+                ditherStrength
+              );
+              break;
+            case "atkinson":
+              processedImageData = applyAtkinsonDithering(
+                imageData,
+                paletteRGB,
+                ditherStrength
+              );
+              break;
+            case "ordered":
+              processedImageData = applyOrderedDithering(
+                imageData,
+                paletteRGB,
+                ditherStrength
+              );
+              break;
+            case "none":
+            default:
+              // ディザリングなしの通常の色変換
+              processedImageData = applySimpleColorReduction(
+                imageData,
+                paletteRGB
+              );
+              break;
+          }
+
+          ctx.putImageData(processedImageData, 0, 0);
+        } catch (error) {
+          console.error("Dithering failed:", error);
+          // エラー時は通常の色変換を適用
+          applySimpleColorReduction(imageData, paletteRGB);
+          ctx.putImageData(imageData, 0, 0);
+        }
+      } else {
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      setDotsImageSrc(canvas.toDataURL());
+      isProcessingRef.current = false;
+
+      // 処理待ちがあれば実行
+      if (pendingProcessRef.current) {
+        const { type } = pendingProcessRef.current;
+        pendingProcessRef.current = null;
+        if (type === "original") {
+          processOriginalImage();
+        } else if (type === "palette") {
+          applyColorPalette();
+        }
+      }
+    });
+  }, [
+    colorPalette,
+    colorReduction,
+    ditherType,
+    ditherStrength,
+    debounce,
+    setDotsImageSrc,
+    processOriginalImage,
+  ]);
+
+  useEffect(() => {
+    // パレットが変更されたかどうかをチェック
+    const isPaletteChanged =
+      JSON.stringify(prevPaletteRef.current) !== JSON.stringify(colorPalette);
+    const isInitialRender = !dotsImageSrc || !originalPixelsRef.current;
+
+    // 元の画像を処理する必要がある場合
+    if (isInitialRender || !isPaletteChanged) {
+      processOriginalImage();
+    } else {
+      // パレットのみ変更された場合、色置換のみを再適用
+      applyColorPalette();
+    }
+
+    // 現在のパレットを保存
+    prevPaletteRef.current = [...colorPalette];
+
+    // コンポーネントのアンマウント時またはクリーンアップ時にタイマーをクリア
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [
+    smoothImageSrc,
+    dotsImageSrc,
+    pixelLength,
+    colorReduction,
+    colorPalette,
+    ditherType,
+    ditherStrength,
+    processOriginalImage,
+    applyColorPalette,
+  ]);
 
   const imgStyle: React.CSSProperties = {
     width: "100%",
@@ -512,7 +612,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   return (
     <>
       {dotsImageSrc && (
-        <img
+        <Image
+          layout={"fill"}
           src={dotsImageSrc}
           alt="Pixel Art"
           style={imgStyle}

@@ -55,8 +55,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   // キャンバスを参照するためのRef
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   // デバウンス処理変数（カラーパレット）
-  const [debouncedColorPalette] = useDebounce(colorPalette, 10);
-  const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
+  const [debouncedColorPalette] = useDebounce(colorPalette, 5);
+  const [debouncedDitherStrength] = useDebounce(ditherStrength, 10);
 
   useEffect(() => {
     // パレットが変更されたかどうかをチェック

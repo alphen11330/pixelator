@@ -143,7 +143,8 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <img
+              <Image
+                layout={"fill"}
                 src={smoothImageSrc}
                 alt="edited Image"
                 style={imgStyle}

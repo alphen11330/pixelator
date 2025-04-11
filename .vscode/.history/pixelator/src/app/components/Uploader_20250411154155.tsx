@@ -7,7 +7,7 @@ type Props = {
 };
 
 const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
-  const MAX_SIZE = 1024;
+  const MAX_SIZE = 512;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

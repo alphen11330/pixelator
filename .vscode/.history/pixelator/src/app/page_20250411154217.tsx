@@ -25,7 +25,7 @@ export default function Page() {
   const [smoothImageSrc, setSmoothImageSrc] = useState<string | null>(null); // ドット化される前の画像
   const [dotsImageSrc, setDotsImageSrc] = useState<string | null>(null); // ドット化された画像
 
-  const [pixelLength, setPixelLength] = useState(256); // ドット長
+  const [pixelLength, setPixelLength] = useState(128); // ドット長
   const [grayscale, setGrayscale] = useState(false); // グレースケール化の判定
   const [invertColor, setInvertColor] = useState(false); // 色反転の判定
 
@@ -143,7 +143,8 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <img
+              <Image
+                layout={"fill"}
                 src={smoothImageSrc}
                 alt="edited Image"
                 style={imgStyle}
@@ -175,7 +176,7 @@ export default function Page() {
               <InputRange
                 name={"ドット長"}
                 min={8}
-                max={1024}
+                max={512}
                 step={8}
                 value={pixelLength}
                 unit={"px"}
@@ -339,7 +340,7 @@ export default function Page() {
                         <InputRange
                           name={"ディザリング強度"}
                           min={0}
-                          max={1}
+                          max={2}
                           step={0.01}
                           value={ditherStrength}
                           unit={""}

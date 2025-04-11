@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useDebounce } from "use-debounce";
 
@@ -46,7 +46,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   colorPalette,
   ditherType = "ordered",
   // ditherType?: "floydsteinberg" | "atkinson" | "ordered" | "none";
-  ditherStrength, // デフォルト値は1.0（通常の強度）
+
+  ditherStrength = 2, // デフォルト値は1.0（通常の強度）
 }) => {
   // 元の画像ピクセルデータを保持するためのRef
   const originalPixelsRef = useRef<ImageData | null>(null);
@@ -54,33 +55,35 @@ const PixelArtProcessor: React.FC<Props> = ({
   const prevPaletteRef = useRef<string[]>([]);
   // キャンバスを参照するためのRef
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // デバウンス処理変数（カラーパレット）
-  const [debouncedColorPalette] = useDebounce(colorPalette, 10);
-  const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
+  //　デバウンス
+  const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebounce(query, 500); // 500ms 後に値が更新される
 
   useEffect(() => {
-    // パレットが変更されたかどうかをチェック
-    const isPaletteChanged =
-      JSON.stringify(prevPaletteRef.current) !== JSON.stringify(colorPalette);
-    const isInitialRender = !dotsImageSrc || !originalPixelsRef.current;
+    if (debouncedQuery) {
+      // パレットが変更されたかどうかをチェック
+      const isPaletteChanged =
+        JSON.stringify(prevPaletteRef.current) !== JSON.stringify(colorPalette);
+      const isInitialRender = !dotsImageSrc || !originalPixelsRef.current;
 
-    // 元の画像を処理する必要がある場合
-    if (isInitialRender || !isPaletteChanged) {
-      processOriginalImage();
-    } else {
-      // パレットのみ変更された場合、色置換のみを再適用
-      applyColorPalette();
+      // 元の画像を処理する必要がある場合
+      if (isInitialRender || !isPaletteChanged) {
+        processOriginalImage();
+      } else {
+        // パレットのみ変更された場合、色置換のみを再適用
+        applyColorPalette();
+      }
+
+      // 現在のパレットを保存
+      prevPaletteRef.current = [...colorPalette];
     }
-
-    // 現在のパレットを保存
-    prevPaletteRef.current = [...colorPalette];
   }, [
     smoothImageSrc,
     pixelLength,
     colorReduction,
-    debouncedColorPalette,
+    colorPalette,
     ditherType,
-    debouncedDitherStrength,
+    ditherStrength,
   ]);
 
   // 元の画像からピクセルアートを生成
@@ -512,7 +515,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   return (
     <>
       {dotsImageSrc && (
-        <img
+        <Image
+          layout={"fill"}
           src={dotsImageSrc}
           alt="Pixel Art"
           style={imgStyle}

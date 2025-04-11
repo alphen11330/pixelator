@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { useDebounce } from "use-debounce";
 
 type Props = {
   smoothImageSrc: string | null;
@@ -46,7 +45,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   colorPalette,
   ditherType = "ordered",
   // ditherType?: "floydsteinberg" | "atkinson" | "ordered" | "none";
-  ditherStrength, // デフォルト値は1.0（通常の強度）
+
+  ditherStrength = 2, // デフォルト値は1.0（通常の強度）
 }) => {
   // 元の画像ピクセルデータを保持するためのRef
   const originalPixelsRef = useRef<ImageData | null>(null);
@@ -54,9 +54,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   const prevPaletteRef = useRef<string[]>([]);
   // キャンバスを参照するためのRef
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // デバウンス処理変数（カラーパレット）
-  const [debouncedColorPalette] = useDebounce(colorPalette, 10);
-  const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
 
   useEffect(() => {
     // パレットが変更されたかどうかをチェック
@@ -78,9 +75,9 @@ const PixelArtProcessor: React.FC<Props> = ({
     smoothImageSrc,
     pixelLength,
     colorReduction,
-    debouncedColorPalette,
+    colorPalette,
     ditherType,
-    debouncedDitherStrength,
+    ditherStrength,
   ]);
 
   // 元の画像からピクセルアートを生成
@@ -512,7 +509,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   return (
     <>
       {dotsImageSrc && (
-        <img
+        <Image
+          layout={"fill"}
           src={dotsImageSrc}
           alt="Pixel Art"
           style={imgStyle}

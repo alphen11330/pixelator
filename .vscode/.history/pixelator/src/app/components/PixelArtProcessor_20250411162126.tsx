@@ -56,7 +56,8 @@ const PixelArtProcessor: React.FC<Props> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   // デバウンス処理変数（カラーパレット）
   const [debouncedColorPalette] = useDebounce(colorPalette, 10);
-  const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
+  const [debouncedDitherStrength] = useDebounce(ditherStrength, 10);
+  const [debouncedDotsImageSrc] = useDebounce(dotsImageSrc, 10);
 
   useEffect(() => {
     // パレットが変更されたかどうかをチェック
@@ -512,8 +513,9 @@ const PixelArtProcessor: React.FC<Props> = ({
   return (
     <>
       {dotsImageSrc && (
-        <img
-          src={dotsImageSrc}
+        <Image
+          layout={"fill"}
+          src={debouncedDotsImageSrc}
           alt="Pixel Art"
           style={imgStyle}
           onContextMenu={(e) => e.preventDefault()}

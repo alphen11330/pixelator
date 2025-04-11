@@ -143,7 +143,8 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <img
+              <Image
+                layout={"fill"}
                 src={smoothImageSrc}
                 alt="edited Image"
                 style={imgStyle}
@@ -175,7 +176,7 @@ export default function Page() {
               <InputRange
                 name={"ドット長"}
                 min={8}
-                max={1024}
+                max={512}
                 step={8}
                 value={pixelLength}
                 unit={"px"}
@@ -339,7 +340,7 @@ export default function Page() {
                         <InputRange
                           name={"ディザリング強度"}
                           min={0}
-                          max={1}
+                          max={2}
                           step={0.01}
                           value={ditherStrength}
                           unit={""}

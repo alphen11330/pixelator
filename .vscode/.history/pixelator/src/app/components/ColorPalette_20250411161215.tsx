@@ -178,7 +178,7 @@ const ColorPalette: React.FC<Props> = ({
   // リフレッシュ、減色数を変更したときに編集画像からパレットを作成
   useEffect(() => {
     fetchPalette(smoothImageSrc);
-  }, [imageSrc, refreshColorPalette]);
+  }, [fetchPalette, smoothImageSrc, imageSrc, refreshColorPalette]);
 
   // パレット用画像からパレットを作成
   useEffect(() => {
@@ -186,7 +186,7 @@ const ColorPalette: React.FC<Props> = ({
       fetchPalette(imageForPalette);
       setImageForPalette(null);
     }
-  }, [imageForPalette]);
+  }, [imageForPalette, fetchPalette]);
 
   // 個別の色更新を最適化
   const handleColorChange = useCallback(
