@@ -9,7 +9,6 @@ type Props = {
   pixelLength: number;
   colorReduction: boolean;
   colorPalette: string[];
-  colorLevels: number;
   ditherType?: "ordered" | "atkinson" | "floydsteinberg" | "none";
   ditherStrength?: number; // 0.0～2.0の範囲で強度を指定 (デフォルト: 1.0)
 };
@@ -44,7 +43,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   pixelLength,
   colorReduction,
   colorPalette,
-  colorLevels,
   ditherType = "ordered",
   // ditherType?: "floydsteinberg" | "atkinson" | "ordered" | "none";
   ditherStrength, // デフォルト値は1.0（通常の強度）
@@ -58,12 +56,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   // デバウンス処理変数（カラーパレット）
   const [debouncedColorPalette] = useDebounce(colorPalette, 10);
   const [debouncedDitherStrength] = useDebounce(ditherStrength, 5);
-  const [debouncedpixelLength] = useDebounce(pixelLength, 1);
-
-  useEffect(() => {
-    if (colorLevels <= 4) {
-    }
-  }, [colorLevels]);
 
   useEffect(() => {
     // パレットが変更されたかどうかをチェック
@@ -83,7 +75,7 @@ const PixelArtProcessor: React.FC<Props> = ({
     prevPaletteRef.current = [...colorPalette];
   }, [
     smoothImageSrc,
-    debouncedpixelLength,
+    pixelLength,
     colorReduction,
     debouncedColorPalette,
     ditherType,

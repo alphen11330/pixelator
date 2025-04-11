@@ -61,11 +61,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   const [debouncedpixelLength] = useDebounce(pixelLength, 1);
 
   useEffect(() => {
-    if (colorLevels <= 4) {
-    }
-  }, [colorLevels]);
-
-  useEffect(() => {
     // パレットが変更されたかどうかをチェック
     const isPaletteChanged =
       JSON.stringify(prevPaletteRef.current) !== JSON.stringify(colorPalette);

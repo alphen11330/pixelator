@@ -61,8 +61,9 @@ const PixelArtProcessor: React.FC<Props> = ({
   const [debouncedpixelLength] = useDebounce(pixelLength, 1);
 
   useEffect(() => {
-    if (colorLevels <= 4) {
-    }
+if(colorLevels<=4)
+
+
   }, [colorLevels]);
 
   useEffect(() => {
