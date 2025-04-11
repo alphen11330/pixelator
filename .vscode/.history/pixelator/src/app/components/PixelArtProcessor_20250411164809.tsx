@@ -503,12 +503,7 @@ const PixelArtProcessor: React.FC<Props> = ({
       ctx.putImageData(imageData, 0, 0);
     }
 
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        setDotsImageSrc(url);
-      }
-    }, "image/png");
+    setDotsImageSrc(canvas.toDataURL());
   };
 
   const imgStyle: React.CSSProperties = {

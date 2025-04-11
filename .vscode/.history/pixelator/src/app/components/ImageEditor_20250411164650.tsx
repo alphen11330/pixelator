@@ -131,6 +131,9 @@ const ImageEditor: React.FC<Props> = ({
         if (blob) {
           const url = URL.createObjectURL(blob);
           setSmoothImageSrc(url);
+
+          // 前のURLを revoke しておく（古いURLを残さない）
+          // URL.revokeObjectURL(prevUrl); などを useRef 等で保持して管理
         }
       }, "image/png");
 

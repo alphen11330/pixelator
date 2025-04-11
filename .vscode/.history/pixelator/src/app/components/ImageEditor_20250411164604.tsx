@@ -127,12 +127,7 @@ const ImageEditor: React.FC<Props> = ({
       cv.imshow(canvas, dst);
 
       // 変換後の画像をセット
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          setSmoothImageSrc(url);
-        }
-      }, "image/png");
+      setSmoothImageSrc(canvas.toDataURL());
 
       // メモリ解放
       src.delete();
