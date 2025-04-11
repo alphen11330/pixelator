@@ -122,7 +122,7 @@ export default function Page() {
             alignItems: "center",
           }}
         >
-          {/* 画像ディスプレイ  */}
+          {/* 上画面  */}
           <div style={dotsBox}>
             <span
               onClick={() => setDisplay(!display)} // クリックで display 変更
@@ -153,24 +153,20 @@ export default function Page() {
             )}
           </div>
         </div>
-        {/* パネル操作画面 */}
         <div style={gridBox}>
           <div>
-            <Uploader // 画像をアップロード
+            <Uploader
               setImageSrc={setImageSrc}
               setSmoothImageSrc={setSmoothImageSrc}
             />
             {imageSrc && (
               <>
-                <Downloader // ドット画像をダウンロード
-                  dotsImageSrc={dotsImageSrc}
-                  isRecommendedSize={isRecommendedSize}
-                />
+                <Downloader dotsImageSrc={dotsImageSrc} />
                 <span style={{ marginLeft: "-2rem" }}>
                   <CheckBox
                     name={"推奨サイズで保存"}
-                    value={isRecommendedSize}
-                    setValue={setIsRecommendedSize}
+                    value={grayscale}
+                    setValue={setGrayscale}
                   />
                 </span>
               </>

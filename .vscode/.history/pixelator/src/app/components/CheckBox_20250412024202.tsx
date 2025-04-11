@@ -9,9 +9,9 @@ const CheckBox: React.FC<Props> = ({ value, setValue, name }) => {
     width: "20px",
     height: "20px",
     color: "rgb(255,255,255)",
-    backgroundColor: value ? "rgb(89, 134, 240)" : "white",
+    backgroundColor: value ? "rgb(101, 195, 246);" : "white",
     border: value
-      ? "2px solid rgb(89, 80, 198)"
+      ? "2px solid rgb(92, 78, 244)"
       : "2px solid rgb(138, 138, 138)",
 
     borderRadius: "4px",
@@ -54,7 +54,7 @@ const CheckBox: React.FC<Props> = ({ value, setValue, name }) => {
         }}
       />
       <span style={checkBoxStyle} onClick={() => setValue(!value)}>
-        {value ? <span>✓</span> : <span>　</span>}
+        {value ? <>✓</> : <>　</>}
       </span>
       <span style={labelBoxStyle}>
         <span style={labelStyle} onClick={() => setValue(!value)}>

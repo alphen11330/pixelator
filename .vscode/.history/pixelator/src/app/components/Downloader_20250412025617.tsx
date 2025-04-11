@@ -1,11 +1,14 @@
 import React from "react";
 
-type Props = {
+interface DownloaderProps {
   dotsImageSrc: string | null;
   isRecommendedSize: boolean;
-};
+}
 
-const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
+const Downloader: React.FC<DownloaderProps> = ({
+  dotsImageSrc,
+  isRecommendedSize,
+}) => {
   const handleDownload = () => {
     if (!dotsImageSrc) {
       alert("画像が指定されていません");

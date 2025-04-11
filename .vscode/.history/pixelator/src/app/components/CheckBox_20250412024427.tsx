@@ -54,7 +54,11 @@ const CheckBox: React.FC<Props> = ({ value, setValue, name }) => {
         }}
       />
       <span style={checkBoxStyle} onClick={() => setValue(!value)}>
-        {value ? <span>✓</span> : <span>　</span>}
+        {value ? (
+          <span style={{ color: "rgb(206, 241, 0)" }}>✓</span>
+        ) : (
+          <span>　</span>
+        )}
       </span>
       <span style={labelBoxStyle}>
         <span style={labelStyle} onClick={() => setValue(!value)}>

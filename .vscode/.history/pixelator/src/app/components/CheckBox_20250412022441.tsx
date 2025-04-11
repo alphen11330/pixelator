@@ -6,41 +6,21 @@ type Props = {
 
 const CheckBox: React.FC<Props> = ({ value, setValue, name }) => {
   const checkBoxStyle: React.CSSProperties = {
+    display: "inline-flex",
     width: "20px",
     height: "20px",
     color: "rgb(255,255,255)",
-    backgroundColor: value ? "rgb(89, 134, 240)" : "white",
     border: value
-      ? "2px solid rgb(89, 80, 198)"
+      ? "2px solid rgb(92, 78, 244)"
       : "2px solid rgb(138, 138, 138)",
-
     borderRadius: "4px",
     marginRight: "8px",
     marginLeft: "3rem",
     marginBlock: "1rem",
-
-    display: "inline-flex",
-    justifyContent: "center",
-    alignItems: "center",
-
+    backgroundColor: value ? "rgb(92, 78, 244)" : "white",
     transition: "all 0.25s ease",
     userSelect: "none",
     cursor: "pointer", // ユーザーにクリック可能と示す
-  };
-
-  const labelBoxStyle: React.CSSProperties = {
-    height: "20px",
-    marginBlock: "1rem",
-    display: "inline-flex",
-    justifyContent: "center",
-    alignItems: "center",
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontSize: "16px",
-    fontWeight: "bold",
-    userSelect: "none",
-    cursor: "pointer",
   };
 
   return (
@@ -53,13 +33,19 @@ const CheckBox: React.FC<Props> = ({ value, setValue, name }) => {
           setValue(e.target.checked);
         }}
       />
-      <span style={checkBoxStyle} onClick={() => setValue(!value)}>
-        {value ? <span>✓</span> : <span>　</span>}
-      </span>
-      <span style={labelBoxStyle}>
-        <span style={labelStyle} onClick={() => setValue(!value)}>
-          {name}
-        </span>
+      <div style={checkBoxStyle} onClick={() => setValue(!value)}>
+        {value ? <>✓</> : <>　</>}
+      </div>
+      <span
+        style={{
+          fontSize: "16px",
+          fontWeight: "bold",
+          userSelect: "none",
+          cursor: "pointer",
+        }}
+        onClick={() => setValue(!value)}
+      >
+        {name}
       </span>
     </>
   );

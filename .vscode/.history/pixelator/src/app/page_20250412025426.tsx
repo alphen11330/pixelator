@@ -162,7 +162,7 @@ export default function Page() {
             />
             {imageSrc && (
               <>
-                <Downloader // ドット画像をダウンロード
+                <Downloader
                   dotsImageSrc={dotsImageSrc}
                   isRecommendedSize={isRecommendedSize}
                 />

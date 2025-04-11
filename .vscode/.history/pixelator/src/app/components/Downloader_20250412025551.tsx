@@ -1,11 +1,11 @@
 import React from "react";
 
-type Props = {
+interface DownloaderProps {
   dotsImageSrc: string | null;
   isRecommendedSize: boolean;
-};
+}
 
-const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
+const Downloader: React.FC<DownloaderProps> = ({ dotsImageSrc }) => {
   const handleDownload = () => {
     if (!dotsImageSrc) {
       alert("画像が指定されていません");
@@ -18,25 +18,24 @@ const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
     img.onload = () => {
       let width = img.width;
       let height = img.height;
+      const minSize = 960;
 
-      if (isRecommendedSize) {
-        const minSize = 960;
-        if (width <= minSize && height <= minSize) {
-          const scale = Math.max(minSize / width, minSize / height);
-          width = Math.round(width * scale);
+      if (width <= minSize && height <= minSize) {
+        const scale = Math.max(minSize / width, minSize / height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      } else if (width > minSize || height > minSize) {
+        if (width > height) {
+          const scale = minSize / width;
+          width = minSize;
           height = Math.round(height * scale);
-        } else if (width > minSize || height > minSize) {
-          if (width > height) {
-            const scale = minSize / width;
-            width = minSize;
-            height = Math.round(height * scale);
-          } else {
-            const scale = minSize / height;
-            height = minSize;
-            width = Math.round(width * scale);
-          }
+        } else {
+          const scale = minSize / height;
+          height = minSize;
+          width = Math.round(width * scale);
         }
       }
+
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;

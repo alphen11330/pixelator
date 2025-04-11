@@ -156,16 +156,13 @@ export default function Page() {
         {/* パネル操作画面 */}
         <div style={gridBox}>
           <div>
-            <Uploader // 画像をアップロード
+            <Uploader
               setImageSrc={setImageSrc}
               setSmoothImageSrc={setSmoothImageSrc}
             />
             {imageSrc && (
               <>
-                <Downloader // ドット画像をダウンロード
-                  dotsImageSrc={dotsImageSrc}
-                  isRecommendedSize={isRecommendedSize}
-                />
+                <Downloader dotsImageSrc={dotsImageSrc} />
                 <span style={{ marginLeft: "-2rem" }}>
                   <CheckBox
                     name={"推奨サイズで保存"}

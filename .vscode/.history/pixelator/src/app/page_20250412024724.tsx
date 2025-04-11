@@ -24,8 +24,6 @@ export default function Page() {
   const [smoothImageSrc, setSmoothImageSrc] = useState<string | null>(null); // ドット化される前の画像
   const [dotsImageSrc, setDotsImageSrc] = useState<string | null>(null); // ドット化された画像
 
-  const [isRecommendedSize, setIsRecommendedSize] = useState(true);
-
   const [pixelLength, setPixelLength] = useState(256); // ドット長
   const [grayscale, setGrayscale] = useState(false); // グレースケール化の判定
   const [invertColor, setInvertColor] = useState(false); // 色反転の判定
@@ -122,7 +120,6 @@ export default function Page() {
             alignItems: "center",
           }}
         >
-          {/* 画像ディスプレイ  */}
           <div style={dotsBox}>
             <span
               onClick={() => setDisplay(!display)} // クリックで display 変更
@@ -153,26 +150,15 @@ export default function Page() {
             )}
           </div>
         </div>
-        {/* パネル操作画面 */}
         <div style={gridBox}>
           <div>
-            <Uploader // 画像をアップロード
+            <Uploader
               setImageSrc={setImageSrc}
               setSmoothImageSrc={setSmoothImageSrc}
             />
             {imageSrc && (
               <>
-                <Downloader // ドット画像をダウンロード
-                  dotsImageSrc={dotsImageSrc}
-                  isRecommendedSize={isRecommendedSize}
-                />
-                <span style={{ marginLeft: "-2rem" }}>
-                  <CheckBox
-                    name={"推奨サイズで保存"}
-                    value={isRecommendedSize}
-                    setValue={setIsRecommendedSize}
-                  />
-                </span>
+                <Downloader dotsImageSrc={dotsImageSrc} />
               </>
             )}
           </div>
