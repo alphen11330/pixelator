@@ -110,6 +110,7 @@ export default function Page() {
     objectFit: "contain",
     userSelect: "none",
     pointerEvents: "none",
+    zIndex: display ? "-1" : "1",
     opacity: display ? "0" : "1",
   };
 
@@ -132,21 +133,18 @@ export default function Page() {
               {display && <span className={style.dotToImg} />}
               {!display && <span className={style.imgToDot} />}
             </span>
-
             {smoothImageSrc && (
-              <span style={{ opacity: display ? "1" : "0" }}>
-                <PixelArtProcessor //スムーズ画像をドット絵に変換
-                  smoothImageSrc={smoothImageSrc}
-                  dotsImageSrc={dotsImageSrc}
-                  setDotsImageSrc={setDotsImageSrc}
-                  pixelLength={pixelLength}
-                  colorReduction={colorReduction}
-                  colorPalette={colorPalette}
-                  colorLevels={colorLevels}
-                  ditherType={ditherType}
-                  ditherStrength={ditherStrength}
-                />
-              </span>
+              <PixelArtProcessor //スムーズ画像をドット絵に変換
+                smoothImageSrc={smoothImageSrc}
+                dotsImageSrc={dotsImageSrc}
+                setDotsImageSrc={setDotsImageSrc}
+                pixelLength={pixelLength}
+                colorReduction={colorReduction}
+                colorPalette={colorPalette}
+                colorLevels={colorLevels}
+                ditherType={ditherType}
+                ditherStrength={ditherStrength}
+              />
             )}
             {smoothImageSrc && (
               <>

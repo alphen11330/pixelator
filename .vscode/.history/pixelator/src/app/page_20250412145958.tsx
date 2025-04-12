@@ -127,6 +127,7 @@ export default function Page() {
           {/* 画像ディスプレイ  */}
           <div style={dotsBox}>
             <span
+              style={{ opacity: display ? "1" : "0" }}
               onClick={() => setDisplay(!display)} // クリックで display 変更
             >
               {display && <span className={style.dotToImg} />}
@@ -134,7 +135,7 @@ export default function Page() {
             </span>
 
             {smoothImageSrc && (
-              <span style={{ opacity: display ? "1" : "0" }}>
+              <span>
                 <PixelArtProcessor //スムーズ画像をドット絵に変換
                   smoothImageSrc={smoothImageSrc}
                   dotsImageSrc={dotsImageSrc}
