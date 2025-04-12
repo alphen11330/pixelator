@@ -144,7 +144,7 @@ export default function Page() {
                 ditherStrength={ditherStrength}
               />
             )}
-            {smoothImageSrc && !display && (
+            {smoothImageSrc && (
               <>
                 <img
                   src={smoothImageSrc}
@@ -152,6 +152,12 @@ export default function Page() {
                   style={imgStyle}
                   onContextMenu={(e) => e.preventDefault()}
                 />{" "}
+                <img
+                  src={smoothImageSrc}
+                  alt="edited Image"
+                  style={imgStyle}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
               </>
             )}
           </div>

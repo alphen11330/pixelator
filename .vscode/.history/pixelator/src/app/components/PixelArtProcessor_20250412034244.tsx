@@ -76,9 +76,6 @@ const PixelArtProcessor: React.FC<Props> = ({
     initDebouncedpixelLength
   );
 
-  // 前のURLを記録
-  const previousUrlRef = useRef<string | null>(null);
-
   useEffect(() => {
     // 配色数とドット長でデバウンス値をセット
     if (colorLevels <= 5 || pixelLength <= 512) {
@@ -175,13 +172,10 @@ const PixelArtProcessor: React.FC<Props> = ({
           applyColorPalette();
         } else {
           canvas.toBlob((blob) => {
-            if (previousUrlRef.current) {
-              URL.revokeObjectURL(previousUrlRef.current);
-            }
             if (blob) {
               const url = URL.createObjectURL(blob);
-              previousUrlRef.current = url;
               setDotsImageSrc(url);
+              URL.revokeObjectURL(url);
             }
           }, "image/png");
         }
@@ -363,6 +357,7 @@ const PixelArtProcessor: React.FC<Props> = ({
         data[i + 2] = newB;
 
         // 量子化誤差を計算（アトキンソン・ディザリングでは誤差の1/8を分散）
+        // 強度パラメータを適用
         const errR = ((oldR - newR) / 8) * strength;
         const errG = ((oldG - newG) / 8) * strength;
         const errB = ((oldB - newB) / 8) * strength;
@@ -390,50 +385,53 @@ const PixelArtProcessor: React.FC<Props> = ({
     return imageData;
   };
 
-  // 値を指定範囲に収めるための補助関数（オーバーフロー/アンダーフロー対策）
-  const clamp = (val: number, min: number, max: number) =>
-    Math.max(min, Math.min(max, val));
   // 8x8の行列を使った組織的ディザリング
   const applyOrderedDithering = (
     imageData: ImageData,
     paletteRGB: [number, number, number][],
     strength: number = 1.0,
+    // ベイヤー行列 8x8
     bayerMatrix: number[][]
   ) => {
     const { width, height } = imageData;
-    const data = imageData.data; // RGBAの配列（1ピクセル = 4バイト）
+    const data = imageData.data;
 
-    // ベイヤー行列の値を -32〜+32 にスケーリングして、しきい値用テーブルを作成
-    const scaledBayer = bayerMatrix.map((row) => row.map((v) => (v - 32) * 2));
-
-    // すべてのピクセルに対してディザリング処理を実行
+    // 組織的ディザリング処理
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const i = (y * width + x) * 4; // 現在のピクセルのRGBAインデックス
+        const i = (y * width + x) * 4;
 
-        // 透明度が低いピクセルはスキップ（背景など）
-        if (data[i + 3] < 10) continue;
+        if (data[i + 3] < 10) continue; // 透明部分はスキップ
 
-        // 位置に応じたベイヤーしきい値を取得し、強度パラメータを適用
-        const threshold = scaledBayer[y % 8][x % 8] * strength;
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
 
-        // RGBそれぞれにしきい値を加算し、色を微調整
-        const r = clamp(data[i] + threshold, 0, 255);
-        const g = clamp(data[i + 1] + threshold, 0, 255);
-        const b = clamp(data[i + 2] + threshold, 0, 255);
+        // ベイヤー行列の値を取得（0-63を-32から+32の範囲にマッピング）
+        // 強度パラメータを適用
+        const threshold = (bayerMatrix[y % 8][x % 8] - 32) * 2 * strength;
 
-        // 最も近いパレットの色を取得
-        const [newR, newG, newB] = findNearestColor(r, g, b, paletteRGB);
+        // しきい値を適用した色調整
+        const adjustedR = Math.max(0, Math.min(255, r + threshold));
+        const adjustedG = Math.max(0, Math.min(255, g + threshold));
+        const adjustedB = Math.max(0, Math.min(255, b + threshold));
 
-        // ピクセルの色をパレットの色に置き換え
+        // 最も近い色を見つける
+        const [newR, newG, newB] = findNearestColor(
+          adjustedR,
+          adjustedG,
+          adjustedB,
+          paletteRGB
+        );
+
+        // 新しい色をセット
         data[i] = newR;
         data[i + 1] = newG;
         data[i + 2] = newB;
-        // data[i + 3]（アルファ値）はそのまま
       }
     }
 
-    return imageData; // 加工済みのImageDataを返す
+    return imageData;
   };
 
   // シンプルな色変換（ディザリングなし）
@@ -552,6 +550,15 @@ const PixelArtProcessor: React.FC<Props> = ({
             );
             break;
 
+          case "bayerMatrixMeshShadow":
+            processedImageData = applyOrderedDithering(
+              imageData,
+              paletteRGB,
+              ditherStrength,
+              bayerMatrixMeshShadow
+            );
+            break;
+
           case "bayerMatrixMeshLight":
             processedImageData = applyOrderedDithering(
               imageData,
@@ -561,12 +568,12 @@ const PixelArtProcessor: React.FC<Props> = ({
             );
             break;
 
-          case "bayerMatrixMeshDark":
+          case "bayerMatrixPolkadotShadow":
             processedImageData = applyOrderedDithering(
               imageData,
               paletteRGB,
               ditherStrength,
-              bayerMatrixMeshDark
+              bayerMatrixPolkadotShadow
             );
             break;
 
@@ -576,15 +583,6 @@ const PixelArtProcessor: React.FC<Props> = ({
               paletteRGB,
               ditherStrength,
               bayerMatrixPolkadotLight
-            );
-            break;
-
-          case "bayerMatrixPolkadotDark":
-            processedImageData = applyOrderedDithering(
-              imageData,
-              paletteRGB,
-              ditherStrength,
-              bayerMatrixPolkadotDark
             );
             break;
 
@@ -617,19 +615,14 @@ const PixelArtProcessor: React.FC<Props> = ({
     }
 
     canvas.toBlob((blob) => {
-      if (previousUrlRef.current) {
-        URL.revokeObjectURL(previousUrlRef.current);
-      }
       if (blob) {
         const url = URL.createObjectURL(blob);
-        previousUrlRef.current = url;
         setDotsImageSrc(url);
       }
     }, "image/png");
   };
 
   const imgStyle: React.CSSProperties = {
-    position: "absolute",
     width: "100%",
     height: "100%",
     objectFit: "contain",
@@ -735,8 +728,8 @@ const bayerMatrixDiagonal = [
   [32, 63, 32, 0, 32, 63, 32, 0],
 ];
 
-const bayerMatrixMeshLight = [
-  // メッシュ（明）
+const bayerMatrixMeshShadow = [
+  // メッシュ（光）
   [0, 64, 64, 64, 64, 64, 64, 0],
   [64, 0, 64, 64, 64, 64, 0, 64],
   [64, 64, 0, 64, 64, 0, 64, 64],
@@ -747,8 +740,8 @@ const bayerMatrixMeshLight = [
   [0, 64, 64, 64, 64, 64, 64, 0],
 ];
 
-const bayerMatrixMeshDark = [
-  // メッシュ（暗）
+const bayerMatrixMeshLight = [
+  // メッシュ（光）
   [64, 0, 0, 0, 0, 0, 0, 64],
   [0, 64, 0, 0, 0, 0, 64, 0],
   [0, 0, 64, 0, 0, 64, 0, 0],
@@ -757,30 +750,30 @@ const bayerMatrixMeshDark = [
   [0, 0, 64, 0, 0, 64, 0, 0],
   [0, 64, 0, 0, 0, 0, 64, 0],
   [64, 0, 0, 0, 0, 0, 0, 64],
+];
+
+const bayerMatrixPolkadotShadow = [
+  // 水玉（影）
+  [0, 16, 56, 64, 64, 56, 16, 0],
+  [16, 48, 56, 56, 56, 56, 48, 16],
+  [56, 56, 48, 16, 16, 48, 56, 56],
+  [64, 56, 16, 0, 0, 16, 56, 64],
+  [64, 56, 16, 0, 0, 16, 56, 64],
+  [56, 56, 48, 16, 16, 48, 56, 56],
+  [16, 48, 56, 56, 56, 56, 48, 16],
+  [0, 16, 56, 64, 64, 56, 16, 0],
 ];
 
 const bayerMatrixPolkadotLight = [
-  // ハーフトーン（明）
-  [0, 0, 63, 63, 63, 63, 0, 0],
-  [0, 63, 63, 63, 63, 63, 63, 0],
-  [63, 63, 63, 0, 0, 63, 63, 63],
-  [63, 63, 0, 0, 0, 0, 63, 63],
-  [63, 63, 0, 0, 0, 0, 63, 63],
-  [63, 63, 63, 0, 0, 63, 63, 63],
-  [0, 63, 63, 63, 63, 63, 63, 0],
-  [0, 0, 63, 63, 63, 63, 0, 0],
-];
-
-const bayerMatrixPolkadotDark = [
-  // ハーフトーン（明）
-  [63, 63, 0, 0, 0, 0, 63, 63],
-  [63, 0, 0, 0, 0, 0, 0, 63],
-  [0, 0, 0, 63, 63, 0, 0, 0],
-  [0, 0, 63, 63, 63, 63, 0, 0],
-  [0, 0, 63, 63, 63, 63, 0, 0],
-  [0, 0, 0, 63, 63, 0, 0, 0],
-  [63, 0, 0, 0, 0, 0, 0, 63],
-  [63, 63, 0, 0, 0, 0, 63, 63],
+  // 水玉（光）
+  [63, 48, 8, 8, 8, 8, 48, 63],
+  [48, 16, 8, 8, 8, 8, 16, 48],
+  [8, 8, 16, 48, 48, 16, 8, 8],
+  [8, 8, 48, 63, 63, 48, 8, 8],
+  [8, 8, 48, 63, 63, 48, 8, 8],
+  [8, 8, 16, 48, 48, 16, 8, 8],
+  [48, 16, 8, 8, 8, 8, 16, 48],
+  [63, 48, 8, 8, 8, 8, 48, 63],
 ];
 
 const bayerMatrixLeadGlass = [

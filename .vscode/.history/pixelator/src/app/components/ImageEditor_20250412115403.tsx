@@ -54,6 +54,7 @@ const ImageEditor: React.FC<Props> = ({
   blackSize,
 }) => {
   const previousUrlRef = useRef<string | null>(null); // 前のURLを記録
+
   useLayoutEffect(() => {
     if (!window.cv) {
       console.error("OpenCV is not loaded.");
@@ -61,35 +62,28 @@ const ImageEditor: React.FC<Props> = ({
     }
     if (!imageSrc) return;
 
-    // 元の画像から処理を開始
     const imgElement = document.createElement("img");
     imgElement.src = imageSrc;
 
     imgElement.onload = () => {
       const cv = window.cv;
-
-      // 元の画像からソースMat作成
       let src = cv.imread(imgElement);
       let dst = new cv.Mat();
 
-      // 処理ステップ1: グレースケール処理
       if (grayscale) {
         dst = grayscaleProcessor(cv, src);
         src.delete();
         src = dst.clone();
       } else {
-        // グレースケールしない場合はソースをそのままコピー
         dst = src.clone();
       }
 
-      // 処理ステップ2: 色反転処理
       if (invertColor) {
         const inverted = invertColorProcessor(cv, dst);
         dst.delete();
         dst = inverted;
       }
 
-      // 処理ステップ3: 色相統一処理とコントラスト・明度調整
       if (colorCollection) {
         const processed = colorCollectionProcessor(
           cv,
@@ -109,37 +103,30 @@ const ImageEditor: React.FC<Props> = ({
         dst = processed;
       }
 
-      // 処理ステップ4: 白黒画素処理による輪郭線処理（更新）
       if (edgeEnhancement) {
-        const enhanced = erodeDilateProcessor(
-          cv,
-          dst,
-          whiteSize, // 変数名変更
-          blackSize // 変数名変更
-        );
+        const enhanced = erodeDilateProcessor(cv, dst, whiteSize, blackSize);
         dst.delete();
         dst = enhanced;
       }
 
-      // キャンバスに描画
       const canvas = document.createElement("canvas");
       canvas.width = imgElement.width;
       canvas.height = imgElement.height;
       cv.imshow(canvas, dst);
 
-      // 変換後の画像をセット
       canvas.toBlob((blob) => {
-        if (previousUrlRef.current) {
-          URL.revokeObjectURL(previousUrlRef.current);
-        }
         if (blob) {
+          // 既存のURLがあれば解放
+          if (previousUrlRef.current) {
+            URL.revokeObjectURL(previousUrlRef.current);
+          }
+
           const url = URL.createObjectURL(blob);
           previousUrlRef.current = url;
           setSmoothImageSrc(url);
         }
       }, "image/png");
 
-      // メモリ解放
       src.delete();
       dst.delete();
     };
@@ -161,6 +148,7 @@ const ImageEditor: React.FC<Props> = ({
     edgeEnhancement,
     whiteSize,
     blackSize,
+    setSmoothImageSrc,
   ]);
 
   return null;

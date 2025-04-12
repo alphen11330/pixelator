@@ -104,7 +104,6 @@ export default function Page() {
   };
 
   const imgStyle: React.CSSProperties = {
-    position: "absolute",
     width: "100%",
     height: "100%",
     objectFit: "contain",
@@ -145,14 +144,12 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <>
-                <img
-                  src={smoothImageSrc}
-                  alt="edited Image"
-                  style={imgStyle}
-                  onContextMenu={(e) => e.preventDefault()}
-                />{" "}
-              </>
+              <img
+                src={smoothImageSrc}
+                alt="edited Image"
+                style={imgStyle}
+                onContextMenu={(e) => e.preventDefault()}
+              />
             )}
           </div>
         </div>
@@ -169,7 +166,7 @@ export default function Page() {
                   dotsImageSrc={dotsImageSrc}
                   isRecommendedSize={isRecommendedSize}
                 />
-                <div>
+                <div style={{ marginLeft: "-2rem" }}>
                   <CheckBox
                     name={"推奨サイズで保存"}
                     value={isRecommendedSize}

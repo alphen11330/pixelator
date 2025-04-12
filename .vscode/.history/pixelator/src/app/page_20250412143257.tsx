@@ -30,7 +30,7 @@ export default function Page() {
   const [grayscale, setGrayscale] = useState(false); // グレースケール化の判定
   const [invertColor, setInvertColor] = useState(false); // 色反転の判定
 
-  const [display, setDisplay] = useState(true); // 表示画像
+  const [display, setDisplay] = useState(1); // 表示画像
 
   //色調補正
   const [colorCollection, setColorCollection] = useState(false); // 色調補正処理の判定
@@ -110,6 +110,7 @@ export default function Page() {
     objectFit: "contain",
     userSelect: "none",
     pointerEvents: "none",
+    opacity: "0.5",
   };
 
   return (
@@ -126,7 +127,7 @@ export default function Page() {
           {/* 画像ディスプレイ  */}
           <div style={dotsBox}>
             <span
-              onClick={() => setDisplay(!display)} // クリックで display 変更
+              onClick={() => setDisplay(display)} // クリックで display 変更
             >
               {display && <span className={style.dotToImg} />}
               {!display && <span className={style.imgToDot} />}

@@ -5,7 +5,7 @@ type Props = {
 
 const DitherTypeDropdown: React.FC<Props> = ({ ditherType, setDitherType }) => {
   const dithers = [
-    { value: "none", label: "ーーーーーー" }, // ディザリングなし
+    { value: "none", label: "　ーーーー　" }, // ディザリングなし
     { value: "bayerMatrixBasic", label: "ベーシック" }, //組織的ディザリング
     { value: "bayerMatrixNoise", label: "ノイズパターン" },
     { value: "bayerMatrixPlaid", label: "チェック" },

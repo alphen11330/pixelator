@@ -390,10 +390,10 @@ const PixelArtProcessor: React.FC<Props> = ({
     return imageData;
   };
 
-  // 値を指定範囲に収めるための補助関数（オーバーフロー/アンダーフロー対策）
   const clamp = (val: number, min: number, max: number) =>
     Math.max(min, Math.min(max, val));
   // 8x8の行列を使った組織的ディザリング
+
   const applyOrderedDithering = (
     imageData: ImageData,
     paletteRGB: [number, number, number][],
@@ -401,39 +401,29 @@ const PixelArtProcessor: React.FC<Props> = ({
     bayerMatrix: number[][]
   ) => {
     const { width, height } = imageData;
-    const data = imageData.data; // RGBAの配列（1ピクセル = 4バイト）
+    const data = imageData.data;
 
-    // ベイヤー行列の値を -32〜+32 にスケーリングして、しきい値用テーブルを作成
     const scaledBayer = bayerMatrix.map((row) => row.map((v) => (v - 32) * 2));
 
-    // すべてのピクセルに対してディザリング処理を実行
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const i = (y * width + x) * 4; // 現在のピクセルのRGBAインデックス
-
-        // 透明度が低いピクセルはスキップ（背景など）
+        const i = (y * width + x) * 4;
         if (data[i + 3] < 10) continue;
 
-        // 位置に応じたベイヤーしきい値を取得し、強度パラメータを適用
         const threshold = scaledBayer[y % 8][x % 8] * strength;
 
-        // RGBそれぞれにしきい値を加算し、色を微調整
         const r = clamp(data[i] + threshold, 0, 255);
         const g = clamp(data[i + 1] + threshold, 0, 255);
         const b = clamp(data[i + 2] + threshold, 0, 255);
 
-        // 最も近いパレットの色を取得
         const [newR, newG, newB] = findNearestColor(r, g, b, paletteRGB);
-
-        // ピクセルの色をパレットの色に置き換え
         data[i] = newR;
         data[i + 1] = newG;
         data[i + 2] = newB;
-        // data[i + 3]（アルファ値）はそのまま
       }
     }
 
-    return imageData; // 加工済みのImageDataを返す
+    return imageData;
   };
 
   // シンプルな色変換（ディザリングなし）
@@ -629,7 +619,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   };
 
   const imgStyle: React.CSSProperties = {
-    position: "absolute",
     width: "100%",
     height: "100%",
     objectFit: "contain",

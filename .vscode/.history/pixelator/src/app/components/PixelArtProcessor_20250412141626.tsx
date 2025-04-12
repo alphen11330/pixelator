@@ -629,7 +629,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   };
 
   const imgStyle: React.CSSProperties = {
-    position: "absolute",
     width: "100%",
     height: "100%",
     objectFit: "contain",

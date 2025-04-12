@@ -55,6 +55,8 @@ const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
 
         canvas.toBlob((blob) => {
           if (blob) {
+            alert("画像の作成に失敗しました");
+
             const url = URL.createObjectURL(blob);
             // ダウンロード
             const link = document.createElement("a");

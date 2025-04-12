@@ -152,6 +152,8 @@ export default function Page() {
                   style={imgStyle}
                   onContextMenu={(e) => e.preventDefault()}
                 />{" "}
+
+                />
               </>
             )}
           </div>

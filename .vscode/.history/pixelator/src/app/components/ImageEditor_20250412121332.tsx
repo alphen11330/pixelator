@@ -131,11 +131,13 @@ const ImageEditor: React.FC<Props> = ({
       canvas.toBlob((blob) => {
         if (previousUrlRef.current) {
           URL.revokeObjectURL(previousUrlRef.current);
+          console.log("SmoothImageSrcを開放");
         }
         if (blob) {
           const url = URL.createObjectURL(blob);
           previousUrlRef.current = url;
           setSmoothImageSrc(url);
+          console.log("SmoothImageSrcをセット");
         }
       }, "image/png");
 

@@ -5,7 +5,7 @@ type Props = {
 
 const DitherTypeDropdown: React.FC<Props> = ({ ditherType, setDitherType }) => {
   const dithers = [
-    { value: "none", label: "ーーーーーー" }, // ディザリングなし
+    { value: "none", label: "　ーーーー　" }, // ディザリングなし
     { value: "bayerMatrixBasic", label: "ベーシック" }, //組織的ディザリング
     { value: "bayerMatrixNoise", label: "ノイズパターン" },
     { value: "bayerMatrixPlaid", label: "チェック" },
@@ -14,10 +14,10 @@ const DitherTypeDropdown: React.FC<Props> = ({ ditherType, setDitherType }) => {
     { value: "bayerMatrixCRT_Vertical", label: "たてじま" },
     { value: "bayerMatrixCRT_Horizontal", label: "よこじま" },
     { value: "bayerMatrixDiagonal", label: "斜めストライプ" },
-    { value: "bayerMatrixMeshLight", label: "メッシュ（明）" },
-    { value: "bayerMatrixMeshDark", label: "メッシュ（暗）" },
-    { value: "bayerMatrixPolkadotLight", label: "ハーフトーン（明）" },
-    { value: "bayerMatrixPolkadotDark", label: "ハーフトーン（暗）" },
+    { value: "bayerMatrixMeshShadow", label: "メッシュ（明）" },
+    { value: "bayerMatrixMeshLight", label: "メッシュ（暗）" },
+    { value: "bayerMatrixPolkadotShadow", label: "ハーフトーン（明）" },
+    { value: "bayerMatrixPolkadotLight", label: "ハーフトーン（暗）" },
   ];
 
   const label: React.CSSProperties = {

@@ -133,6 +133,7 @@ export default function Page() {
             </span>
             {smoothImageSrc && display && (
               <PixelArtProcessor //スムーズ画像をドット絵に変換
+                key="dots"
                 smoothImageSrc={smoothImageSrc}
                 dotsImageSrc={dotsImageSrc}
                 setDotsImageSrc={setDotsImageSrc}
@@ -152,6 +153,12 @@ export default function Page() {
                   style={imgStyle}
                   onContextMenu={(e) => e.preventDefault()}
                 />{" "}
+                <img
+                  src={smoothImageSrc}
+                  alt="edited Image"
+                  style={imgStyle}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
               </>
             )}
           </div>

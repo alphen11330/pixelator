@@ -390,50 +390,53 @@ const PixelArtProcessor: React.FC<Props> = ({
     return imageData;
   };
 
-  // 値を指定範囲に収めるための補助関数（オーバーフロー/アンダーフロー対策）
-  const clamp = (val: number, min: number, max: number) =>
-    Math.max(min, Math.min(max, val));
   // 8x8の行列を使った組織的ディザリング
   const applyOrderedDithering = (
     imageData: ImageData,
     paletteRGB: [number, number, number][],
     strength: number = 1.0,
+    // ベイヤー行列 8x8
     bayerMatrix: number[][]
   ) => {
     const { width, height } = imageData;
-    const data = imageData.data; // RGBAの配列（1ピクセル = 4バイト）
+    const data = imageData.data;
 
-    // ベイヤー行列の値を -32〜+32 にスケーリングして、しきい値用テーブルを作成
-    const scaledBayer = bayerMatrix.map((row) => row.map((v) => (v - 32) * 2));
-
-    // すべてのピクセルに対してディザリング処理を実行
+    // 組織的ディザリング処理
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        const i = (y * width + x) * 4; // 現在のピクセルのRGBAインデックス
+        const i = (y * width + x) * 4;
 
-        // 透明度が低いピクセルはスキップ（背景など）
-        if (data[i + 3] < 10) continue;
+        if (data[i + 3] < 10) continue; // 透明部分はスキップ
 
-        // 位置に応じたベイヤーしきい値を取得し、強度パラメータを適用
-        const threshold = scaledBayer[y % 8][x % 8] * strength;
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
 
-        // RGBそれぞれにしきい値を加算し、色を微調整
-        const r = clamp(data[i] + threshold, 0, 255);
-        const g = clamp(data[i + 1] + threshold, 0, 255);
-        const b = clamp(data[i + 2] + threshold, 0, 255);
+        // ベイヤー行列の値を取得（0-63を-32から+32の範囲にマッピング）
+        // 強度パラメータを適用
+        const threshold = (bayerMatrix[y % 8][x % 8] - 32) * 2 * strength;
 
-        // 最も近いパレットの色を取得
-        const [newR, newG, newB] = findNearestColor(r, g, b, paletteRGB);
+        // しきい値を適用した色調整
+        const adjustedR = Math.max(0, Math.min(255, r + threshold));
+        const adjustedG = Math.max(0, Math.min(255, g + threshold));
+        const adjustedB = Math.max(0, Math.min(255, b + threshold));
 
-        // ピクセルの色をパレットの色に置き換え
+        // 最も近い色を見つける
+        const [newR, newG, newB] = findNearestColor(
+          adjustedR,
+          adjustedG,
+          adjustedB,
+          paletteRGB
+        );
+
+        // 新しい色をセット
         data[i] = newR;
         data[i + 1] = newG;
         data[i + 2] = newB;
-        // data[i + 3]（アルファ値）はそのまま
       }
     }
 
-    return imageData; // 加工済みのImageDataを返す
+    return imageData;
   };
 
   // シンプルな色変換（ディザリングなし）
@@ -629,7 +632,6 @@ const PixelArtProcessor: React.FC<Props> = ({
   };
 
   const imgStyle: React.CSSProperties = {
-    position: "absolute",
     width: "100%",
     height: "100%",
     objectFit: "contain",

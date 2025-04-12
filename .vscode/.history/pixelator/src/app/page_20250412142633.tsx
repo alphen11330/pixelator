@@ -101,6 +101,7 @@ export default function Page() {
     )`,
     backgroundSize: "10% 10%",
     userSelect: "none",
+    zIndex: "1",
   };
 
   const imgStyle: React.CSSProperties = {
@@ -110,6 +111,7 @@ export default function Page() {
     objectFit: "contain",
     userSelect: "none",
     pointerEvents: "none",
+    zIndex: "0",
   };
 
   return (
@@ -145,14 +147,12 @@ export default function Page() {
               />
             )}
             {smoothImageSrc && !display && (
-              <>
-                <img
-                  src={smoothImageSrc}
-                  alt="edited Image"
-                  style={imgStyle}
-                  onContextMenu={(e) => e.preventDefault()}
-                />{" "}
-              </>
+              <img
+                src={smoothImageSrc}
+                alt="edited Image"
+                style={imgStyle}
+                onContextMenu={(e) => e.preventDefault()}
+              />
             )}
           </div>
         </div>

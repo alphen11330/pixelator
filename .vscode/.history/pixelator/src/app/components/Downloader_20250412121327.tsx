@@ -55,18 +55,21 @@ const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
 
         canvas.toBlob((blob) => {
           if (blob) {
-            const url = URL.createObjectURL(blob);
-            // ダウンロード
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = "pixelator.png";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            alert("画像の作成に失敗しました");
 
-            // メモリ解放
-            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            const url = URL.createObjectURL(blob);
           }
+
+          // ダウンロード
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "pixelator.png";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // メモリ解放
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
         }, "image/png");
       }
     };

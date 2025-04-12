@@ -110,6 +110,7 @@ export default function Page() {
     objectFit: "contain",
     userSelect: "none",
     pointerEvents: "none",
+    opacity: "0.5",
   };
 
   return (

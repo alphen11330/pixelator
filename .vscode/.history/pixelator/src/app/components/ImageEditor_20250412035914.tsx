@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import grayscaleProcessor from "./grayscaleProcessor";
 import invertColorProcessor from "./invertColorProcessor";
 import colorCollectionProcessor from "./colorCollectionProcessor";
@@ -53,7 +53,6 @@ const ImageEditor: React.FC<Props> = ({
   whiteSize,
   blackSize,
 }) => {
-  const previousUrlRef = useRef<string | null>(null); // 前のURLを記録
   useLayoutEffect(() => {
     if (!window.cv) {
       console.error("OpenCV is not loaded.");
@@ -129,12 +128,8 @@ const ImageEditor: React.FC<Props> = ({
 
       // 変換後の画像をセット
       canvas.toBlob((blob) => {
-        if (previousUrlRef.current) {
-          URL.revokeObjectURL(previousUrlRef.current);
-        }
         if (blob) {
           const url = URL.createObjectURL(blob);
-          previousUrlRef.current = url;
           setSmoothImageSrc(url);
         }
       }, "image/png");

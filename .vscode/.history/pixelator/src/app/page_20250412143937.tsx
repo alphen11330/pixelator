@@ -131,29 +131,30 @@ export default function Page() {
               {display && <span className={style.dotToImg} />}
               {!display && <span className={style.imgToDot} />}
             </span>
-            {smoothImageSrc && display && (
-              <PixelArtProcessor //スムーズ画像をドット絵に変換
-                smoothImageSrc={smoothImageSrc}
-                dotsImageSrc={dotsImageSrc}
-                setDotsImageSrc={setDotsImageSrc}
-                pixelLength={pixelLength}
-                colorReduction={colorReduction}
-                colorPalette={colorPalette}
-                colorLevels={colorLevels}
-                ditherType={ditherType}
-                ditherStrength={ditherStrength}
-              />
-            )}
-            {smoothImageSrc && !display && (
-              <>
-                <img
-                  src={smoothImageSrc}
-                  alt="edited Image"
-                  style={imgStyle}
-                  onContextMenu={(e) => e.preventDefault()}
-                />{" "}
-              </>
-            )}
+            {smoothImageSrc &&
+              (display ? (
+                <PixelArtProcessor
+                  key="dots"
+                  smoothImageSrc={smoothImageSrc}
+                  dotsImageSrc={dotsImageSrc}
+                  setDotsImageSrc={setDotsImageSrc}
+                  pixelLength={pixelLength}
+                  colorReduction={colorReduction}
+                  colorPalette={colorPalette}
+                  colorLevels={colorLevels}
+                  ditherType={ditherType}
+                  ditherStrength={ditherStrength}
+                />
+              ) : (
+                <div key="image">
+                  <img
+                    src={smoothImageSrc}
+                    alt="edited Image"
+                    style={imgStyle}
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                </div>
+              ))}
           </div>
         </div>
         {/* パネル操作画面 */}

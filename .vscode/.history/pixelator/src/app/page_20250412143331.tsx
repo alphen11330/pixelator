@@ -110,6 +110,7 @@ export default function Page() {
     objectFit: "contain",
     userSelect: "none",
     pointerEvents: "none",
+    opacity: "0.5",
   };
 
   return (
@@ -126,7 +127,7 @@ export default function Page() {
           {/* 画像ディスプレイ  */}
           <div style={dotsBox}>
             <span
-              onClick={() => setDisplay(!display)} // クリックで display 変更
+              onClick={() => setDisplay(display)} // クリックで display 変更
             >
               {display && <span className={style.dotToImg} />}
               {!display && <span className={style.imgToDot} />}
