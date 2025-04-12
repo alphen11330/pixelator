@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import useDeviceChecker from "./deviceChecker";
-
+import DeviceChecker from "./deviceChecker";
 import Uploader from "./components/Uploader";
 import PixelArtProcessor from "./components/PixelArtProcessor";
 import InputRange from "./components/InputRange";
@@ -19,8 +18,6 @@ declare global {
 }
 
 export default function Page() {
-  const isPC = useDeviceChecker();
-
   const [imageSrc, setImageSrc] = useState<string | null>(null); // オリジナル保持
   const [smoothImageSrc, setSmoothImageSrc] = useState<string | null>(null); // ドット化される前の画像
   const [dotsImageSrc, setDotsImageSrc] = useState<string | null>(null); // ドット化された画像

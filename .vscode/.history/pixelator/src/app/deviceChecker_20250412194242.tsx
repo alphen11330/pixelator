@@ -1,16 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const useDeviceChecker = () => {
+const DeviceChecker = () => {
   const [isPC, setIsPC] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
     const checkDevice = () => {
-      const isWideEnough = window.innerWidth > 768;
-      const isLandscape = window.innerWidth >= window.innerHeight;
-      setIsPC(isWideEnough && isLandscape);
+      setIsPC(window.innerWidth > 768);
     };
 
     checkDevice();
@@ -19,10 +15,11 @@ const useDeviceChecker = () => {
 
     return () => {
       window.removeEventListener("resize", checkDevice);
+      window.removeEventListener("orientationchange", checkDevice);
     };
   }, []);
 
   return isPC; // 現在のデバイス状態を返す
 };
 
-export default useDeviceChecker;
+export default DeviceChecker;

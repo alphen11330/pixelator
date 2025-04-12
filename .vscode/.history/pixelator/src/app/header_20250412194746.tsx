@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import DeviceChecker from "./deviceChecker";
 import { pupupuFont } from "./fonts/pupupuFonr";
-import useDeviceChecker from "./deviceChecker";
 
 const Header = () => {
   const isPC = useDeviceChecker();

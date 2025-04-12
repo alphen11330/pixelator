@@ -8,9 +8,7 @@ const useDeviceChecker = () => {
     if (typeof window === "undefined") return;
 
     const checkDevice = () => {
-      const isWideEnough = window.innerWidth > 768;
-      const isLandscape = window.innerWidth >= window.innerHeight;
-      setIsPC(isWideEnough && isLandscape);
+      setIsPC(window.innerWidth > 768);
     };
 
     checkDevice();
