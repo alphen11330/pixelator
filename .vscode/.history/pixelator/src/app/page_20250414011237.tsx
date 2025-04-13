@@ -55,7 +55,6 @@ export default function Page() {
   const [ditherType, setDitherType] = useState("bayerMatrixBasic"); // ディザリング手法の選択
   const [ditherStrength, setDitherStrength] = useState(0.1); // ディザリング強度
 
-  //輪郭線強調
   const [edgeEnhancement, setEdgeEnhancement] = useState(true); // 輪郭線強調の判定
   const [whiteSize, setWhiteSize] = useState(2); // 白画素処理サイズ（正:縮小、負:拡大）
   // OpenCV.js をロード
