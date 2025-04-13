@@ -1,0 +1,32 @@
+.downloadButton {
+
+    padding: 10px 15px;
+    border: 2px solid hsl(335, 39.4%, 49.2%);
+    border-radius: 5px;
+    background-color: hsl(345, 59.3%, 88.4%);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    user-select: none;
+  }
+  
+  .downloadButton:hover {
+    background-color: hsl(335, 51.7%, 70.8%);
+  }
+
+  .uploadButton {
+    color: rgb(0, 0, 0);
+    padding: 10px 15px;
+    border: 2px solid hsl(200, 39.40%, 49.20%);
+    border-radius: 5px;
+    background-color: hsl(190, 59.30%, 88.40%);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    user-select: none;
+  }
+  
+  .uploadButton:hover {
+    color: rgb(255, 255, 255);
+    background-color: hsl(200, 51.70%, 70.80%);
+  }
