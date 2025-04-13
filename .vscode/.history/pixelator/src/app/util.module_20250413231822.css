@@ -1,0 +1,319 @@
+/************** ボタン **************/
+/* ダウンロードボタン */
+.downloadButton {
+  padding: 10px 15px;
+  border: 2px solid hsl(335, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(345, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.downloadButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(335, 51.7%, 70.8%);
+}
+
+/* アップロードボタン */
+.uploadButton {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: 2px solid hsl(200, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(190, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.uploadButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(200, 51.7%, 70.8%);
+}
+
+/* パレット作成ボタン */
+.createPalettereButton {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: 2px solid hsl(70, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(60, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.createPalettereButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(70, 51.7%, 70.8%);
+}
+
+/* リフレッシュボタン */
+.refreshButton {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: 2px solid hsl(140, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(125, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.refreshButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(140, 51.7%, 70.8%);
+}
+
+.refreshButton:hover .refresh {
+  border-top: 0.2rem solid hsl(0, 0%, 100%);
+  border-left: 0.2rem solid hsl(0, 0%, 100%);
+  border-right: 0.2rem solid transparent;
+  border-bottom: 0.2rem solid hsl(0, 0%, 100%);
+  transform: rotate(180deg);
+  transition: all 0.3s;
+}
+
+.refreshButton:hover .refresh::before {
+  border-top: 0.35rem solid transparent;
+  border-left: 0.5rem solid hsl(0, 0%, 100%);
+  border-bottom: 0.35rem solid transparent;
+  transition: all 0.3s;
+}
+
+.rainbowButton {
+  padding: 10px 15px;
+  background: rgb(255, 0, 0);
+  background-size: 400% 400%;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  transition: color 0.3s;
+  border: 2px solid hsla(140, 39%, 49%, 0);
+  animation: rainbow 1.5s linear infinite;
+}
+
+.rainbowButton::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 125%;
+  height: 125%;
+  animation: rainbow 7.5s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.rainbowButton::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 150%;
+  height: 150%;
+  animation: rainbow 6s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.rainbowButton:hover {
+  color: #000;
+  font-weight: bold;
+}
+
+@keyframes rainbow {
+  0% {
+    background: hsl(70, 75%, 75%);
+
+  }
+
+  25% {
+    background: hsl(125, 75%, 75%);
+
+  }
+
+  50% {
+    background: hsl(190, 75%, 75%);
+  }
+
+  75% {
+    background: hsl(345, 75%, 75%);
+  }
+
+  100% {
+    background: hsl(70, 75%, 75%);
+
+  }
+}
+
+/************** アイコン **************/
+/* 元画像表示時の枠 */
+.imgToDot {
+  position: absolute;
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  /* 空の背景 */
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 0.25em;
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+/* 丸左（明）*/
+.imgToDot::after {
+  content: "";
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  width: 75%;
+  height: 75%;
+  border-radius: 999px;
+  background-color: hsl(348, 100%, 86%);
+  border: dashed 2px hsl(0, 100%, 50%);
+  z-index: 5;
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 四角右（暗） */
+.imgToDot::before {
+  content: "";
+  position: absolute;
+  bottom: 3%;
+  right: 3%;
+  width: 65%;
+  height: 65%;
+  background-color: hsl(191, 23%, 91%);
+  border-radius: 20%;
+  z-index: 4;
+}
+
+/* ドット絵表示時の枠 */
+.dotToImg {
+  position: absolute;
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  /* 空の背景 */
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 0.25em;
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+/* 丸左（暗）*/
+.dotToImg::after {
+  content: "";
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  width: 75%;
+  height: 75%;
+  border-radius: 999px;
+  background-color: hsl(338, 26%, 93%);
+  z-index: 4;
+}
+
+/* 四角右（明） */
+.dotToImg::before {
+  content: "";
+  position: absolute;
+  bottom: 3%;
+  right: 3%;
+  width: 65%;
+  height: 65%;
+  background-color: hsl(201, 89%, 68%);
+  border: dashed 2px hsl(233, 100%, 50%);
+  border-radius: 20%;
+  z-index: 5;
+  animation: rotate 20s linear infinite;
+}
+
+.imgToDot:hover,
+.dotToImg:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* 矢印 */
+.refresh {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-top: 0.2rem solid hsl(125, 50%, 30%);
+  border-left: 0.2rem solid hsl(125, 50%, 30%);
+  border-right: 0.2rem solid transparent;
+  border-bottom: 0.2rem solid hsl(125, 50%, 30%);
+  border-radius: 100% 100% 100% 100%;
+  transition: all 0.3s;
+}
+
+/* 三角 */
+.refresh::before {
+  content: "";
+  position: absolute;
+  top: -0.15rem;
+  left: 0.8rem;
+  width: 0;
+  height: 0;
+  border-top: 0.35rem solid transparent;
+  border-left: 0.5rem solid hsl(125, 50%, 30%);
+  border-bottom: 0.35rem solid transparent;
+  transform: rotate(45deg);
+  transition: all 0.3s;
+}
+
+
+.videoControls {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.controlButton {
+  background-color: #444;
+  color: #fff;
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.controlButton:hover {
+  background-color: #666;
+}
+
+.controlButton:active {
+  background-color: #222;
+}
