@@ -5,9 +5,14 @@ import style from "../util.module.css";
 type Props = {
   setImageSrc: React.Dispatch<React.SetStateAction<string | null>>;
   setSmoothImageSrc: React.Dispatch<React.SetStateAction<string | null>>;
+  setDotsImageSrc: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
+const Uploader: React.FC<Props> = ({
+  setImageSrc,
+  setSmoothImageSrc,
+  setDotsVideoSrc,
+}) => {
   const MAX_SIZE = 1024;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +23,7 @@ const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
 
     // 画像ファイル処理
     if (fileType.startsWith("image/")) {
+      setDotsVideoSrc(null);
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
@@ -53,6 +59,22 @@ const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
       };
       reader.readAsDataURL(file);
     }
+
+    // // 動画ファイル処理
+    // else if (fileType.startsWith("video/")) {
+    //   const videoURL = URL.createObjectURL(file);
+    //   setImageSrc(null);
+    //   setSmoothImageSrc(null);
+    //   setDotsImageSrc(null);
+    //   setDotsVideoSrc(videoURL);
+    // }
+
+    // サポート外
+    else {
+      alert(
+        "対応していないファイル形式です。画像または動画を選択してください。"
+      );
+    }
   };
 
   return (
@@ -66,12 +88,12 @@ const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
         }}
         className={style.uploadButton}
       >
-        <div>画像を選択</div>
+        <div>画像 / 動画を選択</div>
       </label>
       <input
         id="file-upload"
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
         onChange={handleFileChange}
         style={{ display: "none" }}
       />

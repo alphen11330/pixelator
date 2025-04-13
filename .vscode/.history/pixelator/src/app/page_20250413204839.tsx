@@ -25,6 +25,8 @@ export default function Page() {
   const [smoothImageSrc, setSmoothImageSrc] = useState<string | null>(null); // ドット化される前の画像
   const [dotsImageSrc, setDotsImageSrc] = useState<string | null>(null); // ドット化された画像
 
+  // const [dotsVideoSrc, setDotsVideoSrc] = useState<string | null>(null); // ドット化された動画
+
   const [isRecommendedSize, setIsRecommendedSize] = useState(true);
 
   const [pixelLength, setPixelLength] = useState(256); // ドット長

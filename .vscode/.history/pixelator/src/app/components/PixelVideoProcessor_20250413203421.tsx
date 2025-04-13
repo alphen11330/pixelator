@@ -135,18 +135,18 @@ const PixelVideoProcessor: React.FC<Props> = ({
     mediaRecorder.start();
 
     // フレームレートを下げて処理量を削減（元の1/3のフレームレート）
-    const targetFps = 120;
+    const targetFps = 10;
     const duration = video.duration;
 
     // 均等にフレームを抽出するためのタイムステップを計算
-    const totalFrames = duration * targetFps; // 最大フレーム数を制限
+    const totalFrames = Math.min(300, Math.floor(duration * targetFps)); // 最大フレーム数を制限
     const timeStep = duration / totalFrames;
 
     // フレームごとに処理
     let currentFrame = 0;
 
     const processNextFrameBatch = async () => {
-      const batchSize = 20; // 一度に処理するフレーム数
+      const batchSize = 5; // 一度に処理するフレーム数
       const endFrame = Math.min(currentFrame + batchSize, totalFrames);
 
       for (let i = currentFrame; i < endFrame; i++) {

@@ -11,6 +11,7 @@ import ImageEditor from "./components/ImageEditor";
 import DitherTypeDropdown from "./components/DitherTypeDropdown";
 import Downloader from "./components/Downloader";
 import ColorPalette from "./components/ColorPalette";
+import PixelVideoProcessor from "./components/PixelVideoProcessor";
 
 declare global {
   interface Window {
@@ -24,6 +25,8 @@ export default function Page() {
   const [imageSrc, setImageSrc] = useState<string | null>(null); // オリジナル保持
   const [smoothImageSrc, setSmoothImageSrc] = useState<string | null>(null); // ドット化される前の画像
   const [dotsImageSrc, setDotsImageSrc] = useState<string | null>(null); // ドット化された画像
+
+  // const [dotsVideoSrc, setDotsVideoSrc] = useState<string | null>(null); // ドット化された動画
 
   const [isRecommendedSize, setIsRecommendedSize] = useState(true);
 
@@ -164,6 +167,8 @@ export default function Page() {
             <Uploader // 画像をアップロード
               setImageSrc={setImageSrc}
               setSmoothImageSrc={setSmoothImageSrc}
+              setDotsImageSrc={setDotsImageSrc}
+              // setDotsVideoSrc={setDotsVideoSrc}
             />
             {imageSrc && (
               <>
