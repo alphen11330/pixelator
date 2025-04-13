@@ -46,7 +46,7 @@ export default function Page() {
   const [brightnessLevel, setBrightnessLevel] = useState(25); // 明度
 
   //減色処理
-  const [colorReduction, setColorReduction] = useState(false); // 減色処理の判定
+  const [colorReduction, setColorReduction] = useState(true); // 減色処理の判定
   const [colorLevels, setColorLevels] = useState(4); // 減色数(bit)
   const [colorPalette, setColorPalette] = useState<string[]>([]); // 減色したカラーパレット
   const [refreshColorPalette, setRefreshColorPalette] = useState(false); // カラーパレットをリフレッシュ
@@ -56,7 +56,7 @@ export default function Page() {
   const [ditherStrength, setDitherStrength] = useState(0.1); // ディザリング強度
 
   //輪郭線強調
-  const [edgeEnhancement, setEdgeEnhancement] = useState(false); // 輪郭線強調の判定
+  const [edgeEnhancement, setEdgeEnhancement] = useState(true); // 輪郭線強調の判定
   const [whiteSize, setWhiteSize] = useState(2); // 白画素処理サイズ（正:縮小、負:拡大）
   // OpenCV.js をロード
   useEffect(() => {
@@ -386,20 +386,19 @@ export default function Page() {
                         setValue={setColorLevels}
                       />
                     </div>
-
-                    {/* カラーパレットの表示*/}
-                    <ColorPalette
-                      colorReduction={colorReduction}
-                      colorPalette={colorPalette}
-                      setColorPalette={setColorPalette}
-                      smoothImageSrc={smoothImageSrc}
-                      colorLevels={colorLevels}
-                      imageSrc={imageSrc}
-                      refreshColorPalette={refreshColorPalette}
-                      setRefreshColorPalette={setRefreshColorPalette}
-                    />
                   </>
                 )}
+                {/* カラーパレットの表示*/}
+                <ColorPalette
+                  colorReduction={colorReduction}
+                  colorPalette={colorPalette}
+                  setColorPalette={setColorPalette}
+                  smoothImageSrc={smoothImageSrc}
+                  colorLevels={colorLevels}
+                  imageSrc={imageSrc}
+                  refreshColorPalette={refreshColorPalette}
+                  setRefreshColorPalette={setRefreshColorPalette}
+                />
               </div>
             </>
           )}

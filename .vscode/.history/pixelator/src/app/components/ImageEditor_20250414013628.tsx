@@ -120,6 +120,9 @@ const ImageEditor: React.FC<Props> = ({
           setSmoothImageSrc(url);
         }
       }, "image/png");
+      const timeoutId = setTimeout(() => {
+        fetchPalette(smoothImageSrc);
+      }, 100); // 100ミリ秒（必要に応じて調整）
 
       // メモリ解放
       src.delete();

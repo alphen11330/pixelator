@@ -100,8 +100,12 @@ const ColorPalette: React.FC<Props> = ({
 
   // リフレッシュ、減色数を変更したときに編集画像からパレットを作成
   useEffect(() => {
-    fetchPalette(smoothImageSrc);
-  }, [refreshColorPalette, colorLevels]);
+    const timeoutId = setTimeout(() => {
+      fetchPalette(smoothImageSrc);
+    }, 100); // 100ミリ秒（必要に応じて調整）
+
+    return () => clearTimeout(timeoutId); // クリーンアップ（依存値が変わった時）
+  }, [imageSrc, refreshColorPalette, colorLevels]);
 
   // パレット用画像からパレットを作成
   useEffect(() => {

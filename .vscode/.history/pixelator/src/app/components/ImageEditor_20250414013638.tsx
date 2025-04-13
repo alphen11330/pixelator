@@ -121,6 +121,10 @@ const ImageEditor: React.FC<Props> = ({
         }
       }, "image/png");
 
+      const timeoutId = setTimeout(() => {
+        setRefreshColorPalette(!refreshColorPalette);
+      }, 100); // 100ミリ秒（必要に応じて調整）
+
       // メモリ解放
       src.delete();
       dst.delete();

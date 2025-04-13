@@ -386,20 +386,19 @@ export default function Page() {
                         setValue={setColorLevels}
                       />
                     </div>
-
-                    {/* カラーパレットの表示*/}
-                    <ColorPalette
-                      colorReduction={colorReduction}
-                      colorPalette={colorPalette}
-                      setColorPalette={setColorPalette}
-                      smoothImageSrc={smoothImageSrc}
-                      colorLevels={colorLevels}
-                      imageSrc={imageSrc}
-                      refreshColorPalette={refreshColorPalette}
-                      setRefreshColorPalette={setRefreshColorPalette}
-                    />
                   </>
                 )}
+                {/* カラーパレットの表示*/}
+                <ColorPalette
+                  colorReduction={colorReduction}
+                  colorPalette={colorPalette}
+                  setColorPalette={setColorPalette}
+                  smoothImageSrc={smoothImageSrc}
+                  colorLevels={colorLevels}
+                  imageSrc={imageSrc}
+                  refreshColorPalette={refreshColorPalette}
+                  setRefreshColorPalette={setRefreshColorPalette}
+                />
               </div>
             </>
           )}

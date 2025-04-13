@@ -124,6 +124,7 @@ const ImageEditor: React.FC<Props> = ({
       // メモリ解放
       src.delete();
       dst.delete();
+      setRefreshColorPalette(!refreshColorPalette);
     };
   }, [
     imageSrc,

@@ -120,6 +120,7 @@ const ImageEditor: React.FC<Props> = ({
           setSmoothImageSrc(url);
         }
       }, "image/png");
+      setRefreshColorPalette(!refreshColorPalette);
 
       // メモリ解放
       src.delete();

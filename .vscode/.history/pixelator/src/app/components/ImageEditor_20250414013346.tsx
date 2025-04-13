@@ -26,7 +26,7 @@ type Props = {
   edgeEnhancement: boolean;
   whiteSize: number; // 白画素処理サイズ（正:縮小、負:拡大）
 
-  refreshColorPalette: boolean;
+  refreshColorPalette: number;
   setRefreshColorPalette: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -46,7 +46,6 @@ const ImageEditor: React.FC<Props> = ({
   brightnessLevel,
   edgeEnhancement,
   whiteSize,
-  refreshColorPalette,
   setRefreshColorPalette,
 }) => {
   const previousUrlRef = useRef<string | null>(null); // 前のURLを記録
@@ -124,6 +123,7 @@ const ImageEditor: React.FC<Props> = ({
       // メモリ解放
       src.delete();
       dst.delete();
+      setRefreshColorPalette(!refreshColorPalette);
     };
   }, [
     imageSrc,

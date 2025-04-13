@@ -56,7 +56,7 @@ export default function Page() {
   const [ditherStrength, setDitherStrength] = useState(0.1); // ディザリング強度
 
   //輪郭線強調
-  const [edgeEnhancement, setEdgeEnhancement] = useState(false); // 輪郭線強調の判定
+  const [edgeEnhancement, setEdgeEnhancement] = useState(true); // 輪郭線強調の判定
   const [whiteSize, setWhiteSize] = useState(2); // 白画素処理サイズ（正:縮小、負:拡大）
   // OpenCV.js をロード
   useEffect(() => {
@@ -386,20 +386,19 @@ export default function Page() {
                         setValue={setColorLevels}
                       />
                     </div>
-
-                    {/* カラーパレットの表示*/}
-                    <ColorPalette
-                      colorReduction={colorReduction}
-                      colorPalette={colorPalette}
-                      setColorPalette={setColorPalette}
-                      smoothImageSrc={smoothImageSrc}
-                      colorLevels={colorLevels}
-                      imageSrc={imageSrc}
-                      refreshColorPalette={refreshColorPalette}
-                      setRefreshColorPalette={setRefreshColorPalette}
-                    />
                   </>
                 )}
+                {/* カラーパレットの表示*/}
+                <ColorPalette
+                  colorReduction={colorReduction}
+                  colorPalette={colorPalette}
+                  setColorPalette={setColorPalette}
+                  smoothImageSrc={smoothImageSrc}
+                  colorLevels={colorLevels}
+                  imageSrc={imageSrc}
+                  refreshColorPalette={refreshColorPalette}
+                  setRefreshColorPalette={setRefreshColorPalette}
+                />
               </div>
             </>
           )}
