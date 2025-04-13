@@ -187,14 +187,11 @@ export default function Page() {
                   setContrast={setContrast}
                   setIsHue={setIsHue}
                   setIsSaturation={setIsSaturation}
+                  setRefreshColorPalette={setRefreshColorPalette}
                   setPixelLength={setPixelLength}
                   setContrastLevel={setContrastLevel}
                   setHue={setHue}
                   setSaturation={setSaturation}
-                  setWhiteSize={setWhiteSize}
-                  setDitherStrength={setDitherStrength}
-                  setColorPalette={setColorPalette}
-                  setDitherType={setDitherType}
                 />
               </>
             )}

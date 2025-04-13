@@ -85,7 +85,8 @@ const RandomButton: React.FC<Props> = ({
     const randomDitherStrength = Math.floor(Math.random() * 51) * 0.01;
     setDitherStrength(parseFloat(randomDitherStrength.toFixed(2)));
 
-    // DitherType: dithers の中からランダムに1つ選ぶ
+    // DitherType: dithers の中からランダムに 1 つ選ぶ
+
     const randomDither = dithers[Math.floor(Math.random() * dithers.length)];
     setDitherType(randomDither.value);
 

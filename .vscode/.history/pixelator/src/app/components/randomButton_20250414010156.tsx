@@ -85,9 +85,7 @@ const RandomButton: React.FC<Props> = ({
     const randomDitherStrength = Math.floor(Math.random() * 51) * 0.01;
     setDitherStrength(parseFloat(randomDitherStrength.toFixed(2)));
 
-    // DitherType: dithers の中からランダムに1つ選ぶ
-    const randomDither = dithers[Math.floor(Math.random() * dithers.length)];
-    setDitherType(randomDither.value);
+    // DitherType: dithers の中からランダムに 1 つ選ぶ
 
     // ColorPalette: 長さは [2, 4, 8, 16, 32, 64] のいずれかをランダムに選ぶ
     const paletteSizes = [2, 4, 8, 16, 32, 64];

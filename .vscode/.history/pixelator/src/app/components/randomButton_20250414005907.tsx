@@ -7,6 +7,8 @@ type Props = {
   setContrast: React.Dispatch<React.SetStateAction<boolean>>;
   setIsHue: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSaturation: React.Dispatch<React.SetStateAction<boolean>>;
+  setRefreshColorPalette: React.Dispatch<React.SetStateAction<boolean>>;
+  refreshColorPalette: boolean;
 
   setPixelLength: React.Dispatch<React.SetStateAction<number>>;
   setContrastLevel: React.Dispatch<React.SetStateAction<number>>;
@@ -14,25 +16,10 @@ type Props = {
   setSaturation: React.Dispatch<React.SetStateAction<number>>;
   setWhiteSize: React.Dispatch<React.SetStateAction<number>>;
   setDitherStrength: React.Dispatch<React.SetStateAction<number>>;
+  setColorLevels: React.Dispatch<React.SetStateAction<number>>;
   setColorPalette: React.Dispatch<React.SetStateAction<string[]>>;
   setDitherType: React.Dispatch<React.SetStateAction<string>>;
 };
-
-const dithers = [
-  { value: "none", label: "ーーーーーー" }, // ディザリングなし
-  { value: "bayerMatrixBasic", label: "ベーシック" }, //組織的ディザリング
-  { value: "bayerMatrixNoise", label: "ノイズパターン" },
-  { value: "bayerMatrixPlaid", label: "チェック" },
-  { value: "bayerMatrixCheckered", label: "市松模様" },
-  { value: "bayerMatrixLeadGlass", label: "ガラス" },
-  { value: "bayerMatrixCRT_Vertical", label: "たてじま" },
-  { value: "bayerMatrixCRT_Horizontal", label: "よこじま" },
-  { value: "bayerMatrixDiagonal", label: "斜めストライプ" },
-  { value: "bayerMatrixMeshLight", label: "メッシュ（明）" },
-  { value: "bayerMatrixMeshDark", label: "メッシュ（暗）" },
-  { value: "bayerMatrixPolkadotLight", label: "ハーフトーン（明）" },
-  { value: "bayerMatrixPolkadotDark", label: "ハーフトーン（暗）" },
-];
 
 const RandomButton: React.FC<Props> = ({
   setColorCollection,
@@ -41,6 +28,8 @@ const RandomButton: React.FC<Props> = ({
   setContrast,
   setIsHue,
   setIsSaturation,
+  setRefreshColorPalette,
+  refreshColorPalette,
 
   setPixelLength,
   setContrastLevel,
@@ -48,8 +37,8 @@ const RandomButton: React.FC<Props> = ({
   setSaturation,
   setWhiteSize,
   setDitherStrength,
+  setColorLevels,
   setColorPalette,
-  setDitherType,
 }) => {
   const setRandom = () => {
     setColorCollection(true); //色調補正オン
@@ -84,10 +73,6 @@ const RandomButton: React.FC<Props> = ({
     // DitherStrength: 0～0.5(0.01刻み)
     const randomDitherStrength = Math.floor(Math.random() * 51) * 0.01;
     setDitherStrength(parseFloat(randomDitherStrength.toFixed(2)));
-
-    // DitherType: dithers の中からランダムに1つ選ぶ
-    const randomDither = dithers[Math.floor(Math.random() * dithers.length)];
-    setDitherType(randomDither.value);
 
     // ColorPalette: 長さは [2, 4, 8, 16, 32, 64] のいずれかをランダムに選ぶ
     const paletteSizes = [2, 4, 8, 16, 32, 64];

@@ -18,22 +18,6 @@ type Props = {
   setDitherType: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const dithers = [
-  { value: "none", label: "ーーーーーー" }, // ディザリングなし
-  { value: "bayerMatrixBasic", label: "ベーシック" }, //組織的ディザリング
-  { value: "bayerMatrixNoise", label: "ノイズパターン" },
-  { value: "bayerMatrixPlaid", label: "チェック" },
-  { value: "bayerMatrixCheckered", label: "市松模様" },
-  { value: "bayerMatrixLeadGlass", label: "ガラス" },
-  { value: "bayerMatrixCRT_Vertical", label: "たてじま" },
-  { value: "bayerMatrixCRT_Horizontal", label: "よこじま" },
-  { value: "bayerMatrixDiagonal", label: "斜めストライプ" },
-  { value: "bayerMatrixMeshLight", label: "メッシュ（明）" },
-  { value: "bayerMatrixMeshDark", label: "メッシュ（暗）" },
-  { value: "bayerMatrixPolkadotLight", label: "ハーフトーン（明）" },
-  { value: "bayerMatrixPolkadotDark", label: "ハーフトーン（暗）" },
-];
-
 const RandomButton: React.FC<Props> = ({
   setColorCollection,
   setEdgeEnhancement,
@@ -84,10 +68,6 @@ const RandomButton: React.FC<Props> = ({
     // DitherStrength: 0～0.5(0.01刻み)
     const randomDitherStrength = Math.floor(Math.random() * 51) * 0.01;
     setDitherStrength(parseFloat(randomDitherStrength.toFixed(2)));
-
-    // DitherType: dithers の中からランダムに1つ選ぶ
-    const randomDither = dithers[Math.floor(Math.random() * dithers.length)];
-    setDitherType(randomDither.value);
 
     // ColorPalette: 長さは [2, 4, 8, 16, 32, 64] のいずれかをランダムに選ぶ
     const paletteSizes = [2, 4, 8, 16, 32, 64];

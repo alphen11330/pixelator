@@ -34,7 +34,7 @@ export default function Page() {
 
   //色調補正
   const [colorCollection, setColorCollection] = useState(false); // 色調補正処理の判定
-  const [isHue, setIsHue] = useState(false);
+  const [isHue, setContrast: React.Dispatch<React.SetStateAction<boolean>>] = useState(false);
   const [hue, setHue] = useState(60); // 色相の値
   const [isLuminance, setIsLuminance] = useState(false);
   const [luminance, setLuminance] = useState(10); // 輝度の値
@@ -184,17 +184,7 @@ export default function Page() {
                   setColorCollection={setColorCollection}
                   setEdgeEnhancement={setEdgeEnhancement}
                   setColorReduction={setColorReduction}
-                  setContrast={setContrast}
-                  setIsHue={setIsHue}
-                  setIsSaturation={setIsSaturation}
                   setPixelLength={setPixelLength}
-                  setContrastLevel={setContrastLevel}
-                  setHue={setHue}
-                  setSaturation={setSaturation}
-                  setWhiteSize={setWhiteSize}
-                  setDitherStrength={setDitherStrength}
-                  setColorPalette={setColorPalette}
-                  setDitherType={setDitherType}
                 />
               </>
             )}
