@@ -11,7 +11,7 @@ const DitherTypeDropdown: React.FC<Props> = ({ ditherType, setDitherType }) => {
     { value: "bayerMatrixPlaid", label: "チェック" },
     { value: "bayerMatrixCheckered", label: "市松模様" },
     { value: "bayerMatrixLeadGlass", label: "ガラス" },
-    { value: "bayerMatrixTile", label: "タイル" },
+    { value: "    bayerMatrixTile", label: "タイル" },
     { value: "bayerMatrixCRT_Vertical", label: "たてじま" },
     { value: "bayerMatrixCRT_Horizontal", label: "よこじま" },
     { value: "bayerMatrixDiagonal", label: "斜めストライプ" },
