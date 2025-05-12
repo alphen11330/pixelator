@@ -401,10 +401,10 @@
 
 /* スライダー */
 .slider {
+  position: absolute;
   -webkit-appearance: none;
   appearance: none;
-  width: 60%;
-  margin-inline: 3rem;
+  width: 80%;
   margin-block: 1.5rem;
   height: 16px;
   border-radius: 10px;

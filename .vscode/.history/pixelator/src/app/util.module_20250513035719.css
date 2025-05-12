@@ -404,8 +404,7 @@
   -webkit-appearance: none;
   appearance: none;
   width: 60%;
-  margin-inline: 3rem;
-  margin-block: 1.5rem;
+  margin-block: auto;
   height: 16px;
   border-radius: 10px;
   background: linear-gradient(90deg, #fbc2eb 0%, #89b4ff 100%);

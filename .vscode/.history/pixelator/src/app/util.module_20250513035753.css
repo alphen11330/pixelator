@@ -86,6 +86,182 @@
   transition: all 0.3s;
 }
 
+/* ランダムボタン */
+.rainbowButton {
+  padding: 10px 15px;
+  color: rgb(255, 255, 255);
+  background-size: 400% 400%;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  transition: color 0.3s;
+  border: 2px solid hsla(140, 39%, 49%, 0);
+  animation: rainbow 1.5s linear infinite;
+  scale: 1.0;
+  transition: all 0.3s;
+}
+
+.rainbowButton::before {
+  content: "";
+  position: absolute;
+  top: 30%;
+  left: 30%;
+  width: 125%;
+  height: 125%;
+  animation: rainbow 7.5s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.rainbowButton::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 150%;
+  height: 150%;
+  animation: rainbow 6s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.rainbowButton:hover {
+  scale: 1.1;
+  transition: all 0.3s;
+}
+
+@keyframes rainbow {
+  0% {
+    background: hsl(70, 75%, 75%);
+
+  }
+
+  25% {
+    background: hsl(160, 75%, 75%);
+
+  }
+
+  50% {
+    background: hsl(250, 75%, 75%);
+  }
+
+  75% {
+    background: hsl(340, 75%, 75%);
+  }
+
+  100% {
+    background: hsl(70, 75%, 75%);
+
+  }
+}
+
+/* オープンペインターボタン */
+.openPainter {
+  position: absolute;
+  right: 0px;
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 0.25em;
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+.openPainter:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+.openPainter img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.palette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+.brush {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: bounce 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translate(0px, 0px);
+  }
+
+  50% {
+    transform: translate(2px, -6px);
+    /* 上方向に5px移動 */
+  }
+}
+
+/* 閉じるボタン */
+.closeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 40px;
+  height: 40px;
+  background: rgb(255, 255, 255);
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  user-select: none;
+}
+
+.closeButton::before,
+.closeButton::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 3px;
+  background-color: rgb(118, 118, 118);
+  transform-origin: center;
+}
+
+.closeButton::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.closeButton::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+
 /************** アイコン **************/
 /* 元画像表示時の枠 */
 .imgToDot {
@@ -94,8 +270,8 @@
   width: 3em;
   height: 3em;
   background: rgb(255, 255, 255);
-  /* 空の背景 */
   border: 3px solid rgb(118, 118, 118);
+  /* 空の背景 */
   border-radius: 0.25em;
   box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
   overflow: hidden;
@@ -117,7 +293,6 @@
   background-color: hsl(348, 100%, 86%);
   border: dashed 2px hsl(0, 100%, 50%);
   z-index: 5;
-  transition: all 0.3s;
   animation: rotate 20s linear infinite;
 }
 
@@ -187,6 +362,7 @@
   border: dashed 2px hsl(233, 100%, 50%);
   border-radius: 20%;
   z-index: 5;
+  animation: rotate 20s linear infinite;
 }
 
 .imgToDot:hover,
@@ -221,4 +397,31 @@
   border-bottom: 0.35rem solid transparent;
   transform: rotate(45deg);
   transition: all 0.3s;
+}
+
+/* スライダー */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 70%;
+  margin-inline: auto;
+  margin-block: 1.5rem;
+  height: 16px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #fbc2eb 0%, #89b4ff 100%);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* WebKit (Chrome, Safari) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 3px solid #ff99cc;
+  box-shadow: 0 2px 8px rgba(255, 153, 204, 0.6);
+  cursor: pointer;
 }
