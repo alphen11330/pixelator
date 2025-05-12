@@ -98,8 +98,8 @@ export default function Page() {
       rgb(226, 226, 226) 25%, rgb(255, 255, 255) 25%, rgb(255, 255, 255) 50%,
       rgb(226, 226, 226) 50%, rgb(226, 226, 226) 75%, rgb(255, 255, 255) 75%, rgb(255, 255, 255) 100%
     )`,
-    backgroundSize: isPC ? "10% 10%" : "40px 40px",
-    backgroundPosition: isPC ? "2.5% 2.5%" : "10px 10px",
+    backgroundSize: "40px 40px",
+    backgroundPosition: "10px 10px",
     userSelect: "none",
   };
 

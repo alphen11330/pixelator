@@ -86,7 +86,7 @@ export default function Page() {
   const dotsBox: React.CSSProperties = {
     position: "relative",
     height: isPC ? "" : "min(100% - 20px)",
-    width: isPC ? "90%" : "min(100% - 20px)",
+    width: isPC ? "80%" : "min(100% - 20px)",
     aspectRatio: "1/1",
     display: "flex",
     border: "solid 1px rgb(135, 135, 135)",
@@ -98,8 +98,7 @@ export default function Page() {
       rgb(226, 226, 226) 25%, rgb(255, 255, 255) 25%, rgb(255, 255, 255) 50%,
       rgb(226, 226, 226) 50%, rgb(226, 226, 226) 75%, rgb(255, 255, 255) 75%, rgb(255, 255, 255) 100%
     )`,
-    backgroundSize: isPC ? "10% 10%" : "40px 40px",
-    backgroundPosition: isPC ? "2.5% 2.5%" : "10px 10px",
+    backgroundSize: "10px 10px",
     userSelect: "none",
   };
 
@@ -181,7 +180,6 @@ export default function Page() {
                   dotsImageSrc={dotsImageSrc}
                   isRecommendedSize={isRecommendedSize}
                 />
-                {/* リフレッシュボタン */}
               </>
             )}
           </div>

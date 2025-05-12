@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
-import createPalette from "./createPalette";
-import style from "../icon.module.css";
+import { useEffect, useState } from "react";
+import style from "../util.module.css";
+import { createPalette } from "./createPalette";
 
 // RGB形式の色をHEX形式に変換する関数
 const rgbToHex = (rgb: string): string => {
@@ -68,23 +68,25 @@ const readImage = (
 };
 
 type Props = {
+  colorReduction: boolean;
   colorPalette: string[];
   setColorPalette: React.Dispatch<React.SetStateAction<string[]>>;
   smoothImageSrc: string | null;
   colorLevels: number;
   imageSrc: string | null;
-  refreshColorPalette: boolean;
-  setRefreshColorPalette: React.Dispatch<React.SetStateAction<boolean>>;
+  lockPalette: boolean;
+  setLockPalette: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ColorPalette: React.FC<Props> = ({
+  colorReduction,
   colorPalette,
   setColorPalette,
   smoothImageSrc,
   colorLevels,
   imageSrc,
-  refreshColorPalette,
-  setRefreshColorPalette,
+  lockPalette,
+  setLockPalette,
 }) => {
   const [imageForPalette, setImageForPalette] = useState<string | null>(null);
 
@@ -96,14 +98,14 @@ const ColorPalette: React.FC<Props> = ({
     }
   };
 
-  // リフレッシュ、減色数を変更したときに編集画像からパレットを作成
+  // 減色数を変更したときに編集画像からパレットを作成
   useEffect(() => {
-    fetchPalette(smoothImageSrc);
-  }, [imageSrc, refreshColorPalette, colorLevels, smoothImageSrc]);
+    if (!lockPalette) fetchPalette(smoothImageSrc);
+  }, [colorLevels, smoothImageSrc, lockPalette]);
 
   // パレット用画像からパレットを作成
   useEffect(() => {
-    if (imageForPalette) {
+    if (imageForPalette && !lockPalette) {
       fetchPalette(imageForPalette);
       setImageForPalette(null);
     }
@@ -116,7 +118,7 @@ const ColorPalette: React.FC<Props> = ({
     setColorPalette(updatedPalette);
   };
 
-  const collorPaletteStyle: React.CSSProperties = {
+  const colorPaletteStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "wrap",
     marginTop: "1rem",
@@ -132,20 +134,6 @@ const ColorPalette: React.FC<Props> = ({
     alignItems: "center",
   };
 
-  const buttonStyle: React.CSSProperties = {
-    position: "relative",
-    height: "3.2rem",
-    padding: "1rem",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: "5px",
-    fontSize: "1rem",
-    cursor: "pointer",
-    transition: "background-color 0.3s, transform 0.3s",
-    userSelect: "none",
-  };
-
   const colorInputStyle: React.CSSProperties = {
     width: "calc(100% / 8 - 3px)",
     paddingTop: "10%",
@@ -159,50 +147,42 @@ const ColorPalette: React.FC<Props> = ({
 
   return (
     <>
-      <div style={buttonContainer}>
-        <button
-          style={{
-            ...buttonStyle,
-            border: "2px solid hsl(140, 39.40%, 49.20%)",
-            backgroundColor: "hsl(125, 59.30%, 88.40%)",
-          }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "hsl(140, 51.70%, 70.80%)")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "hsl(125, 59.30%, 88.40%)")
-          }
-          onClick={() => setRefreshColorPalette(!refreshColorPalette)}
-        >
-          <div className={style.reload} />
-        </button>
+      {colorReduction && (
+        // ボタンを配置
+        <div style={buttonContainer}>
+          {/* リフレッシュボタン */}
+          {/* <button
+            className={style.refreshButton}
+            onClick={() => setRefreshColorPalette(!refreshColorPalette)}
+          >
+            <div className={style.refresh} />
+          </button> */}
 
-        <label
-          htmlFor="fileForPalette-upload"
-          style={{
-            ...buttonStyle,
-            border: "2px solid hsl(70, 39.40%, 49.20%)",
-            backgroundColor: "hsl(60, 59.30%, 88.40%)",
-          }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "hsl(70, 51.70%, 70.80%)")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "hsl(60, 59.30%, 88.40%)")
-          }
-        >
-          <div>画像からパレットを作成</div>
-        </label>
-        <input
-          id="fileForPalette-upload"
-          type="file"
-          accept="image/*"
-          style={{ display: "none" }}
-          onChange={(e) => readImage(e, setImageForPalette)}
-        />
-      </div>
-
-      <div style={collorPaletteStyle}>
+          {/* パレット作成ボタン */}
+          <label
+            htmlFor="fileForPalette-upload"
+            className={style.createPalettereButton}
+          >
+            <div>画像からパレットを作成</div>
+          </label>
+          <input
+            id="fileForPalette-upload"
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={(e) => readImage(e, setImageForPalette)}
+          />
+          {/* ロックボタン */}
+          <button onClick={() => setLockPalette(!lockPalette)}>
+            <img
+              src={lockPalette ? "/locked.png" : "/unlocked.png"}
+              width={30}
+            />
+          </button>
+        </div>
+      )}
+      {/* カラーパレットを配置 */}
+      <div style={colorPaletteStyle}>
         {colorPalette.map((color, index) => (
           <div
             key={`color-${index}`}
