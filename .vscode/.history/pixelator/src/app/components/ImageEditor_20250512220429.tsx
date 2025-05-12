@@ -1,0 +1,154 @@
+"use client";
+import React, { useLayoutEffect, useRef } from "react";
+import colorCollectionProcessor from "./colorCollectionProcessor";
+import erodeDilateProcessor from "./erodeDilateProcessors";
+import { useThrottle } from "./useThrottle"; // スロットリングフックをインポート
+
+type Props = {
+  imageSrc: string; // オリジナル画像
+  setSmoothImageSrc: React.Dispatch<React.SetStateAction<string | null>>; // 加工用画像のセッター
+
+  //色調補正
+  colorCollection: boolean;
+  isHue: boolean;
+  hue: number;
+  isLuminance: boolean;
+  luminance: number;
+  isSaturation: boolean;
+  saturation: number;
+
+  //コントラストと明度調整
+  contrast: boolean;
+  contrastLevel: number;
+  brightness: boolean;
+  brightnessLevel: number;
+
+  //輪郭線強調（更新）
+  edgeEnhancement: boolean;
+  whiteSize: number; // 白画素処理サイズ（正:縮小、負:拡大）
+};
+
+const ImageEditor: React.FC<Props> = ({
+  imageSrc,
+  setSmoothImageSrc,
+  colorCollection,
+  isHue,
+  hue,
+  isLuminance,
+  luminance,
+  isSaturation,
+  saturation,
+  contrast,
+  contrastLevel,
+  brightness,
+  brightnessLevel,
+  edgeEnhancement,
+  whiteSize,
+}) => {
+  const previousUrlRef = useRef<string | null>(null); // 前のURLを記録
+
+  // スロットリングを適用する値
+  const THROTLLE_DElAY = 200;
+  const throttledHue = useThrottle(hue, THROTLLE_DElAY); // 例: 100ms間隔で更新
+  const throttledLuminance = useThrottle(luminance, THROTLLE_DElAY);
+  const throttledSaturation = useThrottle(saturation, THROTLLE_DElAY);
+  const throttledContrastLevel = useThrottle(contrastLevel, THROTLLE_DElAY);
+  const throttledBrightnessLevel = useThrottle(brightnessLevel, THROTLLE_DElAY);
+  const throttledWhiteSize = useThrottle(whiteSize, THROTLLE_DElAY);
+
+  useLayoutEffect(() => {
+    if (!window.cv) {
+      console.error("OpenCV is not loaded.");
+      return;
+    }
+    if (!imageSrc) return;
+    const cv = window.cv;
+    if (typeof cv.imread !== "function") {
+      console.warn("cv.imread is not ready yet");
+      return;
+    }
+    // 元の画像から処理を開始
+    const imgElement = document.createElement("img");
+    imgElement.src = imageSrc;
+
+    imgElement.onload = () => {
+      // 元の画像からソースMat作成
+
+      let src = cv.imread(imgElement);
+      let dst = new cv.Mat();
+      dst = src.clone();
+
+      // 白黒画素処理による輪郭線処理（更新）
+      if (edgeEnhancement) {
+        const enhanced = erodeDilateProcessor(
+          cv,
+          dst,
+          throttledWhiteSize // スロットリングされた値を使用
+        );
+        dst.delete();
+        dst = enhanced;
+      }
+
+      // 色相・コントラスト・明度調整
+      if (colorCollection) {
+        const processed = colorCollectionProcessor(
+          cv,
+          dst,
+          isHue,
+          throttledHue, // スロットリングされた値を使用
+          isLuminance,
+          throttledLuminance, // スロットリングされた値を使用
+          isSaturation,
+          throttledSaturation, // スロットリングされた値を使用
+          contrast,
+          throttledContrastLevel, // スロットリングされた値を使用
+          brightness,
+          throttledBrightnessLevel // スロットリングされた値を使用
+        );
+        dst.delete();
+        dst = processed;
+      }
+
+      // キャンバスに描画
+      const canvas = document.createElement("canvas");
+      canvas.width = imgElement.width;
+      canvas.height = imgElement.height;
+      cv.imshow(canvas, dst);
+
+      // 変換後の画像をセット
+      canvas.toBlob((blob) => {
+        if (previousUrlRef.current) {
+          URL.revokeObjectURL(previousUrlRef.current);
+        }
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          previousUrlRef.current = url;
+          setSmoothImageSrc(url);
+        }
+      }, "image/png");
+
+      // メモリ解放
+      src.delete();
+      dst.delete();
+    };
+  }, [
+    imageSrc,
+    colorCollection,
+    isHue,
+    throttledHue, // スロットリングされた値に依存
+    isLuminance,
+    throttledLuminance, // スロットリングされた値に依存
+    isSaturation,
+    throttledSaturation, // スロットリングされた値に依存
+    contrast,
+    throttledContrastLevel, // スロットリングされた値に依存
+    brightness,
+    throttledBrightnessLevel, // スロットリングされた値に依存
+    edgeEnhancement,
+    throttledWhiteSize, // スロットリングされた値に依存
+  ]);
+
+  return null;
+};
+
+export default ImageEditor;
