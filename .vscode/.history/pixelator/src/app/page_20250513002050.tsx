@@ -194,14 +194,12 @@ export default function Page() {
                   setIsSaturation={setIsSaturation}
                   setPixelLength={setPixelLength}
                   setContrastLevel={setContrastLevel}
-                  setBrightnessLevel={setBrightnessLevel}
                   setHue={setHue}
-                  setLuminance={setLuminance}
                   setSaturation={setSaturation}
                   setWhiteSize={setWhiteSize}
-                  setDitherType={setDitherType}
                   setDitherStrength={setDitherStrength}
-                  setColorLevels={setColorLevels}
+                  setColorPalette={setColorPalette}
+                  setDitherType={setDitherType}
                   setLockPalette={setLockPalette}
                 />
               </>

@@ -50,14 +50,23 @@ const RefreshButton: React.FC<Props> = ({
     setLockPalette(true);
 
     // 項目を閉じる
-    setColorCollection(false);
-    setEdgeEnhancement(false);
-    setColorReduction(false);
+    setColorCollection(true);
+    setEdgeEnhancement(true);
+    setColorReduction(true);
     setContrast(true);
-    setBrightness(false);
-    setIsHue(false);
-    setIsLuminance(false);
+    setBrightness(true);
+    setIsHue(true);
+    setIsLuminance(true);
     setIsSaturation(true);
+
+    // setColorCollection(false);
+    // setEdgeEnhancement(false);
+    // setColorReduction(false);
+    // setContrast(true);
+    // setBrightness(false);
+    // setIsHue(false);
+    // setIsLuminance(false);
+    // setIsSaturation(true);
 
     // 初期値に設定
     setPixelLength(256);

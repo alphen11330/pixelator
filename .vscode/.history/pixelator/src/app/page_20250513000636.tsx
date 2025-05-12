@@ -188,21 +188,50 @@ export default function Page() {
                   setEdgeEnhancement={setEdgeEnhancement}
                   setColorReduction={setColorReduction}
                   setContrast={setContrast}
-                  setBrightness={setBrightness}
                   setIsHue={setIsHue}
-                  setIsLuminance={setIsLuminance}
-                  setIsSaturation={setIsSaturation}
-                  setPixelLength={setPixelLength}
-                  setContrastLevel={setContrastLevel}
-                  setBrightnessLevel={setBrightnessLevel}
-                  setHue={setHue}
-                  setLuminance={setLuminance}
-                  setSaturation={setSaturation}
-                  setWhiteSize={setWhiteSize}
-                  setDitherType={setDitherType}
-                  setDitherStrength={setDitherStrength}
-                  setColorLevels={setColorLevels}
-                  setLockPalette={setLockPalette}
+                  setIsSaturation={function (
+                    value: React.SetStateAction<boolean>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setPixelLength={function (
+                    value: React.SetStateAction<number>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setContrastLevel={function (
+                    value: React.SetStateAction<number>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setHue={function (value: React.SetStateAction<number>): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setSaturation={function (
+                    value: React.SetStateAction<number>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setWhiteSize={function (
+                    value: React.SetStateAction<number>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setDitherStrength={function (
+                    value: React.SetStateAction<number>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setColorPalette={function (
+                    value: React.SetStateAction<string[]>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  setDitherType={function (
+                    value: React.SetStateAction<string>
+                  ): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </>
             )}

@@ -19,7 +19,6 @@ type Props = {
   setWhiteSize: React.Dispatch<React.SetStateAction<number>>;
   setDitherType: React.Dispatch<React.SetStateAction<string>>;
   setDitherStrength: React.Dispatch<React.SetStateAction<number>>;
-  setColorLevels: React.Dispatch<React.SetStateAction<number>>;
   setLockPalette: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -35,14 +34,11 @@ const RefreshButton: React.FC<Props> = ({
 
   setPixelLength,
   setContrastLevel,
-  setBrightnessLevel,
   setHue,
-  setLuminance,
   setSaturation,
   setWhiteSize,
-  setDitherType,
   setDitherStrength,
-  setColorLevels,
+  setDitherType,
   setLockPalette,
 }) => {
   const setInit = () => {
@@ -50,26 +46,32 @@ const RefreshButton: React.FC<Props> = ({
     setLockPalette(true);
 
     // 項目を閉じる
-    setColorCollection(false);
-    setEdgeEnhancement(false);
-    setColorReduction(false);
+    setColorCollection(true);
+    setEdgeEnhancement(true);
+    setColorReduction(true);
     setContrast(true);
-    setBrightness(false);
-    setIsHue(false);
-    setIsLuminance(false);
+    setBrightness(true);
+    setIsHue(true);
+    setIsLuminance(true);
     setIsSaturation(true);
+
+    // setColorCollection(false);
+    // setEdgeEnhancement(false);
+    // setColorReduction(false);
+    // setContrast(true);
+    // setBrightness(false);
+    // setIsHue(false);
+    // setIsLuminance(false);
+    // setIsSaturation(true);
 
     // 初期値に設定
     setPixelLength(256);
     setContrastLevel(1.2);
-    setBrightnessLevel(25);
-    setHue(60);
-    setLuminance(10);
-    setSaturation(30);
-    setWhiteSize(2);
+    setHue(25);
+    setSaturation(60);
+    setWhiteSize(10);
+    setDitherStrength(30);
     setDitherType("bayerMatrixBasic");
-    setDitherStrength(0.1);
-    setColorLevels(5);
     // パレットを開放
     setLockPalette(false);
   };

@@ -183,27 +183,7 @@ export default function Page() {
                   isRecommendedSize={isRecommendedSize}
                 />
                 {/* リフレッシュボタン */}
-                <RefreshButton
-                  setColorCollection={setColorCollection}
-                  setEdgeEnhancement={setEdgeEnhancement}
-                  setColorReduction={setColorReduction}
-                  setContrast={setContrast}
-                  setBrightness={setBrightness}
-                  setIsHue={setIsHue}
-                  setIsLuminance={setIsLuminance}
-                  setIsSaturation={setIsSaturation}
-                  setPixelLength={setPixelLength}
-                  setContrastLevel={setContrastLevel}
-                  setBrightnessLevel={setBrightnessLevel}
-                  setHue={setHue}
-                  setLuminance={setLuminance}
-                  setSaturation={setSaturation}
-                  setWhiteSize={setWhiteSize}
-                  setDitherType={setDitherType}
-                  setDitherStrength={setDitherStrength}
-                  setColorLevels={setColorLevels}
-                  setLockPalette={setLockPalette}
-                />
+                <RefreshButton />
               </>
             )}
           </div>

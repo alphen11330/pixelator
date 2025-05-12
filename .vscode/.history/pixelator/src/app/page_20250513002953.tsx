@@ -201,7 +201,6 @@ export default function Page() {
                   setWhiteSize={setWhiteSize}
                   setDitherType={setDitherType}
                   setDitherStrength={setDitherStrength}
-                  setColorLevels={setColorLevels}
                   setLockPalette={setLockPalette}
                 />
               </>
