@@ -1,0 +1,424 @@
+/************** ボタン **************/
+/* ダウンロードボタン */
+.downloadButton {
+  padding: 10px 15px;
+  border: 2px solid hsl(335, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(345, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.downloadButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(335, 51.7%, 70.8%);
+}
+
+/* アップロードボタン */
+.uploadButton {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: 2px solid hsl(200, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(190, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.uploadButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(200, 51.7%, 70.8%);
+}
+
+/* パレット作成ボタン */
+.createPalettereButton {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: 2px solid hsl(70, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(60, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.createPalettereButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(70, 51.7%, 70.8%);
+}
+
+/* リフレッシュボタン */
+.refreshButton {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: 2px solid hsl(140, 39.4%, 49.2%);
+  border-radius: 5px;
+  background-color: hsl(125, 59.3%, 88.4%);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.refreshButton:hover {
+  color: rgb(255, 255, 255);
+  background-color: hsl(140, 51.7%, 70.8%);
+}
+
+.refreshButton:hover .refresh {
+  border-top: 0.2rem solid hsl(0, 0%, 100%);
+  border-left: 0.2rem solid hsl(0, 0%, 100%);
+  border-right: 0.2rem solid transparent;
+  border-bottom: 0.2rem solid hsl(0, 0%, 100%);
+  transform: rotate(180deg);
+  transition: all 0.3s;
+}
+
+.refreshButton:hover .refresh::before {
+  border-top: 0.35rem solid transparent;
+  border-left: 0.5rem solid hsl(0, 0%, 100%);
+  border-bottom: 0.35rem solid transparent;
+  transition: all 0.3s;
+}
+
+/* ランダムボタン */
+.rainbowButton {
+  padding: 10px 15px;
+  color: rgb(255, 255, 255);
+  background-size: 400% 400%;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  transition: color 0.3s;
+  border: 2px solid hsla(140, 39%, 49%, 0);
+  animation: rainbow 1.5s linear infinite;
+  scale: 1.0;
+  transition: all 0.3s;
+}
+
+.rainbowButton::before {
+  content: "";
+  position: absolute;
+  top: 30%;
+  left: 30%;
+  width: 125%;
+  height: 125%;
+  animation: rainbow 7.5s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.rainbowButton::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 150%;
+  height: 150%;
+  animation: rainbow 6s linear infinite;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.rainbowButton:hover {
+  scale: 1.1;
+  transition: all 0.3s;
+}
+
+@keyframes rainbow {
+  0% {
+    background: hsl(70, 75%, 75%);
+
+  }
+
+  25% {
+    background: hsl(160, 75%, 75%);
+
+  }
+
+  50% {
+    background: hsl(250, 75%, 75%);
+  }
+
+  75% {
+    background: hsl(340, 75%, 75%);
+  }
+
+  100% {
+    background: hsl(70, 75%, 75%);
+
+  }
+}
+
+/* オープンペインターボタン */
+.openPainter {
+  position: absolute;
+  right: 0px;
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 0.25em;
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+.openPainter:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+.openPainter img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.palette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+.brush {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: bounce 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translate(0px, 0px);
+  }
+
+  50% {
+    transform: translate(2px, -6px);
+    /* 上方向に5px移動 */
+  }
+}
+
+/* 閉じるボタン */
+.closeButton {
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  user-select: none;
+}
+
+.closeButton::before,
+.closeButton::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 25px;
+  height: 3px;
+  background-color: rgb(118, 118, 118);
+  transform-origin: center;
+}
+
+.closeButton::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.closeButton::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+
+/************** アイコン **************/
+/* 元画像表示時の枠 */
+.imgToDot {
+  position: absolute;
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  border: 3px solid rgb(118, 118, 118);
+  /* 空の背景 */
+  border-radius: 0.25em;
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+/* 丸左（明）*/
+.imgToDot::after {
+  content: "";
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  width: 75%;
+  height: 75%;
+  border-radius: 999px;
+  background-color: hsl(348, 100%, 86%);
+  border: dashed 2px hsl(0, 100%, 50%);
+  z-index: 5;
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 四角右（暗） */
+.imgToDot::before {
+  content: "";
+  position: absolute;
+  bottom: 3%;
+  right: 3%;
+  width: 65%;
+  height: 65%;
+  background-color: hsl(191, 23%, 91%);
+  border-radius: 20%;
+  z-index: 4;
+}
+
+/* ドット絵表示時の枠 */
+.dotToImg {
+  position: absolute;
+  display: inline-block;
+  width: 3em;
+  height: 3em;
+  background: rgb(255, 255, 255);
+  /* 空の背景 */
+  border: 3px solid rgb(118, 118, 118);
+  border-radius: 0.25em;
+  box-shadow: 0 0.1em 0.2em rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.3s;
+  transform: scale(1);
+}
+
+/* 丸左（暗）*/
+.dotToImg::after {
+  content: "";
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  width: 75%;
+  height: 75%;
+  border-radius: 999px;
+  background-color: hsl(338, 26%, 93%);
+  z-index: 4;
+}
+
+/* 四角右（明） */
+.dotToImg::before {
+  content: "";
+  position: absolute;
+  bottom: 3%;
+  right: 3%;
+  width: 65%;
+  height: 65%;
+  background-color: hsl(201, 89%, 68%);
+  border: dashed 2px hsl(233, 100%, 50%);
+  border-radius: 20%;
+  z-index: 5;
+  animation: rotate 20s linear infinite;
+}
+
+.imgToDot:hover,
+.dotToImg:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* 矢印 */
+.refresh {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-top: 0.2rem solid hsl(125, 50%, 30%);
+  border-left: 0.2rem solid hsl(125, 50%, 30%);
+  border-right: 0.2rem solid transparent;
+  border-bottom: 0.2rem solid hsl(125, 50%, 30%);
+  border-radius: 100% 100% 100% 100%;
+  transition: all 0.3s;
+}
+
+/* 三角 */
+.refresh::before {
+  content: "";
+  position: absolute;
+  top: -0.15rem;
+  left: 0.8rem;
+  width: 0;
+  height: 0;
+  border-top: 0.35rem solid transparent;
+  border-left: 0.5rem solid hsl(125, 50%, 30%);
+  border-bottom: 0.35rem solid transparent;
+  transform: rotate(45deg);
+  transition: all 0.3s;
+}
+
+/* スライダー */
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60%;
+  margin-inline: 3rem;
+  margin-block: 1.5rem;
+  height: 16px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #fbc2eb 0%, #89b4ff 100%);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* WebKit (Chrome, Safari) */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 3px solid #ff99cc;
+  box-shadow: 0 2px 8px rgba(255, 153, 204, 0.6);
+  cursor: pointer;
+}

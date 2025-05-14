@@ -1,0 +1,73 @@
+/* 閉じるボタン */
+.closeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    background: rgb(255, 255, 255);
+    border: 3px solid rgb(118, 118, 118);
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    user-select: none;
+}
+
+.closeButton::before,
+.closeButton::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 3px;
+    background-color: rgb(118, 118, 118);
+    transform-origin: center;
+}
+
+.closeButton::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.closeButton::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+
+.toolBar {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 5%;
+    height: 70%;
+    background-color: rgb(47, 47, 47);
+    border-radius: 0px 10px 10px 0px;
+    padding-block: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    overflow: auto;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
+
+.toolBox {
+    position: relative;
+    color: rgb(138, 138, 138);
+    width: 70%;
+    aspect-ratio: 1 / 1;
+    scale: 0.8;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.toolBox:hover {
+    color: rgb(138, 222, 255);
+    scale: 1;
+    /* ホバー時に白に変化 */
+}
