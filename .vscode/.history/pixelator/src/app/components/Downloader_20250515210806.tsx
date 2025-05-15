@@ -57,7 +57,7 @@ const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
             // ダウンロード
             const link = document.createElement("a");
             link.href = url;
-            link.download = fileName;
+            link.download = "pixelator.png";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

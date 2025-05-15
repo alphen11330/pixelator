@@ -48,7 +48,7 @@ export default function Page() {
 
   //減色処理
   const [colorReduction, setColorReduction] = useState(false); // 減色処理の判定
-  const [colorLevels, setColorLevels] = useState(4); // 減色数(bit)
+  const [colorLevels, setColorLevels] = useState(5); // 減色数(bit)
   const [colorPalette, setColorPalette] = useState<string[]>([]); // 減色したカラーパレット
   const [lockPalette, setLockPalette] = useState(false);
 
@@ -272,7 +272,7 @@ export default function Page() {
                             name={"コントラスト"}
                             min={0.1}
                             max={2}
-                            step={0.01}
+                            step={0.1}
                             value={contrastLevel}
                             unit={""}
                             setValue={setContrastLevel}

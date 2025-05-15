@@ -50,14 +50,11 @@ const Downloader: React.FC<Props> = ({ dotsImageSrc, isRecommendedSize }) => {
 
         canvas.toBlob((blob) => {
           if (blob) {
-            const randomStr = generateRandomString();
-            const fileName = `pixelator_${randomStr}.png`;
-
             const url = URL.createObjectURL(blob);
             // ダウンロード
             const link = document.createElement("a");
             link.href = url;
-            link.download = fileName;
+            link.download = "pixelator.png";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

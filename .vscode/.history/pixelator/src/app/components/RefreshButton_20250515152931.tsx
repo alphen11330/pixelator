@@ -69,7 +69,7 @@ const RefreshButton: React.FC<Props> = ({
     setWhiteSize(2);
     setDitherType("bayerMatrixBasic");
     setDitherStrength(0.1);
-    setColorLevels(4);
+    setColorLevels(5);
     // パレットを開放
     setLockPalette(false);
   };
