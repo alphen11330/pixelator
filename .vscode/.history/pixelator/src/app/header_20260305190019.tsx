@@ -158,11 +158,11 @@ const Header: React.FC<Props> = ({ isJP, setIsJP }) => {
               userSelect: "none",
               pointerEvents: "none",
               display: "inline-block",
-              marginRight: "1rem",
+              marginRight: "0.5rem",
             }}
             width={40}
           />
-          Langage
+          {isPC ? "Langage" : ""}
         </button>
         <div style={title}>
           <div style={logobox}>
@@ -173,7 +173,7 @@ const Header: React.FC<Props> = ({ isJP, setIsJP }) => {
           </div>
           <Link href="/">
             <span className={pupupuFont.className} style={headerTextStyle}>
-              {isJP ? "ぴくせれーたー" : "Pixelator"}
+              {isJP ? "ぴくせれーたー v2" : "Pixelator v2"}
             </span>
           </Link>
         </div>

@@ -1,13 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
 import DeviceChecker from "./deviceChecker";
-import { pupupuFont } from "./fonts/pupupuFonr";
-import useLangChecker from "./langChecker";
+import { pupupuFont } from "./fonts/pupupuFont";
 
-const Header = () => {
+type Props = {
+  isJP: boolean;
+  setIsJP: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Header: React.FC<Props> = ({ isJP, setIsJP }) => {
   const isPC = DeviceChecker();
-  const isJP = useLangChecker();
+
   const header: React.CSSProperties = {
     position: "relative",
     top: "0",
@@ -16,7 +19,7 @@ const Header = () => {
     backgroundColor: "rgb(255, 255, 255)",
     borderBottom: "solid 1px rgb(167, 167, 167)",
     userSelect: "none",
-    zIndex: "9999",
+    zIndex: "10",
   };
 
   const headerTextStyle: React.CSSProperties = {
@@ -75,17 +78,11 @@ const Header = () => {
   const langButton: React.CSSProperties = {
     position: "absolute",
     top: "50%",
+    right: "1rem",
     transform: "translate(0%,-50%)",
-    right: "12px",
     cursor: "pointer",
   };
 
-  const [imageSrc, setImageSrc] = useState("/langJA.png");
-  const changeLang = () => {
-    setImageSrc("/langEN.png");
-  };
-
-  // const [clickHamburger, setClickHamburger] = useState(false);
   // useEffect(() => {
   //   if (isPC) setClickHamburger(true);
   // }, [isPC]);
@@ -150,9 +147,23 @@ const Header = () => {
   //   backgroundColor: "rgba(255, 255, 255, 0.84)",
   //   margin: "1rem",
   // };
+
   return (
     <>
       <div style={header}>
+        <button style={langButton} onClick={() => setIsJP(!isJP)}>
+          <img
+            src={isJP ? "/langJA.PNG" : "/langEN.PNG"}
+            style={{
+              userSelect: "none",
+              pointerEvents: "none",
+              display: "inline-block",
+              marginRight: "0.5rem",
+            }}
+            width={40}
+          />
+          {isPC ? "Langage" : ""}
+        </button>
         <div style={title}>
           <div style={logobox}>
             <div style={pinkCircle}>
@@ -162,13 +173,11 @@ const Header = () => {
           </div>
           <Link href="/">
             <span className={pupupuFont.className} style={headerTextStyle}>
-              ぴくせれーたー
+              {isJP ? "ぴくせれーたーv2" : "Pixelatorv2"}
             </span>
           </Link>
         </div>
-        <button style={langButton}>
-          <img src={"/langJA.png"} width={40} />
-        </button>
+
         {/* {!isPC && (
           <div
             style={hamburgerFrame}
