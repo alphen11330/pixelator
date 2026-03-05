@@ -173,7 +173,7 @@ const Header: React.FC<Props> = ({ isJP, setIsJP }) => {
           </div>
           <Link href="/">
             <span className={pupupuFont.className} style={headerTextStyle}>
-              {isJP ? "ぴくせれーたー2.1" : "Pixelator2.1"}
+              {isJP ? "ぴくせれーたー2.2" : "Pixelator2.2"}
             </span>
           </Link>
         </div>
