@@ -12,7 +12,7 @@ const colorCollectionProcessor = (
     brightness: boolean,
     brightnessLevel: number
 ) => {
-    const hls = new cv.Mat();
+    let hls = new cv.Mat();
     let alpha = new cv.Mat();
     let hasAlpha = false;
 
@@ -32,7 +32,7 @@ const colorCollectionProcessor = (
         cv.cvtColor(bgr, hls, cv.COLOR_RGB2HLS);
 
         // アルファチャンネルを保持
-        alpha = channels.get(3).clone(); // クローンを作成して保持
+        alpha = channels.get(3).clone();
 
         // メモリ解放
         bgr.delete();
@@ -42,28 +42,74 @@ const colorCollectionProcessor = (
         cv.cvtColor(src, hls, cv.COLOR_RGB2HLS);
     }
 
-    // HLSチャンネルを加工
-    for (let y = 0; y < hls.rows; y++) {
-        for (let x = 0; x < hls.cols; x++) {
-            const pixel = hls.ucharPtr(y, x);
-            if (isHue) {
-                // 現在の色相に回転量を加算
-                pixel[0] = (pixel[0] + hue) % 180;  // 色相はOpenCVで0〜179度の範囲
-                if (pixel[0] < 0) pixel[0] += 180; // 負の値にならないように調整
+    // LUTを使用してHLSチャンネルを加工
+    // JSのピクセルループ（width×height回）の代わりに256要素のLUTを作り
+    // cv.LUT()でネイティブコードに処理を委ねる
+    if (isHue || isLuminance || isSaturation) {
+        const hlsChannels = new cv.MatVector();
+        cv.split(hls, hlsChannels);
+
+        let hCh = hlsChannels.get(0).clone();
+        let lCh = hlsChannels.get(1).clone();
+        let sCh = hlsChannels.get(2).clone();
+        hlsChannels.delete();
+
+        if (isHue) {
+            // 色相LUT: モジュロ180の加算（負値も正しく処理）
+            const lutArr = new Uint8Array(256);
+            for (let i = 0; i < 256; i++) {
+                lutArr[i] = ((i + hue) % 180 + 180) % 180;
             }
-            if (isLuminance) {
-                let newLuminance = pixel[1] + luminance;
-                if (newLuminance < 0) newLuminance = 0;
-                if (newLuminance > 255) newLuminance = 255;
-                pixel[1] = newLuminance;
-            }
-            if (isSaturation) {
-                let newSaturation = pixel[2] + saturation;
-                if (newSaturation < 0) newSaturation = 0;
-                if (newSaturation > 255) newSaturation = 255;
-                pixel[2] = newSaturation;
-            }
+            const lutMat = cv.matFromArray(1, 256, cv.CV_8UC1, lutArr);
+            const result = new cv.Mat();
+            cv.LUT(hCh, lutMat, result);
+            hCh.delete();
+            lutMat.delete();
+            hCh = result;
         }
+
+        if (isLuminance) {
+            // 輝度LUT: クランプ付き加算
+            const lutArr = new Uint8Array(256);
+            for (let i = 0; i < 256; i++) {
+                lutArr[i] = Math.max(0, Math.min(255, i + luminance));
+            }
+            const lutMat = cv.matFromArray(1, 256, cv.CV_8UC1, lutArr);
+            const result = new cv.Mat();
+            cv.LUT(lCh, lutMat, result);
+            lCh.delete();
+            lutMat.delete();
+            lCh = result;
+        }
+
+        if (isSaturation) {
+            // 彩度LUT: クランプ付き加算
+            const lutArr = new Uint8Array(256);
+            for (let i = 0; i < 256; i++) {
+                lutArr[i] = Math.max(0, Math.min(255, i + saturation));
+            }
+            const lutMat = cv.matFromArray(1, 256, cv.CV_8UC1, lutArr);
+            const result = new cv.Mat();
+            cv.LUT(sCh, lutMat, result);
+            sCh.delete();
+            lutMat.delete();
+            sCh = result;
+        }
+
+        // チャンネルを結合して新しいhlsを生成
+        const mergedChannels = new cv.MatVector();
+        mergedChannels.push_back(hCh);
+        mergedChannels.push_back(lCh);
+        mergedChannels.push_back(sCh);
+        const newHls = new cv.Mat();
+        cv.merge(mergedChannels, newHls);
+        mergedChannels.delete();
+        hCh.delete();
+        lCh.delete();
+        sCh.delete();
+
+        hls.delete();
+        hls = newHls;
     }
 
     // HLSをRGBに戻す

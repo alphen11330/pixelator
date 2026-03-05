@@ -190,7 +190,7 @@ const PixelArtProcessor: React.FC<Props> = ({
     };
   };
 
-  // RGBの距離を計算
+  // RGBの距離を計算（平方根不要：大小比較のみなので二乗距離で十分）
   const colorDistance = (
     r1: number,
     g1: number,
@@ -199,7 +199,7 @@ const PixelArtProcessor: React.FC<Props> = ({
     g2: number,
     b2: number
   ) => {
-    return Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+    return (r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2;
   };
 
   // パレットの中から一番近い色を返す
