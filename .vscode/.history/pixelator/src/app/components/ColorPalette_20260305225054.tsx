@@ -522,7 +522,7 @@ const ColorPalette: React.FC<Props> = ({
                 border: "solid 5px rgb(60, 58, 71)",
                 borderRadius: "0 0 5px 5px",
                 background: "rgb(189, 189, 195)",
-                maxHeight: toneCurveEnabled ? "800px" : "0px",
+                maxHeight: toneCurveEnabled ? "600px" : "0px",
                 overflow: "hidden",
                 transition: "max-height 0.5s ease",
                 boxSizing: "border-box",

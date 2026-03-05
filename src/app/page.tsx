@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import useDeviceChecker from "./deviceChecker";
 import style from "./util.module.css";
 
@@ -11,6 +11,7 @@ import ImageEditor from "./components/ImageEditor";
 import DitherTypeDropdown from "./components/DitherTypeDropdown";
 import Downloader from "./components/Downloader";
 import ColorPalette from "./components/ColorPalette";
+import { CurvePoint, DEFAULT_CURVE_POINTS, buildLUT } from "./components/toneCurveUtils";
 import RefreshButton from "./components/RefreshButton";
 import Painter from "./components/painter/Painter";
 import RandomButton from "./components/RandomButton";
@@ -64,6 +65,14 @@ export default function Page() {
   //ディザリング
   const [ditherType, setDitherType] = useState("bayerMatrixBasic"); // ディザリング手法の選択
   const [ditherStrength, setDitherStrength] = useState(0.1); // ディザリング強度
+
+  //トーンカーブ
+  const [toneCurveEnabled, setToneCurveEnabled] = useState(false);
+  const [toneCurvePoints, setToneCurvePoints] = useState<CurvePoint[]>(DEFAULT_CURVE_POINTS);
+  const toneCurveLUT = useMemo(
+    () => toneCurveEnabled ? buildLUT(toneCurvePoints) : null,
+    [toneCurvePoints, toneCurveEnabled]
+  );
 
   //輪郭線強調
   const [edgeEnhancement, setEdgeEnhancement] = useState(true); // 輪郭線強調の判定
@@ -199,6 +208,7 @@ export default function Page() {
                     colorLevels={colorLevels}
                     ditherType={ditherType}
                     ditherStrength={ditherStrength}
+                    toneCurveLUT={toneCurveLUT}
                   />
                 </span>
               </>
@@ -281,6 +291,8 @@ export default function Page() {
                   setDitherStrength={setDitherStrength}
                   setColorLevels={setColorLevels}
                   setLockPalette={setLockPalette}
+                  setToneCurveEnabled={setToneCurveEnabled}
+                  setToneCurvePoints={setToneCurvePoints}
                 />
               </>
             )}
@@ -486,6 +498,10 @@ export default function Page() {
                   lockPalette={lockPalette}
                   setLockPalette={setLockPalette}
                   isJP={isJP}
+                  toneCurveEnabled={toneCurveEnabled}
+                  setToneCurveEnabled={setToneCurveEnabled}
+                  toneCurvePoints={toneCurvePoints}
+                  setToneCurvePoints={setToneCurvePoints}
                 />
               </div>
             </>

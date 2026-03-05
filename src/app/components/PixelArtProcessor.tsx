@@ -12,6 +12,7 @@ type Props = {
   colorLevels: number;
   ditherType: string;
   ditherStrength?: number; // 0.0～2.0の範囲で強度を指定 (デフォルト: 1.0)
+  toneCurveLUT?: number[] | null;
 };
 
 // rgb() 形式と hex(#rrggbb) 形式の両方に対応
@@ -47,6 +48,7 @@ const PixelArtProcessor: React.FC<Props> = ({
   colorLevels,
   ditherType = "orderedClassic",
   ditherStrength,
+  toneCurveLUT,
 }) => {
   // 元の画像ピクセルデータを保持するためのRef
   const originalPixelsRef = useRef<ImageData | null>(null);
@@ -69,6 +71,8 @@ const PixelArtProcessor: React.FC<Props> = ({
     ditherStrength,
     initThrottleDitherStrength
   );
+  // デバウンス処理変数（トーンカーブLUT）
+  const throttleToneCurveLUT = useThrottle(toneCurveLUT, 50);
   // デバウンス処理変数（ドット長）
   const [initThrottlePixelLength, setInitThrottlePixelLength] = useState(0);
   const throttlepixelLength = useThrottle(pixelLength, initThrottlePixelLength);
@@ -121,6 +125,7 @@ const PixelArtProcessor: React.FC<Props> = ({
     throttleColorPalette,
     ditherType,
     throttleDitherStrength,
+    throttleToneCurveLUT,
   ]);
 
   // 元の画像からピクセルアートを生成
@@ -281,6 +286,7 @@ const PixelArtProcessor: React.FC<Props> = ({
         ditherType,
         ditherStrength: ditherStrength ?? 1.0,
         bayerMatrix,
+        toneCurveLUT: toneCurveLUT ?? null,
       },
       [buffer]
     );

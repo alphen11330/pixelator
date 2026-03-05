@@ -1,4 +1,5 @@
 import style from "../util.module.css";
+import { CurvePoint, DEFAULT_CURVE_POINTS } from "./toneCurveUtils";
 
 type Props = {
   setColorCollection: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,6 +22,8 @@ type Props = {
   setDitherStrength: React.Dispatch<React.SetStateAction<number>>;
   setColorLevels: React.Dispatch<React.SetStateAction<number>>;
   setLockPalette: React.Dispatch<React.SetStateAction<boolean>>;
+  setToneCurveEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+  setToneCurvePoints: React.Dispatch<React.SetStateAction<CurvePoint[]>>;
 };
 
 const RefreshButton: React.FC<Props> = ({
@@ -44,6 +47,8 @@ const RefreshButton: React.FC<Props> = ({
   setDitherStrength,
   setColorLevels,
   setLockPalette,
+  setToneCurveEnabled,
+  setToneCurvePoints,
 }) => {
   const setInit = () => {
     // パレットをロック
@@ -70,6 +75,11 @@ const RefreshButton: React.FC<Props> = ({
     setDitherType("bayerMatrixBasic");
     setDitherStrength(0.1);
     setColorLevels(5);
+
+    // トーンカーブをリセット
+    setToneCurveEnabled(false);
+    setToneCurvePoints([...DEFAULT_CURVE_POINTS]);
+
     // パレットを開放
     setLockPalette(false);
   };

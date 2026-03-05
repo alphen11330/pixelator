@@ -148,11 +148,22 @@ interface DitherMessage {
   ditherType: string;
   ditherStrength: number;
   bayerMatrix: number[][] | null;
+  toneCurveLUT?: number[] | null;
 }
 
 self.onmessage = (e: MessageEvent<DitherMessage>) => {
-  const { buffer, width, height, paletteRGB, ditherType, ditherStrength, bayerMatrix } = e.data;
+  const { buffer, width, height, paletteRGB, ditherType, ditherStrength, bayerMatrix, toneCurveLUT } = e.data;
   const data = new Uint8ClampedArray(buffer);
+
+  if (toneCurveLUT) {
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] >= 10) {
+        data[i]     = toneCurveLUT[data[i]];
+        data[i + 1] = toneCurveLUT[data[i + 1]];
+        data[i + 2] = toneCurveLUT[data[i + 2]];
+      }
+    }
+  }
 
   if (ditherType === "floydSteinberg") {
     applyFloydSteinberg(data, width, height, paletteRGB, ditherStrength);

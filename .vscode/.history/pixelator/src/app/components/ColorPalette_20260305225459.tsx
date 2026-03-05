@@ -519,7 +519,7 @@ const ColorPalette: React.FC<Props> = ({
             <div
               style={{
                 width: "100%",
-                border: "solid 5px rgb(60, 58, 71)",
+                border: "solid 5px rgb(189, 189, 195)",
                 borderRadius: "0 0 5px 5px",
                 background: "rgb(189, 189, 195)",
                 maxHeight: toneCurveEnabled ? "800px" : "0px",

@@ -75,6 +75,7 @@ const SelectPrePalette: React.FC<Props> = ({ setColorPalette, isJP }) => {
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    boxSizing: "border-box",
     border: "solid 5px rgb(60, 58, 71)",
     borderRadius: "0 0 5px 5px",
     background: "rgb(189, 189, 195)",
