@@ -8,9 +8,13 @@ type Props = {
   isJP: boolean;
 };
 
-const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
+const Uploader: React.FC<Props> = ({
+  setImageSrc,
+  setSmoothImageSrc,
+  isJP,
+}) => {
   // 読み込んだ画像を縮小
-  const MAX_SIZE = 512;
+  const MAX_SIZE = 1024;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -66,7 +70,7 @@ const Uploader: React.FC<Props> = ({ setImageSrc, setSmoothImageSrc }) => {
         }}
         className={style.uploadButton}
       >
-        <div>{isJP ? "画像を選択" : ""}</div>
+        <div>{isJP ? "画像を選択" : "Select IMG"}</div>
       </label>
       <input
         id="file-upload"

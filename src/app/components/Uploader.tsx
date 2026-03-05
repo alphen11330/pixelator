@@ -14,7 +14,7 @@ const Uploader: React.FC<Props> = ({
   isJP,
 }) => {
   // 読み込んだ画像を縮小
-  const MAX_SIZE = 512;
+  const MAX_SIZE = 1024;
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
