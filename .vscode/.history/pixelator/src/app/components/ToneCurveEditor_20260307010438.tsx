@@ -6,7 +6,6 @@ import useDeviceChecker from "../deviceChecker";
 type Channel = "rgb" | "r" | "g" | "b";
 
 type Props = {
-  pointsRgb: CurvePoint[];
   pointsR: CurvePoint[];
   pointsG: CurvePoint[];
   pointsB: CurvePoint[];
@@ -36,7 +35,6 @@ const buildPathD = (points: CurvePoint[]): string => {
 };
 
 const ToneCurveEditor: React.FC<Props> = ({
-  pointsRgb,
   pointsR,
   pointsG,
   pointsB,
@@ -52,13 +50,7 @@ const ToneCurveEditor: React.FC<Props> = ({
   const centerWasAddedRef = useRef(false);
 
   const points: CurvePoint[] =
-    channel === "r"
-      ? pointsR
-      : channel === "g"
-      ? pointsG
-      : channel === "b"
-      ? pointsB
-      : pointsRgb;
+    channel === "g" ? pointsG : channel === "b" ? pointsB : pointsR;
 
   const handleChannelChange = (ch: Channel) => {
     setChannel(ch);
@@ -204,7 +196,7 @@ const ToneCurveEditor: React.FC<Props> = ({
                 y1={0}
                 x2={v}
                 y2={SVG_SIZE}
-                stroke="rgb(73, 71, 82)"
+                stroke="rgb(200,200,206)"
                 strokeWidth={0.5}
               />
               <line
@@ -212,7 +204,7 @@ const ToneCurveEditor: React.FC<Props> = ({
                 y1={v}
                 x2={SVG_SIZE}
                 y2={v}
-                stroke="rgb(73, 71, 82)"
+                stroke="rgb(200,200,206)"
                 strokeWidth={0.5}
               />
             </React.Fragment>
@@ -224,7 +216,7 @@ const ToneCurveEditor: React.FC<Props> = ({
           y1={SVG_SIZE}
           x2={SVG_SIZE}
           y2={0}
-          stroke="rgb(80, 78, 90)"
+          stroke="rgb(160,160,170)"
           strokeWidth={0.8}
           strokeDasharray="4,3"
         />

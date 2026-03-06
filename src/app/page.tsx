@@ -68,11 +68,27 @@ export default function Page() {
 
   //トーンカーブ
   const [toneCurveEnabled, setToneCurveEnabled] = useState(false);
-  const [toneCurvePoints, setToneCurvePoints] = useState<CurvePoint[]>(DEFAULT_CURVE_POINTS);
-  const toneCurveLUT = useMemo(
-    () => toneCurveEnabled ? buildLUT(toneCurvePoints) : null,
-    [toneCurvePoints, toneCurveEnabled]
-  );
+  const [toneCurvePoints, setToneCurvePoints] = useState<{
+    rgb: CurvePoint[]; r: CurvePoint[]; g: CurvePoint[]; b: CurvePoint[];
+  }>({
+    rgb: [...DEFAULT_CURVE_POINTS],
+    r: [...DEFAULT_CURVE_POINTS],
+    g: [...DEFAULT_CURVE_POINTS],
+    b: [...DEFAULT_CURVE_POINTS],
+  });
+  const toneCurveLUT = useMemo(() => {
+    if (!toneCurveEnabled) return null;
+    const rgbLut = buildLUT(toneCurvePoints.rgb);
+    const rLut   = buildLUT(toneCurvePoints.r);
+    const gLut   = buildLUT(toneCurvePoints.g);
+    const bLut   = buildLUT(toneCurvePoints.b);
+    // RGB カーブ適用後に個別チャンネルカーブを合成
+    return {
+      r: Array.from({ length: 256 }, (_, i) => rLut[rgbLut[i]]),
+      g: Array.from({ length: 256 }, (_, i) => gLut[rgbLut[i]]),
+      b: Array.from({ length: 256 }, (_, i) => bLut[rgbLut[i]]),
+    };
+  }, [toneCurvePoints, toneCurveEnabled]);
 
   //輪郭線強調
   const [edgeEnhancement, setEdgeEnhancement] = useState(true); // 輪郭線強調の判定

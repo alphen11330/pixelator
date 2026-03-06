@@ -148,7 +148,7 @@ interface DitherMessage {
   ditherType: string;
   ditherStrength: number;
   bayerMatrix: number[][] | null;
-  toneCurveLUT?: number[] | null;
+  toneCurveLUT?: { r: number[]; g: number[]; b: number[] } | null;
 }
 
 self.onmessage = (e: MessageEvent<DitherMessage>) => {
@@ -158,9 +158,9 @@ self.onmessage = (e: MessageEvent<DitherMessage>) => {
   if (toneCurveLUT) {
     for (let i = 0; i < data.length; i += 4) {
       if (data[i + 3] >= 10) {
-        data[i]     = toneCurveLUT[data[i]];
-        data[i + 1] = toneCurveLUT[data[i + 1]];
-        data[i + 2] = toneCurveLUT[data[i + 2]];
+        data[i]     = toneCurveLUT.r[data[i]];
+        data[i + 1] = toneCurveLUT.g[data[i + 1]];
+        data[i + 2] = toneCurveLUT.b[data[i + 2]];
       }
     }
   }

@@ -23,7 +23,7 @@ type Props = {
   setColorLevels: React.Dispatch<React.SetStateAction<number>>;
   setLockPalette: React.Dispatch<React.SetStateAction<boolean>>;
   setToneCurveEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-  setToneCurvePoints: React.Dispatch<React.SetStateAction<CurvePoint[]>>;
+  setToneCurvePoints: React.Dispatch<React.SetStateAction<{ rgb: CurvePoint[]; r: CurvePoint[]; g: CurvePoint[]; b: CurvePoint[] }>>;
 };
 
 const RefreshButton: React.FC<Props> = ({
@@ -78,7 +78,12 @@ const RefreshButton: React.FC<Props> = ({
 
     // トーンカーブをリセット
     setToneCurveEnabled(false);
-    setToneCurvePoints([...DEFAULT_CURVE_POINTS]);
+    setToneCurvePoints({
+      rgb: [...DEFAULT_CURVE_POINTS],
+      r: [...DEFAULT_CURVE_POINTS],
+      g: [...DEFAULT_CURVE_POINTS],
+      b: [...DEFAULT_CURVE_POINTS],
+    });
 
     // パレットを開放
     setLockPalette(false);

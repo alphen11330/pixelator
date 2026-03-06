@@ -204,7 +204,7 @@ const ToneCurveEditor: React.FC<Props> = ({
                 y1={0}
                 x2={v}
                 y2={SVG_SIZE}
-                stroke="rgb(73, 71, 82)"
+                stroke="rgb(80, 78, 90)"
                 strokeWidth={0.5}
               />
               <line
@@ -212,7 +212,7 @@ const ToneCurveEditor: React.FC<Props> = ({
                 y1={v}
                 x2={SVG_SIZE}
                 y2={v}
-                stroke="rgb(73, 71, 82)"
+                stroke="rgb(80, 78, 90)"
                 strokeWidth={0.5}
               />
             </React.Fragment>
@@ -224,7 +224,7 @@ const ToneCurveEditor: React.FC<Props> = ({
           y1={SVG_SIZE}
           x2={SVG_SIZE}
           y2={0}
-          stroke="rgb(80, 78, 90)"
+          stroke="rgb(160,160,170)"
           strokeWidth={0.8}
           strokeDasharray="4,3"
         />

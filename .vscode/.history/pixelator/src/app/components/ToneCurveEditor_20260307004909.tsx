@@ -3,22 +3,10 @@ import React, { useCallback, useRef, useState } from "react";
 import { CurvePoint, DEFAULT_CURVE_POINTS, buildLUT } from "./toneCurveUtils";
 import useDeviceChecker from "../deviceChecker";
 
-type Channel = "rgb" | "r" | "g" | "b";
-
 type Props = {
-  pointsRgb: CurvePoint[];
-  pointsR: CurvePoint[];
-  pointsG: CurvePoint[];
-  pointsB: CurvePoint[];
-  onChange: (channel: Channel, points: CurvePoint[]) => void;
+  points: CurvePoint[];
+  onChange: (points: CurvePoint[]) => void;
   isJP: boolean;
-};
-
-const CHANNEL_COLORS: Record<Channel, { curve: string; point: string }> = {
-  rgb: { curve: "rgb(255, 255, 253)", point: "rgb(40, 40, 40)" },
-  r: { curve: "rgb(220, 60, 60)", point: "rgb(200, 40, 40)" },
-  g: { curve: "rgb(50, 190, 80)", point: "rgb(30, 160, 60)" },
-  b: { curve: "rgb(60, 120, 220)", point: "rgb(37, 69, 225)" },
 };
 
 const SVG_SIZE = 200;
@@ -35,36 +23,13 @@ const buildPathD = (points: CurvePoint[]): string => {
   return d;
 };
 
-const ToneCurveEditor: React.FC<Props> = ({
-  pointsRgb,
-  pointsR,
-  pointsG,
-  pointsB,
-  onChange,
-  isJP,
-}) => {
+const ToneCurveEditor: React.FC<Props> = ({ points, onChange, isJP }) => {
   const isPC = useDeviceChecker();
   const svgRef = useRef<SVGSVGElement>(null);
   const draggingRef = useRef<number | null>(null);
-  const [channel, setChannel] = useState<Channel>("rgb");
   const [centerLocked, setCenterLocked] = useState(false);
   // チェックON時にポイントを自動追加したか記録
   const centerWasAddedRef = useRef(false);
-
-  const points: CurvePoint[] =
-    channel === "r"
-      ? pointsR
-      : channel === "g"
-      ? pointsG
-      : channel === "b"
-      ? pointsB
-      : pointsRgb;
-
-  const handleChannelChange = (ch: Channel) => {
-    setChannel(ch);
-    setCenterLocked(false);
-    centerWasAddedRef.current = false;
-  };
 
   const handleCenterLockChange = (checked: boolean) => {
     setCenterLocked(checked);
@@ -75,12 +40,11 @@ const ToneCurveEditor: React.FC<Props> = ({
         const newPoints = ([...points, [128, 128]] as CurvePoint[]).sort(
           (a, b) => a[0] - b[0]
         );
-        onChange(channel, newPoints);
+        onChange(newPoints);
       } else {
         centerWasAddedRef.current = false;
         // x=128のポイントをy=128に強制
         onChange(
-          channel,
           points.map((p) => (p[0] === 128 ? [128, 128] : p) as CurvePoint)
         );
       }
@@ -88,10 +52,7 @@ const ToneCurveEditor: React.FC<Props> = ({
       // チェックOFF: 自動追加したポイントを削除
       if (centerWasAddedRef.current) {
         centerWasAddedRef.current = false;
-        onChange(
-          channel,
-          points.filter((p) => p[0] !== 128)
-        );
+        onChange(points.filter((p) => p[0] !== 128));
       }
     }
   };
@@ -136,7 +97,7 @@ const ToneCurveEditor: React.FC<Props> = ({
         const centerIdx = points.findIndex((p) => p[0] === 128);
         if (centerIdx !== -1 && idx === centerIdx) {
           next[idx] = [128, newY];
-          onChange(channel, next);
+          onChange(next);
           return;
         }
       }
@@ -166,9 +127,9 @@ const ToneCurveEditor: React.FC<Props> = ({
         const maxX = next[idx + 1][0] - 1;
         next[idx] = [Math.max(minX, Math.min(maxX, newX)), newY];
       }
-      onChange(channel, next);
+      onChange(next);
     },
-    [points, onChange, centerLocked, channel]
+    [points, onChange, centerLocked]
   );
 
   const handlePointerUp = useCallback(() => {
@@ -204,7 +165,7 @@ const ToneCurveEditor: React.FC<Props> = ({
                 y1={0}
                 x2={v}
                 y2={SVG_SIZE}
-                stroke="rgb(73, 71, 82)"
+                stroke="rgb(200,200,206)"
                 strokeWidth={0.5}
               />
               <line
@@ -212,7 +173,7 @@ const ToneCurveEditor: React.FC<Props> = ({
                 y1={v}
                 x2={SVG_SIZE}
                 y2={v}
-                stroke="rgb(73, 71, 82)"
+                stroke="rgb(200,200,206)"
                 strokeWidth={0.5}
               />
             </React.Fragment>
@@ -224,7 +185,7 @@ const ToneCurveEditor: React.FC<Props> = ({
           y1={SVG_SIZE}
           x2={SVG_SIZE}
           y2={0}
-          stroke="rgb(80, 78, 90)"
+          stroke="rgb(160,160,170)"
           strokeWidth={0.8}
           strokeDasharray="4,3"
         />
@@ -232,7 +193,7 @@ const ToneCurveEditor: React.FC<Props> = ({
         <path
           d={pathD}
           fill="none"
-          stroke={CHANNEL_COLORS[channel].curve}
+          stroke="rgb(251, 253, 246)"
           strokeWidth={1.5}
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -260,10 +221,8 @@ const ToneCurveEditor: React.FC<Props> = ({
               cx={cx}
               cy={cy}
               r={isPC ? 3 : 6}
-              fill={
-                isCenter ? "rgb(255, 180, 0)" : CHANNEL_COLORS[channel].point
-              }
-              stroke="rgb(253, 247, 246)"
+              fill={isCenter ? "rgb(255, 180, 0)" : "rgb(37, 69, 225)"}
+              stroke="rgb(232, 247, 255)"
               strokeWidth={1.5}
               style={{ cursor }}
               onPointerDown={(e) => handlePointerDown(idx, e)}
@@ -279,50 +238,28 @@ const ToneCurveEditor: React.FC<Props> = ({
           marginTop: "0.4rem",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-          {/* チャンネル選択ドロップダウン */}
-          <select
-            value={channel}
-            onChange={(e) => handleChannelChange(e.target.value as Channel)}
-            style={{
-              fontSize: "0.75rem",
-              padding: "0.1rem 0.3rem",
-              border: "1px solid rgb(100,98,110)",
-              borderRadius: "3px",
-              background: "rgb(220,220,226)",
-              cursor: "pointer",
-            }}
-          >
-            <option value="rgb">RGB</option>
-            <option value="r">{isJP ? "レッド" : "Red"}</option>
-            <option value="g">{isJP ? "グリーン" : "Green"}</option>
-            <option value="b">{isJP ? "ブルー" : "Blue"}</option>
-          </select>
-          {/* 中心を固定 */}
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.2rem",
-              fontSize: "0.75rem",
-              cursor: "pointer",
-              userSelect: "none",
-              marginLeft: "0.2rem",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={centerLocked}
-              onChange={(e) => handleCenterLockChange(e.target.checked)}
-              style={{ cursor: "pointer" }}
-            />
-            {isJP ? "中心を固定" : "Lock Center"}
-          </label>
-        </div>
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.3rem",
+            fontSize: "0.75rem",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={centerLocked}
+            onChange={(e) => handleCenterLockChange(e.target.checked)}
+            style={{ cursor: "pointer" }}
+          />
+          {isJP ? "中心を固定" : "Lock Center"}
+        </label>
         <button
           onClick={() => {
             setCenterLocked(false);
-            onChange(channel, [...DEFAULT_CURVE_POINTS]);
+            onChange([...DEFAULT_CURVE_POINTS]);
           }}
           style={{
             fontSize: "0.75rem",

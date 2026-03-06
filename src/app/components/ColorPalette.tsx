@@ -4,6 +4,8 @@ import { createPalette } from "./createPalette";
 import SelectPrePalette from "./SelectPrePalette";
 import ToneCurveEditor from "./ToneCurveEditor";
 import { CurvePoint } from "./toneCurveUtils";
+
+type ToneCurveChannels = { rgb: CurvePoint[]; r: CurvePoint[]; g: CurvePoint[]; b: CurvePoint[] };
 import { sortPalette } from "./sortPalette";
 import useDeviceChecker from "../deviceChecker";
 import { Margarine } from "next/font/google";
@@ -205,8 +207,8 @@ type Props = {
   isJP: boolean;
   toneCurveEnabled: boolean;
   setToneCurveEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-  toneCurvePoints: CurvePoint[];
-  setToneCurvePoints: React.Dispatch<React.SetStateAction<CurvePoint[]>>;
+  toneCurvePoints: ToneCurveChannels;
+  setToneCurvePoints: React.Dispatch<React.SetStateAction<ToneCurveChannels>>;
 };
 
 const ColorPalette: React.FC<Props> = ({
@@ -530,8 +532,13 @@ const ColorPalette: React.FC<Props> = ({
             >
               <div style={{ padding: "0.5rem" }}>
                 <ToneCurveEditor
-                  points={toneCurvePoints}
-                  onChange={setToneCurvePoints}
+                  pointsRgb={toneCurvePoints.rgb}
+                  pointsR={toneCurvePoints.r}
+                  pointsG={toneCurvePoints.g}
+                  pointsB={toneCurvePoints.b}
+                  onChange={(ch, pts) =>
+                    setToneCurvePoints((prev) => ({ ...prev, [ch]: pts }))
+                  }
                   isJP={isJP}
                 />
               </div>

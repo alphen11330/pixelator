@@ -12,7 +12,7 @@ type Props = {
   colorLevels: number;
   ditherType: string;
   ditherStrength?: number; // 0.0～2.0の範囲で強度を指定 (デフォルト: 1.0)
-  toneCurveLUT?: number[] | null;
+  toneCurveLUT?: { r: number[]; g: number[]; b: number[] } | null;
 };
 
 // rgb() 形式と hex(#rrggbb) 形式の両方に対応
