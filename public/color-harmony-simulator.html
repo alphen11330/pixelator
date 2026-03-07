@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>配色幾何学シミュレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f; --surface: #18181c; --border: #2e2e38;
+    --text: #e8e8f0; --dim: #888898; --accent: #6ee7f7;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; padding: 36px 16px 60px;
+  }
+  header { text-align: center; margin-bottom: 24px; }
+  header h1 { font-size: 1.35rem; font-weight: 300; letter-spacing: 0.28em; }
+  header p  { font-size: 0.68rem; color: var(--dim); margin-top: 5px;
+               letter-spacing: 0.18em; font-family: 'DM Mono', monospace; }
+  .selector-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
+  }
+  .selector-label {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    color: var(--dim); letter-spacing: 0.15em;
+  }
+  select {
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    font-family: 'DM Mono', monospace; font-size: 0.8rem;
+    padding: 6px 28px 6px 12px; cursor: pointer; outline: none;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888898'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    transition: border-color 0.15s;
+  }
+  select:hover, select:focus { border-color: var(--accent); }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px;
+    display: flex; flex-direction: column; gap: 14px;
+    width: 460px;
+  }
+  .card-title {
+    font-size: 0.72rem; letter-spacing: 0.22em; color: var(--dim);
+    font-family: 'DM Mono', monospace; text-transform: uppercase;
+  }
+  .top-row { display: flex; gap: 14px; align-items: stretch; height: 210px; }
+  .wheel-wrap {
+    position: relative; flex-shrink: 0;
+    width: 210px; height: 210px; cursor: crosshair;
+  }
+  .wheel-wrap canvas { position: absolute; top: 0; left: 0; }
+  .sl-col { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .sl-axis-labels {
+    display: flex; justify-content: space-between;
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    color: var(--dim); letter-spacing: 0.05em; flex-shrink: 0;
+  }
+  .sl-pad {
+    flex: 1; border-radius: 10px; position: relative;
+    cursor: crosshair; border: 1px solid var(--border);
+    overflow: hidden; min-height: 0;
+  }
+  .sl-pad canvas { display: block; position: absolute; top:0; left:0; width:100%; height:100%; }
+  .sl-pad-dot {
+    position: absolute; width: 13px; height: 13px;
+    border-radius: 50%; border: 2px solid #fff;
+    background: rgba(255,255,255,0.1);
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.5);
+  }
+  .sl-val {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    color: var(--dim); text-align: right; flex-shrink: 0;
+  }
+  .count-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.72rem; color: var(--dim); font-family: 'DM Mono', monospace;
+  }
+  .count-row input[type=range] { flex:1; accent-color: var(--accent); cursor:pointer; height:2px; }
+  .count-val { min-width: 18px; color: var(--text); }
+  .palette-bar {
+    width: 100%; height: 26px; border-radius: 6px; overflow: hidden; display: flex;
+  }
+  .palette-bar .seg { flex: 1; }
+  .footer-row { display: flex; justify-content: flex-end; }
+  .reset-btn {
+    background: none; border: 1px solid var(--border); color: var(--dim);
+    font-family: 'DM Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.12em; padding: 5px 14px; border-radius: 6px;
+    cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>配色幾何学シミュレーター</h1>
+  <p>HUE · SATURATION · LIGHTNESS</p>
+</header>
+<div class="selector-row">
+  <span class="selector-label">MODE</span>
+  <select id="mode-select">
+    <option value="0">テトラード</option>
+    <option value="3">分裂補色</option>
+    <option value="1">類似配色</option>
+    <option value="2">均等配色</option>
+  </select>
+</div>
+<div id="card-container"></div>
+<script>
+const CONFIGS = [
+  { name: "テトラード", type: "tetrad",    count: 4, fixedCount: true  },
+  { name: "類似配色",   type: "analogous", count: 4, fixedCount: false },
+  { name: "均等配色",   type: "dynamic",   count: 6, fixedCount: false },
+  { name: "分裂補色",   type: "splitcomp", count: 3, fixedCount: true  },
+];
+
+let activeCleanup = null;
+
+function buildCard(cfg) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-title">${cfg.name}</div>
+    <div class="top-row">
+      <div class="wheel-wrap">
+        <canvas class="c-ring" width="210" height="210"></canvas>
+        <canvas class="c-top"  width="210" height="210"></canvas>
+      </div>
+      <div class="sl-col">
+        <div class="sl-axis-labels"><span>S →</span><span>↑ L</span></div>
+        <div class="sl-pad">
+          <canvas class="c-sl"></canvas>
+          <div class="sl-pad-dot"></div>
+        </div>
+        <div class="sl-val">S 100  L 50</div>
+      </div>
+    </div>
+    <div class="bottom-row" style="display:flex;flex-direction:column;gap:10px;">
+      ${cfg.fixedCount ? '' : `
+      <div class="count-row">
+        <span>count</span>
+        <input type="range" min="${cfg.type==='analogous'?2:2}" max="10" value="${cfg.count}">
+        <span class="count-val">${cfg.count}</span>
+      </div>`}
+      <div class="palette-bar"></div>
+      <div class="footer-row"><button class="reset-btn">↺ reset</button></div>
+    </div>
+  `;
+  document.getElementById('card-container').innerHTML = '';
+  document.getElementById('card-container').appendChild(card);
+
+  const cRing = card.querySelector('.c-ring');
+  const cTop  = card.querySelector('.c-top');
+  const cSL   = card.querySelector('.c-sl');
+  const ctxR  = cRing.getContext('2d');
+  const ctxT  = cTop.getContext('2d');
+  const ctxSL = cSL.getContext('2d');
+  const slPad = card.querySelector('.sl-pad');
+  const slDot = card.querySelector('.sl-pad-dot');
+  const slVal = card.querySelector('.sl-val');
+  const palBar= card.querySelector('.palette-bar');
+
+  const W=210, H=210, CX=105, CY=105;
+  const R_OUT=98, R_IN=64, midR=(R_OUT+R_IN)/2;
+
+  let n=cfg.count, splitOffset=30;
+  const INIT_S=1.0, INIT_L=0.50;
+  let globalS=INIT_S, globalL=INIT_L;
+
+  // 類似配色: hubは色相環上のガイドポイント（パレット非掲載）
+  // hues = n個のサテライト（hub中心に±offsetで等間隔）
+  let analogousHub = 180; // 初期値180°
+
+  function buildAnalogousHues(hub, offset, count) {
+    // count個を hub±offset の範囲に等間隔
+    const cOff = Math.min(offset, 120);
+    if (count === 1) return [hub % 360];
+    return Array.from({length: count}, (_, k) => {
+      const t = (k / (count - 1)) * 2 - 1; // -1〜+1
+      return (hub + t * cOff + 360) % 360;
+    });
+  }
+
+  // 分裂補色: 頂点(apex) + 対向側に対称2点、常に二等辺三角形
+  // spreadAngle = 対向軸から各サテライトまでの角度
+  let scApex = 0;
+  let scSpread = 30; // 初期30°
+
+  function buildSplitCompHues(apex, spread) {
+    const comp = (apex + 180 + 360) % 360;
+    const s = Math.min(Math.max(spread, 1), 150);
+    return [
+      apex % 360,
+      (comp + s + 360) % 360,
+      (comp - s + 360) % 360,
+    ];
+  }
+
+  let hues = cfg.type==='analogous'
+    ? buildAnalogousHues(analogousHub, splitOffset, n)
+    : cfg.type==='splitcomp'
+    ? buildSplitCompHues(scApex, scSpread)
+    : Array.from({length:n},(_,i)=>(i*360/n)%360);
+
+  const getSat=()=>Math.round(globalS*100);
+  const getLit=()=>Math.round(globalL*100);
+  let dragMode=null, dragIdx=-1;
+
+  function drawRing(){
+    ctxR.clearRect(0,0,W,H);
+    for(let d=0;d<360;d++){
+      ctxR.beginPath();
+      ctxR.strokeStyle=`hsl(${d},100%,50%)`;
+      ctxR.lineWidth=R_OUT-R_IN+2;
+      ctxR.arc(CX,CY,midR,(d-1)*Math.PI/180,(d+1)*Math.PI/180);
+      ctxR.stroke();
+    }
+  }
+
+  function drawSLPad(){
+    const pw=slPad.offsetWidth||140, ph=slPad.offsetHeight||160;
+    cSL.width=pw; cSL.height=ph;
+    const avgH = cfg.type==='analogous' ? analogousHub : hues.reduce((a,b)=>a+b,0)/hues.length;
+    const gS=ctxSL.createLinearGradient(0,0,pw,0);
+    gS.addColorStop(0,`hsl(${avgH},0%,50%)`);
+    gS.addColorStop(1,`hsl(${avgH},100%,50%)`);
+    ctxSL.fillStyle=gS; ctxSL.fillRect(0,0,pw,ph);
+    const gL=ctxSL.createLinearGradient(0,0,0,ph);
+    gL.addColorStop(0,'rgba(255,255,255,0.8)');
+    gL.addColorStop(0.45,'rgba(0,0,0,0)');
+    gL.addColorStop(1,'rgba(0,0,0,0.8)');
+    ctxSL.fillStyle=gL; ctxSL.fillRect(0,0,pw,ph);
+    ctxSL.strokeStyle='rgba(255,255,255,0.07)'; ctxSL.lineWidth=1;
+    [0.25,0.5,0.75].forEach(t=>{
+      ctxSL.beginPath(); ctxSL.moveTo(t*pw,0);  ctxSL.lineTo(t*pw,ph); ctxSL.stroke();
+      ctxSL.beginPath(); ctxSL.moveTo(0,t*ph); ctxSL.lineTo(pw,t*ph); ctxSL.stroke();
+    });
+    slDot.style.left=globalS*pw+'px';
+    slDot.style.top=(1-globalL)*ph+'px';
+    slDot.style.background=`hsl(${avgH},${getSat()}%,${getLit()}%)`;
+    slVal.textContent=`S ${getSat()}  L ${getLit()}`;
+  }
+
+  function drawTop(){
+    ctxT.clearRect(0,0,W,H);
+    ctxT.setLineDash([4,4]); ctxT.lineWidth=1.5; ctxT.strokeStyle='rgba(255,255,255,0.5)';
+    ctxT.beginPath();
+    if(cfg.type==='analogous'){
+      // サテライト同士を弧状に繋ぐ（隣同士を線で接続）
+      hues.forEach((h,i)=>{
+        const r=h*Math.PI/180;
+        i===0?ctxT.moveTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r))
+             :ctxT.lineTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r));
+      });
+    } else if(cfg.type==='splitcomp'){
+      // 二等辺三角形: 全3点を繋ぐ
+      [0,1,2,0].forEach((idx,i)=>{
+        const r=hues[idx]*Math.PI/180;
+        i===0?ctxT.moveTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r))
+             :ctxT.lineTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r));
+      });
+    } else if(cfg.type==='tetrad'){
+      hues.forEach((h,i)=>{
+        const r=h*Math.PI/180;
+        i===0?ctxT.moveTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r))
+             :ctxT.lineTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r));
+      });
+      ctxT.closePath();
+    } else {
+      hues.forEach((h,i)=>{
+        const r=h*Math.PI/180;
+        i===0?ctxT.moveTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r))
+             :ctxT.lineTo(CX+midR*Math.cos(r),CY+midR*Math.sin(r));
+      });
+      ctxT.closePath();
+    }
+    ctxT.stroke(); ctxT.setLineDash([]);
+
+    if(cfg.type==='analogous'){
+      // hubガイド: 配色群の対称位置（hub+180°）に菱形マーカー
+      const guideAngle = (analogousHub + 180 + 360) % 360;
+      const gr = guideAngle * Math.PI / 180;
+      const gx = CX + midR * Math.cos(gr), gy = CY + midR * Math.sin(gr);
+      // guideから両端サテライトへの点線（太め）
+      ctxT.setLineDash([3,5]); ctxT.lineWidth=2; ctxT.strokeStyle='rgba(255,255,255,0.35)';
+      ctxT.beginPath();
+      const r0=hues[0]*Math.PI/180;
+      ctxT.moveTo(gx,gy); ctxT.lineTo(CX+midR*Math.cos(r0),CY+midR*Math.sin(r0));
+      const rn=hues[hues.length-1]*Math.PI/180;
+      ctxT.moveTo(gx,gy); ctxT.lineTo(CX+midR*Math.cos(rn),CY+midR*Math.sin(rn));
+      ctxT.stroke(); ctxT.setLineDash([]);
+      // 菱形マーカー（大きめ・目立つ）
+      ctxT.save(); ctxT.translate(gx,gy); ctxT.rotate(Math.PI/4);
+      ctxT.beginPath(); ctxT.rect(-7,-7,14,14);
+      ctxT.fillStyle=`hsl(${guideAngle},${getSat()}%,${getLit()}%)`;
+      ctxT.fill();
+      ctxT.lineWidth=2.5; ctxT.strokeStyle='rgba(255,255,255,0.7)'; ctxT.stroke();
+      ctxT.restore();
+      // 外側のグローリング
+      ctxT.beginPath(); ctxT.arc(gx,gy,16,0,Math.PI*2);
+      ctxT.lineWidth=1; ctxT.strokeStyle='rgba(255,255,255,0.25)'; ctxT.stroke();
+      // offsetラベル
+      ctxT.font='500 9px DM Mono,monospace'; ctxT.fillStyle='rgba(255,255,255,0.28)';
+      ctxT.textAlign='center';
+      ctxT.fillText(`\u00b1${Math.round(Math.min(splitOffset,120))}\u00b0`,CX,CY);
+    }
+
+    if(cfg.type==='splitcomp'){
+      // 頂点から補色軸への点線
+      const apexRad  = scApex * Math.PI / 180;
+      const compRad  = (scApex + 180) * Math.PI / 180;
+      ctxT.setLineDash([2,6]); ctxT.lineWidth=1; ctxT.strokeStyle='rgba(255,255,255,0.18)';
+      ctxT.beginPath();
+      ctxT.moveTo(CX+midR*Math.cos(apexRad), CY+midR*Math.sin(apexRad));
+      ctxT.lineTo(CX+midR*Math.cos(compRad), CY+midR*Math.sin(compRad));
+      ctxT.stroke(); ctxT.setLineDash([]);
+      // spreadラベル
+      ctxT.font='500 9px DM Mono,monospace'; ctxT.fillStyle='rgba(255,255,255,0.28)';
+      ctxT.textAlign='center';
+      ctxT.fillText(`\u00b1${Math.round(scSpread)}\u00b0`, CX, CY);
+    }
+
+    // handles
+    hues.forEach((h,i)=>{
+      const r=h*Math.PI/180;
+      const hx=CX+midR*Math.cos(r), hy=CY+midR*Math.sin(r);
+      const isApex = (cfg.type==='splitcomp' && i===0);
+
+      if(isApex){
+        // 頂点: 大きめ塗り丸 + 外側に白い二重リング
+        ctxT.beginPath(); ctxT.arc(hx,hy,11,0,Math.PI*2);
+        ctxT.fillStyle=`hsl(${h},${getSat()}%,${getLit()}%)`; ctxT.fill();
+        ctxT.lineWidth=2.5; ctxT.strokeStyle='#fff'; ctxT.stroke();
+        // 外リング
+        ctxT.beginPath(); ctxT.arc(hx,hy,17,0,Math.PI*2);
+        ctxT.lineWidth=1.5; ctxT.strokeStyle='rgba(255,255,255,0.45)'; ctxT.stroke();
+      } else {
+        // サテライト: 通常サイズ、少し細いリング
+        ctxT.beginPath(); ctxT.arc(hx,hy,7,0,Math.PI*2);
+        ctxT.fillStyle=`hsl(${h},${getSat()}%,${getLit()}%)`; ctxT.fill();
+        ctxT.lineWidth=1.5; ctxT.strokeStyle='rgba(255,255,255,0.7)'; ctxT.stroke();
+      }
+    });
+  }
+
+  function buildPalette(){
+    palBar.innerHTML='';
+    hues.forEach(h=>{
+      const seg=document.createElement('div');
+      seg.className='seg';
+      seg.style.background=`hsl(${h},${getSat()}%,${getLit()}%)`;
+      palBar.appendChild(seg);
+    });
+  }
+
+  function draw(){ drawSLPad(); drawTop(); buildPalette(); }
+
+  function hitHue(mx,my){
+    const dx=mx-CX, dy=my-CY, d=Math.hypot(dx,dy);
+    if(d<R_IN-6||d>R_OUT+6)return -1;
+    const angle=(Math.atan2(dy,dx)*180/Math.PI+360)%360;
+
+    // 類似配色: 対称位置の菱形マーカーを最初にチェック（index=-2で識別）
+    if(cfg.type==='analogous'){
+      const guideAngle=(analogousHub+180+360)%360;
+      const angleDiff=Math.abs((angle-guideAngle+540)%360-180);
+      if(angleDiff<15) return -2; // -2 = guide marker
+    }
+
+    let best=-1, bestD=22;
+    hues.forEach((h,i)=>{
+      const diff=Math.abs((angle-h+540)%360-180);
+      if(diff<bestD){bestD=diff;best=i;}
+    });
+    return best;
+  }
+
+  function updateHue(mx,my,idx){
+    const angle=(Math.atan2(my-CY,mx-CX)*180/Math.PI+360)%360;
+    if(cfg.type==='analogous'){
+      if(idx===-2){
+        // 菱形ガイド（対称位置）をドラッグ → hubを反対側に追従させて全体回転
+        analogousHub=(angle+180+360)%360;
+        hues=buildAnalogousHues(analogousHub,splitOffset,n);
+      } else {
+        const isEnd=(idx===0||idx===hues.length-1);
+        if(isEnd){
+          const delta=(angle-analogousHub+540)%360-180;
+          const k=idx;
+          const t=hues.length===1?1:Math.abs((k/(hues.length-1))*2-1);
+          splitOffset=Math.max(1,Math.min(120,Math.abs(delta)/(t<0.01?1:t)));
+          hues=buildAnalogousHues(analogousHub,splitOffset,n);
+        } else {
+          const diff=angle-hues[idx];
+          analogousHub=(analogousHub+diff+360)%360;
+          hues=buildAnalogousHues(analogousHub,splitOffset,n);
+        }
+      }
+    } else if(cfg.type==='splitcomp'){
+      if(idx===0){
+        scApex = angle;
+        hues = buildSplitCompHues(scApex, scSpread);
+      } else {
+        const comp = (scApex + 180 + 360) % 360;
+        const delta = (angle - comp + 540) % 360 - 180;
+        scSpread = Math.max(1, Math.min(150, Math.abs(delta)));
+        hues = buildSplitCompHues(scApex, scSpread);
+      }
+    } else if(cfg.type==='tetrad'){
+      const diff=angle-hues[idx];
+      if(idx===0||idx===2){hues[0]=(hues[0]+diff+360)%360;hues[2]=(hues[2]+diff+360)%360;}
+      else                {hues[1]=(hues[1]+diff+360)%360;hues[3]=(hues[3]+diff+360)%360;}
+    } else {
+      const diff=angle-hues[idx];
+      hues=hues.map(h=>(h+diff+360)%360);
+    }
+  }
+
+  cTop.addEventListener('mousedown',e=>{
+    const rect=cTop.getBoundingClientRect();
+    const hi=hitHue(e.clientX-rect.left,e.clientY-rect.top);
+    if(hi>=0||hi===-2){dragMode='hue';dragIdx=hi;}
+  });
+
+  function updateSL(e){
+    const rect=slPad.getBoundingClientRect();
+    const cx=e.touches?e.touches[0].clientX:e.clientX;
+    const cy=e.touches?e.touches[0].clientY:e.clientY;
+    globalS=Math.max(0.01,Math.min(1.0,(cx-rect.left)/rect.width));
+    globalL=Math.max(0.05,Math.min(0.95,1-(cy-rect.top)/rect.height));
+    draw();
+  }
+  slPad.addEventListener('mousedown',e=>{dragMode='sl';updateSL(e);});
+  slPad.addEventListener('touchstart',e=>{e.preventDefault();dragMode='sl';updateSL(e);},{passive:false});
+
+  const onMove=e=>{
+    if(!dragMode)return;
+    if(dragMode==='hue'){
+      const rect=cTop.getBoundingClientRect();
+      updateHue(e.clientX-rect.left,e.clientY-rect.top,dragIdx); draw();
+    } else if(dragMode==='sl'){ updateSL(e); }
+  };
+  const onUp=()=>{dragMode=null;dragIdx=-1;};
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+
+  if(!cfg.fixedCount){
+    const slider=card.querySelector('input[type=range]');
+    const valSpan=card.querySelector('.count-val');
+    slider.oninput=e=>{
+      n=+e.target.value; valSpan.textContent=n;
+      hues=cfg.type==='analogous'
+        ?buildAnalogousHues(analogousHub,splitOffset,n)
+        :Array.from({length:n},(_,i)=>(i*360/n)%360);
+      draw();
+    };
+  }
+
+  card.querySelector('.reset-btn').addEventListener('click',()=>{
+    n=cfg.count; splitOffset=30; analogousHub=180; scApex=0; scSpread=30;
+    hues = cfg.type==='analogous'
+      ? buildAnalogousHues(analogousHub,splitOffset,n)
+      : cfg.type==='splitcomp'
+      ? buildSplitCompHues(scApex, scSpread)
+      : Array.from({length:n},(_,i)=>(i*360/n)%360);
+    globalS=INIT_S; globalL=INIT_L;
+    if(!cfg.fixedCount){
+      card.querySelector('input[type=range]').value=cfg.count;
+      card.querySelector('.count-val').textContent=cfg.count;
+    }
+    draw();
+  });
+
+  activeCleanup=()=>{
+    document.removeEventListener('mousemove',onMove);
+    document.removeEventListener('mouseup',onUp);
+  };
+
+  drawRing();
+  draw();
+}
+
+buildCard(CONFIGS[0]);
+document.getElementById('mode-select').addEventListener('change',e=>{
+  if(activeCleanup){activeCleanup();activeCleanup=null;}
+  buildCard(CONFIGS[+e.target.value]);
+});
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import { createPalette } from "./createPalette";
 import SelectPrePalette from "./SelectPrePalette";
 import ToneCurveEditor from "./ToneCurveEditor";
 import { CurvePoint } from "./toneCurveUtils";
+import ColorHarmonyGenerator from "./ColorHarmonyGenerator";
 
 type ToneCurveChannels = { rgb: CurvePoint[]; r: CurvePoint[]; g: CurvePoint[]; b: CurvePoint[] };
 import { sortPalette } from "./sortPalette";
@@ -227,10 +228,9 @@ const ColorPalette: React.FC<Props> = ({
   setToneCurvePoints,
 }) => {
   const [imageForPalette, setImageForPalette] = useState<string | null>(null);
-  const [selectedColorIndex, setSelectedColorIndex] = useState<number | null>(
-    null
-  );
+  const [selectedColorIndex, setSelectedColorIndex] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [colorGeneratorEnabled, setColorGeneratorEnabled] = useState(false);
   const isPC = useDeviceChecker();
 
   // カラーパレットの生成
@@ -540,6 +540,61 @@ const ColorPalette: React.FC<Props> = ({
                     setToneCurvePoints((prev) => ({ ...prev, [ch]: pts }))
                   }
                   isJP={isJP}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* カラージェネレーターアコーディオン */}
+          <div
+            style={contentsBar}
+            onClick={() => setColorGeneratorEnabled((prev) => !prev)}
+          >
+            <span>{isJP ? "カラージェネレーター" : "Color Generator"}</span>
+            <span
+              style={{
+                transform: colorGeneratorEnabled ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.2s",
+              }}
+            >
+              ▼
+            </span>
+          </div>
+          <div
+            style={{
+              marginInline: "auto",
+              width: "calc(80% - 3px)",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                border: "solid 5px rgb(60, 58, 71)",
+                borderRadius: "0 0 5px 5px",
+                background: "rgb(189, 189, 195)",
+                maxHeight: colorGeneratorEnabled ? "600px" : "0px",
+                overflow: "hidden",
+                transition: "max-height 0.5s ease",
+                boxSizing: "border-box",
+              }}
+            >
+              <div style={{ padding: "0.5rem" }}>
+                <ColorHarmonyGenerator
+                  isJP={isJP}
+                  onAdd={(colors) =>
+                    setColorPalette((prev) => {
+                      const next = [...prev, ...colors];
+                      // 重複除去（大文字統一で比較）
+                      const seen = new Set<string>();
+                      return next.filter((c) => {
+                        const key = c.toUpperCase();
+                        if (seen.has(key)) return false;
+                        seen.add(key);
+                        return true;
+                      });
+                    })
+                  }
+                  onApply={(colors) => setColorPalette(colors)}
                 />
               </div>
             </div>
